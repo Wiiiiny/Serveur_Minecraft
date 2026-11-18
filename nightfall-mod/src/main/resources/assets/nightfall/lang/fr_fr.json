@@ -1,0 +1,5 @@
+{
+  "item.nightfall.shadow_hood": "Capuche d'ombre",
+  "death.attack.nightfall.sunlight": "%1$s a été consumé par la lumière",
+  "death.attack.nightfall.sunlight.player": "%1$s a été consumé par la lumière en fuyant %2$s"
+}

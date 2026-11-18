@@ -1,0 +1,5 @@
+{
+  "item.nightfall.shadow_hood": "Shadow Hood",
+  "death.attack.nightfall.sunlight": "%1$s was burned away by the light",
+  "death.attack.nightfall.sunlight.player": "%1$s was burned away by the light while fleeing %2$s"
+}
