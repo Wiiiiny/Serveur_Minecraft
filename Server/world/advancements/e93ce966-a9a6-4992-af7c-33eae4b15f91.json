@@ -1,0 +1,726 @@
+{
+  "minecraft:recipes/decorations/crafting_table": {
+    "criteria": {
+      "unlock_right_away": "2026-11-17 19:33:09 +0100"
+    },
+    "done": true
+  },
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "minecraft:frozen_river": "2026-11-17 19:35:42 +0100",
+      "minecraft:dark_forest": "2026-11-17 19:46:55 +0100",
+      "minecraft:river": "2026-11-17 19:37:09 +0100",
+      "minecraft:snowy_plains": "2026-11-17 19:33:48 +0100",
+      "minecraft:snowy_taiga": "2026-11-17 19:35:48 +0100",
+      "minecraft:frozen_ocean": "2026-11-17 19:35:39 +0100",
+      "minecraft:snowy_beach": "2026-11-17 19:33:10 +0100",
+      "minecraft:plains": "2026-11-17 19:36:20 +0100"
+    },
+    "done": false
+  },
+  "biomesoplenty:biomesoplenty/root": {
+    "criteria": {
+      "coniferous_forest": "2026-11-17 19:36:54 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:biomesoplenty/all_biomes": {
+    "criteria": {
+      "coniferous_forest": "2026-11-17 19:36:54 +0100",
+      "lavender_field": "2026-11-17 19:49:47 +0100",
+      "fir_clearing": "2026-11-17 19:37:11 +0100"
+    },
+    "done": false
+  },
+  "mcwfences:recipes/dark_oak": {
+    "criteria": {
+      "has_dark_oak": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/crimson": {
+    "criteria": {
+      "has_crimson": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/jungle": {
+    "criteria": {
+      "has_jungle": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/warped": {
+    "criteria": {
+      "has_warped": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/metal": {
+    "criteria": {
+      "has_deepslate": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/birch": {
+    "criteria": {
+      "has_birch": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/stone": {
+    "criteria": {
+      "has_stone": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/sandstone": {
+    "criteria": {
+      "has_sand": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/acacia": {
+    "criteria": {
+      "has_acacia": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/oak": {
+    "criteria": {
+      "has_oak": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/hedge": {
+    "criteria": {
+      "has_birch": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/prismarine": {
+    "criteria": {
+      "has_qq": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/quartz": {
+    "criteria": {
+      "has_qq": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/mangrove": {
+    "criteria": {
+      "has_mangrove": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/nether": {
+    "criteria": {
+      "has_nether_brick": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/bamboo": {
+    "criteria": {
+      "has_bamboo": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/spruce": {
+    "criteria": {
+      "has_spruce": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/end": {
+    "criteria": {
+      "has_end_brick": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/mud_brick": {
+    "criteria": {
+      "has_qq": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/blackstone": {
+    "criteria": {
+      "has_blackstone": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "mcwfences:recipes/deepslate": {
+    "criteria": {
+      "has_deepslate": "2026-11-17 19:38:01 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/willow_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/cherry_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/dead_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/magic_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/pine_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/acacia_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/jungle_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/fir_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/maple_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/spruce_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/redwood_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/mangrove_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/hellbark_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/jacaranda_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/palm_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/empyreal_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/dark_oak_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/raw_bamboo_raft": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/umbran_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/bamboo_raft": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/charred_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/white_oak_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/birch_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/oak_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/mahogany_boat": {
+    "criteria": {
+      "in_water": "2026-11-17 19:40:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:nether/explore_nether": {
+    "criteria": {
+      "minecraft:basalt_deltas": "2026-11-17 19:53:49 +0100"
+    },
+    "done": false
+  },
+  "mcwroofs:recipes/grass": {
+    "criteria": {
+      "has_planks": "2026-11-17 21:44:54 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/light_blue_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/orange_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/chest": {
+    "criteria": {
+      "has_lots_of_items": "2026-11-17 20:42:55 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/decorations/sign_post_dark_oak": {
+    "criteria": {
+      "has_the_recipe": "2026-11-17 20:42:55 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/large_flower_pot": {
+    "criteria": {
+      "has_flower_pot": "2026-11-17 21:33:10 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_birch_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_deepslate_bricks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/flower_banner_pattern": {
+    "criteria": {
+      "has_oxeye_daisy": "2026-11-17 20:36:36 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/red_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/light_gray_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_crimson_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_acacia_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/glass_bridge": {
+    "criteria": {
+      "has_planks": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/red_dye_from_tulip": {
+    "criteria": {
+      "has_red_flower": "2026-11-17 21:17:15 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/hourglass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/lantern_block": {
+    "criteria": {
+      "has_lantern": "2026-11-17 21:14:16 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_spruce_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/sign_post_dark_oak": {
+    "criteria": {
+      "has_dark_oak_sign": "2026-11-17 20:42:55 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/green_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/blue_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_oak_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_warped_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/orange_dye_from_torchflower": {
+    "criteria": {
+      "has_torchflower": "2026-11-17 21:45:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/lime_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_white_oak_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/white_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/light_gray_dye_from_white_tulip": {
+    "criteria": {
+      "has_white_tulip": "2026-11-17 20:36:37 +0100"
+    },
+    "done": true
+  },
+  "mcwpaths:recipes/soil": {
+    "criteria": {
+      "has_wood": "2026-11-17 21:44:54 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/brewing/glass_bottle": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/white_dye_from_lily_of_the_valley": {
+    "criteria": {
+      "has_lily_of_the_valley": "2026-11-17 20:36:34 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/purple_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_dripstone_bricks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/glass_bridge_pier": {
+    "criteria": {
+      "has_planks": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/building_blocks/mossy_black_sand": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/mossy_stone_bricks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_dark_oak_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_cherry_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-17 21:39:13 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/pink_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/black_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/gray_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/glass_bridge_stair": {
+    "criteria": {
+      "has_planks": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/pedestal": {
+    "criteria": {
+      "has_stone_brick_slab": "2026-11-17 21:38:47 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_bamboo_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-17 21:39:13 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/cyan_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/legacy_sapling": {
+    "criteria": {
+      "has_oak_sapling": "2026-11-17 21:31:35 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_raw_bamboo_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/brown_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/flower_box": {
+    "criteria": {
+      "has_dirt": "2026-11-17 21:44:54 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/beveled_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/azalea_small_hedge_flowers": {
+    "criteria": {
+      "has_flowering_azalea_leaves": "2026-11-17 20:37:09 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/chiseled_stone_bricks": {
+    "criteria": {
+      "has_tag": "2026-11-17 21:39:13 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_charred_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_jungle_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_tuff_bricks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/mossy_mangrove_planks_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/glass_pane": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/magenta_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "decorative_blocks:recipes/building_blocks/rocky_dirt": {
+    "criteria": {
+      "has_dirt": "2026-11-17 21:44:54 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/mossy_cobblestone_from_moss_block": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/moss_small_hedge": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/mosaic_glass": {
+    "criteria": {
+      "has_wood": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/yellow_stained_glass": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/moss_carpet": {
+    "criteria": {
+      "has_moss_block": "2026-11-17 20:38:52 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/jar": {
+    "criteria": {
+      "has_glass": "2026-11-17 20:58:33 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/light_gray_dye_from_oxeye_daisy": {
+    "criteria": {
+      "has_oxeye_daisy": "2026-11-17 20:36:36 +0100"
+    },
+    "done": true
+  },
+  "DataVersion": 3465
+}
