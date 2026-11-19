@@ -31,6 +31,8 @@
       "snowblossom_grove": "2026-11-17 19:34:56 +0100",
       "cold_desert": "2026-11-17 19:33:51 +0100",
       "maple_woods": "2026-11-17 19:41:52 +0100",
+      "crystalline_chasm": "2026-11-19 17:20:59 +0100",
+      "withered_abyss": "2026-11-19 17:20:00 +0100",
       "field": "2026-11-17 19:35:25 +0100",
       "coniferous_forest": "2026-11-17 19:35:46 +0100",
       "hot_springs": "2026-11-17 19:35:11 +0100",
@@ -42,6 +44,7 @@
       "snowy_fir_clearing": "2026-11-17 19:34:45 +0100",
       "tundra": "2026-11-17 19:34:44 +0100",
       "gravel_beach": "2026-11-17 19:35:32 +0100",
+      "undergrowth": "2026-11-19 17:45:21 +0100",
       "snowy_maple_woods": "2026-11-17 19:35:21 +0100"
     },
     "done": false
@@ -324,6 +327,9 @@
   },
   "minecraft:nether/explore_nether": {
     "criteria": {
+      "minecraft:crimson_forest": "2026-11-19 17:35:05 +0100",
+      "minecraft:nether_wastes": "2026-11-19 17:20:27 +0100",
+      "minecraft:soul_sand_valley": "2026-11-19 17:20:30 +0100",
       "minecraft:basalt_deltas": "2026-11-17 19:53:55 +0100"
     },
     "done": false
@@ -1309,6 +1315,804 @@
   "minecraft:recipes/tools/stone_hoe": {
     "criteria": {
       "has_cobblestone": "2026-11-18 18:19:21 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/white_oak_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/jacaranda_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/spruce_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/mangrove_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/fir_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/oak_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/umbran_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/willow_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/boat_jar": {
+    "criteria": {
+      "minecraft:boats": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/redwood_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/empyreal_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/dark_oak_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/charred_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/pine_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/jungle_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/maple_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/palm_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/bamboo_chest_raft": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/hellbark_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/raw_bamboo_chest_raft": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/acacia_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/magic_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/cherry_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/birch_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/dead_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/mahogany_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:29:26 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/diorite": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/dark_prismarine": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/curtain_rods": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_log_seat_carpentry": {
+    "criteria": {
+      "has_oak_log": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_mystic_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwstairs:recipes/oak": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_beach_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/quartz": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/spruce": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_planks": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_barred_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/oak": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/oak_post": {
+    "criteria": {
+      "has_woods": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_four_panel_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/granite": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/mangrove": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/acacia/oak_bark_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_barrel_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/red_sandstone": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_standing_table_carpentry": {
+    "criteria": {
+      "has_oak_log": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/misc/charcoal": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/bricks": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/prismarine": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_coffee_table_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/metal": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_chair_lukas_natural_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/warped": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "decorative_blocks:recipes/building_blocks/oak_palisade": {
+    "criteria": {
+      "has_log": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/dark_oak": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_swamp_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_paper_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/components": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_chair_gregory_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/birch": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_glass_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/cherry": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_chair_tommy_natural_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/charcoal": {
+    "criteria": {
+      "has_log": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_whispering_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/oak_small_logs": {
+    "criteria": {
+      "has_oak_log": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_cottage_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwfurnitures:recipes/oak": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/stone": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_barn_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/crimson": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/deepslate": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_wood": {
+    "criteria": {
+      "has_log": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/jungle": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/blackstone": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_tropical_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/sandstone": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/print_classic": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/andesite": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/oak_bridge_pier": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwroofs:recipes/oak": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_ranch_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/acacia": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "mcwdoors:recipes/oak": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:35:00 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/yellow_dye_from_dandelion": {
+    "criteria": {
+      "has_dandelion": "2026-11-19 16:35:25 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/bread_box": {
+    "criteria": {
+      "has_bread": "2026-11-19 16:36:10 +0100"
+    },
+    "done": true
+  },
+  "minecraft:story/enter_the_nether": {
+    "criteria": {
+      "entered_nether": "2026-11-19 17:20:00 +0100"
+    },
+    "done": true
+  },
+  "minecraft:nether/root": {
+    "criteria": {
+      "entered_nether": "2026-11-19 17:20:00 +0100"
+    },
+    "done": true
+  },
+  "minecraft:nether/find_bastion": {
+    "criteria": {
+      "bastion": "2026-11-19 17:22:29 +0100"
+    },
+    "done": true
+  },
+  "minecraft:adventure/kill_a_mob": {
+    "criteria": {
+      "minecraft:zombified_piglin": "2026-11-19 17:43:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:adventure/kill_all_mobs": {
+    "criteria": {
+      "minecraft:zombified_piglin": "2026-11-19 17:43:05 +0100"
+    },
+    "done": false
+  },
+  "minecraft:adventure/root": {
+    "criteria": {
+      "killed_something": "2026-11-19 17:43:05 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/jungle_wood": {
+    "criteria": {
+      "has_log": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/jungle_chair_gregory_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_swamp_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_ranch_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "decorative_blocks:recipes/building_blocks/jungle_palisade": {
+    "criteria": {
+      "has_log": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_tropical_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_glass_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/jungle_small_logs": {
+    "criteria": {
+      "has_jungle_log": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_barred_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/jungle_chair_tommy_natural_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/jungle_standing_table_carpentry": {
+    "criteria": {
+      "has_jungle_log": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwfurnitures:recipes/jungle": {
+    "criteria": {
+      "has_wood": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwdoors:recipes/jungle": {
+    "criteria": {
+      "has_wood": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/jungle_coffee_table_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_four_panel_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_whispering_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_barrel_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/jungle_log_seat_carpentry": {
+    "criteria": {
+      "has_jungle_log": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwstairs:recipes/jungle": {
+    "criteria": {
+      "has_planks": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/acacia/jungle_bark_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwroofs:recipes/jungle": {
+    "criteria": {
+      "has_planks": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_barn_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/jungle_post": {
+    "criteria": {
+      "has_woods": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/jungle_chair_lukas_natural_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_cottage_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/jungle_bridge_pier": {
+    "criteria": {
+      "has_planks": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/print_beach": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/jungle_planks": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_classic_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_mystic_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/jungle/jungle_paper_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 18:00:29 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/polished_netherrack": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/netherrack_bricks_from_netherrack_stonecutting": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/nether_brick": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/netherrack_brick_wall_from_netherrack_stonecutting": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/polished_netherrack_from_netherrack_stonecutting": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/netherrack_brick_stairs_from_netherrack_stonecutting": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/netherrack_brick_slab_from_netherrack_stonecutting": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/polished_netherrack_slab_from_netherrack_stonecutting": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/polished_netherrack_stairs_from_netherrack_stonecutting": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/netherrack_circular_paving_from_netherrack_stonecutting": {
+    "criteria": {
+      "has_netherrack": "2026-11-19 18:03:13 +0100"
     },
     "done": true
   },

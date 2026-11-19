@@ -7,7 +7,8 @@
   },
   "minecraft:adventure/adventuring_time": {
     "criteria": {
-      "minecraft:dark_forest": "2026-11-18 17:13:58 +0100"
+      "minecraft:dark_forest": "2026-11-18 17:13:58 +0100",
+      "minecraft:river": "2026-11-19 16:16:32 +0100"
     },
     "done": false
   },
@@ -151,9 +152,2616 @@
   },
   "biomesoplenty:biomesoplenty/all_biomes": {
     "criteria": {
-      "field": "2026-11-18 17:40:16 +0100"
+      "snowblossom_grove": "2026-11-19 16:16:43 +0100",
+      "maple_woods": "2026-11-19 16:16:42 +0100",
+      "crystalline_chasm": "2026-11-19 17:29:03 +0100",
+      "withered_abyss": "2026-11-19 17:20:22 +0100",
+      "field": "2026-11-18 17:40:16 +0100",
+      "coniferous_forest": "2026-11-19 16:16:27 +0100",
+      "glowing_grotto": "2026-11-19 16:16:44 +0100",
+      "undergrowth": "2026-11-19 17:46:55 +0100"
     },
     "done": false
+  },
+  "mcwbridges:recipes/andesite_bridge_stair": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwroofs:recipes/grass": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:20:43 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_bookshelf_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_log_window": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/cyan_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_tiles_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/red_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/diorite": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/gray_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_double_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_large_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_desk": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:nether/explore_nether": {
+    "criteria": {
+      "minecraft:crimson_forest": "2026-11-19 17:36:11 +0100",
+      "minecraft:nether_wastes": "2026-11-19 17:20:27 +0100",
+      "minecraft:soul_sand_valley": "2026-11-19 17:20:28 +0100"
+    },
+    "done": false
+  },
+  "biomesoplenty:recipes/transportation/willow_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_cupboard_counter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/white_oak_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_double_drawer_counter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/jacaranda_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_tile_slab_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_modern_chair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/green_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/lime_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/creeper_trophy": {
+    "criteria": {
+      "has_creeper_trophy": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/spruce_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_bamboo_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/andesite_bricks_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/chest": {
+    "criteria": {
+      "has_lots_of_items": "2026-11-19 16:29:03 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/dark_prismarine": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_bark_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_stairs_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/cherry_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/mangrove_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_stable_head_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/fir_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/curtain_rods": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_window2": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_upper_lower_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/dead_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/magic_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/oak_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_double_kitchen_cabinet": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_railing": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_wardrobe": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/weight_storage_cube": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_mystic_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_log_seat_carpentry": {
+    "criteria": {
+      "has_oak_log": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/lime_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_mystic_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_western_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_ranch_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_bridge_pier": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_table": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/purple_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/red_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/quartz_stairs": {
+    "criteria": {
+      "has_chiseled_quartz_block": "2026-11-19 16:22:01 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_stool_chair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_double_kitchen_cabinet": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwstairs:recipes/oak": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_lower_triple_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/white_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_log_four_window": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_covered_desk": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_beach_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_compact_stairs": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/quartz": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/andesite_brick_stairs_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/vindicator_trophy": {
+    "criteria": {
+      "has_vindicator_trophy": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/andesite_bridge": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_triple_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/yellow_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/chiseled_stone_bricks_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_skyline_stairs": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/white_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_brick_pillar_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_pane_window": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/spruce": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/andesite_circular_paving_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/pine_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_drawer_counter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/building_blocks/fir_wood": {
+    "criteria": {
+      "has_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_cottage_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/acacia_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/cyan_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_planks": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/herringbone_andesite_bricks_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/purple_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_log_bridge_middle_recycle": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/polished_andesite_stairs_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/lime_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/yellow_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_log_bridge_middle": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_barred_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/umbran_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/willow_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/skeleton_trophy": {
+    "criteria": {
+      "has_skeleton_trophy": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/gray_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_swamp_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/jungle_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_stairs": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_barn_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/cyan_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/lantern_block": {
+    "criteria": {
+      "has_lantern": "2026-11-19 16:26:47 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/boat_jar": {
+    "criteria": {
+      "minecraft:boats": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/chiseled_andesite_bricks_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/oak": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_curved_gate": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_barn_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_circular_paving_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:story/enter_the_nether": {
+    "criteria": {
+      "entered_nether": "2026-11-19 17:20:21 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/oak_post": {
+    "criteria": {
+      "has_woods": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_end_table": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_counter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/brown_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/brown_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_planks_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_modern_desk": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/fir_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_plank_parapet": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_lower_triple_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_coffee_table": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_bookshelf": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/stonecutter": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/maple_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/quartz_pillar": {
+    "criteria": {
+      "has_chiseled_quartz_block": "2026-11-19 16:22:01 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/spruce_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_swamp_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/redwood_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/green_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/herringbone_stone_bricks_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_rope_bridge_stair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_picket_fence": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/empyreal_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/redwood_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_bookshelf_cupboard": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/red_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_four_panel_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/andesite_slab_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/purple_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_chair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/stone_brick_walls_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/magenta_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_plank_four_window": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_coffee_table": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_barred_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/mangrove_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_brick_slab_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwpaths:recipes/soil": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:20:43 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_drawer_counter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_shutter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/black_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwpaths:recipes/andesite": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/dark_oak_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_brick_stairs_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/andesite_brick_wall_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/granite": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_pyramid_gate": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/mangrove": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_modern_wardrobe": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/acacia/oak_bark_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/hellbark_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/balustrade_stone_bricks_bridge": {
+    "criteria": {
+      "has_planks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_counter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/jacaranda_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_loft_stairs": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_barrel_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_paper_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_brick_slab_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/cyan_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_slab_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_planks_attic_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/redstone/stone_door": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/red_sandstone": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/palm_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/empyreal_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_standing_table_carpentry": {
+    "criteria": {
+      "has_oak_log": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_modern_wardrobe": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_tile_stairs_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_planks_steep_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/yellow_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_lower_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/misc/charcoal": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_glass_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_japanese2_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/blue_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_platform": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_planks_top_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "decorative_blocks:recipes/building_blocks/stone_pillar": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/bricks": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/arrow_slits_gothic": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/polished_andesite_pillar_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_stool_chair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/charred_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_striped_chair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/prismarine": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/magenta_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_coffee_table_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_japanese_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/metal": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/dark_oak_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_bricks": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/green_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_glass_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwstairs:recipes/andesite": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/bluestone": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_tile_stairs_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_classic_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_stable_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_horse_fence": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/quartz_slab": {
+    "criteria": {
+      "has_chiseled_quartz_block": "2026-11-19 16:22:01 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_chair_lukas_natural_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/blue_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_striped_chair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/warped": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/pink_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_bookshelf": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_planks_upper_lower_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_top_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "decorative_blocks:recipes/building_blocks/oak_palisade": {
+    "criteria": {
+      "has_log": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/dark_oak": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/andesite_stairs": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_swamp_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_modern_chair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/pine_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_bricks_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_balcony": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_slab": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_double_drawer_counter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/pink_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/balustrade_andesite_bridge": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_plank_pane_window": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_log_window2": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwroofs:recipes/andesite": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_paper_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_tile_wall_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_desk": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/jungle_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/raw_bamboo_raft": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/umbran_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_blossom_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_curtain_rod": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_double_wardrobe": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_tiles": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/components": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/stone_button": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/bamboo_raft": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/white_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/maple_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/stone_pressure_plate": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/palm_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/green_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_barn_glass_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_cottage_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_large_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_window": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_bamboo_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_chair_gregory_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_tiles_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/birch": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/black_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_glass_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/cherry": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_log_bridge_stair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/light_blue_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_mystic_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_whispering_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_four_panel_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/pedestal": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/orange_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_attic_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/bamboo_chest_raft": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/andesite_brick_slab_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_planks_path": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_classic_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/orange_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_modern_desk": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_blinds": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/decorations/oak_chair_tommy_natural_carpentry": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/gray_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/light_blue_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/charcoal": {
+    "criteria": {
+      "has_log": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/polished_andesite_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/sturdy_stone_alt": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/hellbark_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_whispering_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_lower_bookshelf_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/lava_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/water_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/evoker_trophy": {
+    "criteria": {
+      "has_evoker_trophy": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/charred_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_steep_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/oak_small_logs": {
+    "criteria": {
+      "has_oak_log": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_chair": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_bulk_stairs": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_glass_kitchen_cabinet": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/purple_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_cottage_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_end_table": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/raw_bamboo_chest_raft": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwfurnitures:recipes/oak": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/orange_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/pillager_trophy": {
+    "criteria": {
+      "has_pillager_trophy": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/stone": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/andesite_pillar_trim": {
+    "criteria": {
+      "has_andesite_pillar_trim": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_barn_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/stone_tile": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_bookshelf_cupboard": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/brown_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/crimson": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/white_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/building_blocks/fir_planks": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/sturdy_stone": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/blue_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/deepslate": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/stone_lamp": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/oak_wood": {
+    "criteria": {
+      "has_log": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/jungle": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/rope_fir_bridge_recycle": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/stone_corner_trim": {
+    "criteria": {
+      "has_stone_corner_trim": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_pane_window": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_paper_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/blue_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_barrel_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_waffle_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/cracked_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stone_brick_stairs_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/flower_box": {
+    "criteria": {
+      "has_dirt": "2026-11-19 16:20:43 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_nether_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_whispering_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_highley_gate": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_terrace_stairs": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_beach_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/blackstone": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/andesite_corner_trim": {
+    "criteria": {
+      "has_andesite_corner_trim": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/andesite_wall_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_log_parapet": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_tropical_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/chiseled_stone_bricks": {
+    "criteria": {
+      "has_tag": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/orange_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/white_oak_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/light_blue_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/acacia_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/polished_andesite_slab_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/magic_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/rope_fir_bridge": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/sandstone": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/magenta_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_tropical_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/herringbone_stone_bricks_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/lime_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_tile_wall_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/brown_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/smooth_stone": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_brick_pillar_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_glass_table": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_four_window": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/print_classic": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_kitchen_sink": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/birch_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/cherry_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/birch_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/pink_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/transportation/oak_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "decorative_blocks:recipes/building_blocks/rocky_dirt": {
+    "criteria": {
+      "has_dirt": "2026-11-19 16:20:43 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_planks_lower_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/stone_brick_wall_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/black_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/dead_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_plank_window": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_rail_bridge": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_triple_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_plank_window2": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_stockade_fence": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_tropical_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/andesite_stairs_from_andesite_stonecutting": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_four_panel_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/andesite": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/oak_bridge_pier": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/chiseled_quartz_block": {
+    "criteria": {
+      "has_chiseled_quartz_block": "2026-11-19 16:22:01 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_kitchen_sink": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/pink_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_kitchen_cabinet": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_circular_paving_from_stone_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_planks_upper_steep_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwroofs:recipes/stone": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "minecraft:nether/root": {
+    "criteria": {
+      "entered_nether": "2026-11-19 17:20:21 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/mahogany_boat": {
+    "criteria": {
+      "in_water": "2026-11-19 16:45:27 +0100"
+    },
+    "done": true
+  },
+  "mcwroofs:recipes/oak": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_louvered_shutter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_beach_trapdoor": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/light_blue_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/witch_trophy": {
+    "criteria": {
+      "has_witch_trophy": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwroofs:recipes/stone_bricks": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_double_wardrobe": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwtrpdoors:recipes/oak/oak_ranch_trapdoor": {
+    "criteria": {
+      "has_logs": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_covered_desk": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_kitchen_cabinet": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/polished_andesite": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/magenta_stone_brick_wall_from_stone_brick_wall": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_lower_bookshelf_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/chiseled_stone_bricks_stone_from_stonecutting": {
+    "criteria": {
+      "has_stone": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "handcrafted:recipes/misc/stone_pillar_trim": {
+    "criteria": {
+      "has_stone_pillar_trim": "2026-11-19 16:20:34 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_double_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_bark_glass_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwwindows:recipes/acacia": {
+    "criteria": {
+      "has_the_recipe": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/red_stone_brick_stairs_from_stone_brick_stairs": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_cupboard_counter": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_bookshelf_drawer": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_table": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/yellow_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/black_stone_brick_slab_from_stone_brick_slab": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:nether/find_bastion": {
+    "criteria": {
+      "bastion": "2026-11-19 17:29:33 +0100"
+    },
+    "done": true
+  },
+  "biomesoplenty:recipes/transportation/mahogany_chest_boat": {
+    "criteria": {
+      "has_boat": "2026-11-19 16:31:50 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/andesite_wall": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/andesite_slab": {
+    "criteria": {
+      "has_andesite": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/stone_bridge_pier": {
+    "criteria": {
+      "has_planks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_wardrobe": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "supplementaries:recipes/stonecutting/stone_tile": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_upper_steep_roof": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwdoors:recipes/oak": {
+    "criteria": {
+      "has_wood": "2026-11-19 16:34:56 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/stripped_fir_glass_kitchen_cabinet": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/stone_tile_slab_from_stone_bricks_stonecutting": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_modern_door": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_wired_fence": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/andesite_bridge_pier": {
+    "criteria": {
+      "has_planks": "2026-11-19 16:22:51 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/gray_stone_bricks": {
+    "criteria": {
+      "has_stone_bricks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/stone_brick_bridge": {
+    "criteria": {
+      "has_planks": "2026-11-19 17:44:50 +0100"
+    },
+    "done": true
+  },
+  "mcwbiomesoplenty:recipes/building_blocks/fir_glass_table": {
+    "criteria": {
+      "has_fir_log": "2026-11-19 16:35:04 +0100"
+    },
+    "done": true
   },
   "DataVersion": 3465
 }
