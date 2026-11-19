@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "fr.serveur.rpg.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": ["BlockItemMixin", "ExplosionMixin", "PistonBlockMixin", "FireBlockMixin", "HopperBlockEntityMixin", "MobEntityMixin", "PhantomMoveControlMixin", "PhantomStartAttackGoalMixin", "ServerPlayerEntityMixin", "CraftingScreenHandlerMixin", "SmithingScreenHandlerMixin", "ServerPlayerPortalMixin"],
+  "injectors": { "defaultRequire": 1 }
+}
