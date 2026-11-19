@@ -67,6 +67,13 @@ public final class ModItems {
             new Item.Settings().maxCount(1).fireproof().rarity(Rarity.EPIC));
     public static final Item LARME_DE_VIE = new TearItem(new Item.Settings().maxCount(16).rarity(Rarity.RARE));
     public static final Item CROCHET = new LockpickItem(new Item.Settings().maxCount(16).rarity(Rarity.UNCOMMON));
+    public static final Item PIECE_OR = new Item(new Item.Settings().rarity(Rarity.UNCOMMON)) {
+        @Override
+        public void appendTooltip(ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.World world,
+                                  java.util.List<Text> tooltip, net.minecraft.client.item.TooltipContext context) {
+            tooltip.add(Text.translatable("tooltip.survierpg.piece").formatted(net.minecraft.util.Formatting.GRAY));
+        }
+    };
 
     private ModItems() {}
 
@@ -74,6 +81,8 @@ public final class ModItems {
         register("pioche_tenebres", PIOCHE_TENEBRES);
         register("larme_de_vie", LARME_DE_VIE);
         register("crochet", CROCHET);
+        register("piece_or", PIECE_OR);
+        fr.serveur.rpg.blocks.ModBlocks.register();
 
         for (Job job : Job.values()) {
             Map<Tier, Item> byTier = new EnumMap<>(Tier.class);
@@ -99,8 +108,8 @@ public final class ModItems {
                     entries.add(PIOCHE_TENEBRES);
                     entries.add(LARME_DE_VIE);
                     entries.add(CROCHET);
-                    entries.add(Items.SOUL_SAND);        // Pierre obscure
-                    entries.add(Items.GLOWSTONE_DUST);   // la monnaie
+                    entries.add(PIECE_OR);
+                    entries.add(fr.serveur.rpg.blocks.ModBlocks.PIERRE_OBSCURE_ITEM);
                     Registries.ITEM.getOrEmpty(new Identifier("nightfall", "shadow_hood")).ifPresent(entries::add);
                     for (Job job : Job.values()) for (Tier tier : Tier.values()) entries.add(OFFICIAL.get(job).get(tier));
                 })

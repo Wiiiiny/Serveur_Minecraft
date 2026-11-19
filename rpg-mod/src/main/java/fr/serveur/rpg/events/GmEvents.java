@@ -48,7 +48,7 @@ public final class GmEvents {
 
     private static Type type;
     private static String title;
-    private static long endTick, startTick, now;
+    private static long endTick, startTick, now, lastEndTick;
     private static ServerBossBar bar;
     private static final Map<UUID, Integer> SCORES = new HashMap<>();
     private static final Map<UUID, String> NAMES = new HashMap<>();
@@ -62,7 +62,15 @@ public final class GmEvents {
     public static void register() {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             now++;
-            if (type == null) return;
+            if (type == null) {
+                // Événements planifiés : un événement aléatoire se lance tout seul à intervalle régulier.
+                var cfg = fr.serveur.rpg.auto.AutoConfig.get();
+                if (cfg.evenementsAuto && now - lastEndTick >= cfg.evenementIntervalleMinutes * 1200L
+                        && server.getCurrentPlayerCount() >= Math.max(1, cfg.evenementJoueursMin)) {
+                    startRandom(server);
+                }
+                return;
+            }
             long total = Math.max(1, endTick - startTick);
             bar.setPercent(Math.max(0f, Math.min(1f, (endTick - now) / (float) total)));
             if (now % 20 == 0) {
@@ -104,9 +112,50 @@ public final class GmEvents {
         Msg.broadcast(server, Text.literal("ÉVÉNEMENT " + t.label.toUpperCase() + " : " + name + " (" + minutes + " min) !").formatted(Formatting.AQUA, Formatting.BOLD));
     }
 
+    private static final String[][] AUTO_TITLES = {
+            {"COMBAT", "Chasse nocturne"}, {"COMBAT", "Arène sanglante"},
+            {"RECOLTE", "Grande récolte"}, {"RECOLTE", "Les bras du royaume"},
+            {"RESSOURCE", "Ruée vers la Pierre obscure"}, {"RESSOURCE", "Fièvre de l'obscur"}};
+
+    public static void startRandom(MinecraftServer server) {
+        String[] pick = AUTO_TITLES[(int) (Math.random() * AUTO_TITLES.length)];
+        start(server, Type.valueOf(pick[0]), Math.max(1, fr.serveur.rpg.auto.AutoConfig.get().evenementDureeMinutes), pick[1]);
+    }
+
+    /** Secondes avant le prochain événement automatique (-1 si désactivé ou en cours). */
+    public static long secondsToNextAuto() {
+        var cfg = fr.serveur.rpg.auto.AutoConfig.get();
+        if (type != null || !cfg.evenementsAuto) return -1;
+        return Math.max(0, (lastEndTick + cfg.evenementIntervalleMinutes * 1200L - now) / 20);
+    }
+
+    public static String currentTitle() {
+        return type == null ? null : title;
+    }
+
+    public static String currentType() {
+        return type == null ? null : type.label;
+    }
+
+    public static long secondsLeft() {
+        return type == null ? 0 : Math.max(0, (endTick - now) / 20);
+    }
+
     public static void stop(MinecraftServer server) {
         if (type == null) return;
+        lastEndTick = now;
         if (bar != null) bar.clearPlayers();
+        // Récompenses automatiques du podium, versées en banque.
+        List<Integer> rewards = fr.serveur.rpg.auto.AutoConfig.get().evenementRecompenses;
+        List<Map.Entry<UUID, Integer>> podium = SCORES.entrySet().stream()
+                .sorted(Map.Entry.<UUID, Integer>comparingByValue().reversed()).toList();
+        for (int i = 0; i < Math.min(podium.size(), rewards.size()); i++) {
+            int coins = rewards.get(i);
+            if (coins <= 0) continue;
+            fr.serveur.rpg.economy.Bank.credit(server, podium.get(i).getKey(), coins);
+            fr.serveur.rpg.economy.Bank.notify(server, podium.get(i).getKey(),
+                    "Événement « " + title + " » : " + (i + 1) + "e place, +" + fr.serveur.rpg.economy.Bank.format(coins) + " !");
+        }
         MutableText t = Text.literal("Fin de l'événement « " + title + " » — classement :").formatted(Formatting.AQUA);
         List<Map.Entry<UUID, Integer>> ranking = SCORES.entrySet().stream().sorted(Map.Entry.<UUID, Integer>comparingByValue().reversed()).toList();
         if (ranking.isEmpty()) t.append(Text.literal("\n(aucun participant)").formatted(Formatting.GRAY));

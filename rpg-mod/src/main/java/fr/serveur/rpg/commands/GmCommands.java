@@ -295,7 +295,7 @@ public final class GmCommands {
                     m.price = IntegerArgumentType.getInteger(c, "prix");
                     s.shop.add(m);
                     s.markDirty();
-                    Msg.ok(c.getSource(), "Boutique #" + m.id + " : " + m.stack.getCount() + "x " + m.stack.getName().getString() + " à " + m.price + " poudres.");
+                    Msg.ok(c.getSource(), "Boutique #" + m.id + " : " + m.stack.getCount() + "x " + m.stack.getName().getString() + " à " + m.price + " pièces.");
                     return 1;
                 })))
                 .then(literal("prix").then(argument("id", IntegerArgumentType.integer(1)).then(argument("prix", IntegerArgumentType.integer(1)).executes(c -> {
@@ -303,7 +303,7 @@ public final class GmCommands {
                     var m = state(c).shop.stream().filter(x -> x.id == id).findFirst().orElseThrow(() -> EconomyCommands.err("Article introuvable."));
                     m.price = IntegerArgumentType.getInteger(c, "prix");
                     state(c).markDirty();
-                    Msg.ok(c.getSource(), "Article #" + id + " : nouveau prix " + m.price + " poudres.");
+                    Msg.ok(c.getSource(), "Article #" + id + " : nouveau prix " + m.price + " pièces.");
                     return 1;
                 }))))
                 .then(literal("retirer").then(argument("id", IntegerArgumentType.integer(1)).executes(c -> {
@@ -315,7 +315,7 @@ public final class GmCommands {
                 })))
                 .then(literal("liste").executes(c -> {
                     MutableText t = Text.literal("Boutique du GM :").formatted(Formatting.GOLD);
-                    state(c).shop.forEach(m -> t.append(Text.literal("\n#" + m.id + " " + m.stack.getCount() + "x " + m.stack.getName().getString() + " — " + m.price + " poudres")));
+                    state(c).shop.forEach(m -> t.append(Text.literal("\n#" + m.id + " " + m.stack.getCount() + "x " + m.stack.getName().getString() + " — " + m.price + " pièces")));
                     Msg.info(c.getSource(), t);
                     return 1;
                 })));
@@ -523,7 +523,7 @@ public final class GmCommands {
                     + (paid > money ? " (bonus prestige inclus)" : "") + ".").formatted(Formatting.GOLD));
         }
         Msg.ok(c.getSource(), "Quête #" + id + " validée" + (xp > 0 ? " (+" + xp + " XP)" : "")
-                + (paid > 0 ? " (+" + paid + " poudres)" : "") + ".");
+                + (paid > 0 ? " (+" + paid + " pièces)" : "") + ".");
         return 1;
     }
 

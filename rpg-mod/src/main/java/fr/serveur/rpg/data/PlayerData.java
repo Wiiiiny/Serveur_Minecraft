@@ -19,7 +19,7 @@ public final class PlayerData {
     /** Progression conservée par métier (si le GM fait changer de métier puis revenir). */
     public final Map<Job, JobProgress> progress = new EnumMap<>(Job.class);
     public final List<Quest> quests = new ArrayList<>();
-    /** Solde bancaire, en poudres de glowstone. */
+    /** Solde bancaire, en Pièces d'or. */
     public long money;
     /** La Pioche des ténèbres de départ a-t-elle été donnée ? */
     public boolean starterGiven;
@@ -35,6 +35,9 @@ public final class PlayerData {
     public boolean awaitingRevive;
     // Statistiques (classements)
     public int deaths, pvpKills, mobKills;
+    /** Quêtes du jour (date au format AAAA-MM-JJ). */
+    public String dailyDate = "";
+    public final List<DailyQuest> daily = new ArrayList<>();
 
     public static final class JobProgress {
         public int level = 1;
@@ -92,6 +95,10 @@ public final class PlayerData {
         nbt.putInt("deaths", deaths);
         nbt.putInt("pvpKills", pvpKills);
         nbt.putInt("mobKills", mobKills);
+        nbt.putString("dailyDate", dailyDate);
+        NbtList dq = new NbtList();
+        daily.forEach(x -> dq.add(x.toNbt()));
+        nbt.put("daily", dq);
         return nbt;
     }
 
@@ -135,6 +142,9 @@ public final class PlayerData {
         d.deaths = nbt.getInt("deaths");
         d.pvpKills = nbt.getInt("pvpKills");
         d.mobKills = nbt.getInt("mobKills");
+        d.dailyDate = nbt.getString("dailyDate");
+        NbtList dq = nbt.getList("daily", NbtElement.COMPOUND_TYPE);
+        for (int i = 0; i < dq.size(); i++) d.daily.add(DailyQuest.fromNbt(dq.getCompound(i)));
         return d;
     }
 }

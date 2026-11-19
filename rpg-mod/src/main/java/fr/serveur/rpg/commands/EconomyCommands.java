@@ -81,24 +81,8 @@ public final class EconomyCommands {
                     return 1;
                 })
                 .then(literal("vendre").then(argument("prix", LongArgumentType.longArg(1)).executes(c -> {
-                    ServerPlayerEntity p = c.getSource().getPlayerOrThrow();
-                    ItemStack held = p.getMainHandStack();
-                    if (held.isEmpty()) throw err("Tiens en main l'objet à vendre.");
-                    if (ObscureStone.isPickaxe(held)) throw err("La Pioche des ténèbres ne peut pas être vendue.");
-                    RpgState state = RpgState.get(p.getServer());
-                    long mine = state.auctions.stream().filter(a -> p.getUuid().equals(a.seller)).count();
-                    if (mine >= MAX_LISTINGS_PER_PLAYER) throw err("Tu as déjà " + MAX_LISTINGS_PER_PLAYER + " objets en vente.");
-                    MarketItem m = new MarketItem();
-                    m.id = state.nextMarketId++;
-                    m.seller = p.getUuid();
-                    m.sellerName = p.getGameProfile().getName();
-                    m.stack = held.copy();
-                    m.price = LongArgumentType.getLong(c, "prix");
-                    p.getInventory().removeOne(held);
-                    state.auctions.add(m);
-                    state.markDirty();
-                    Msg.info(c.getSource(), Text.literal("Mis en vente : " + m.stack.getCount() + "x ").formatted(Formatting.GREEN)
-                            .append(m.stack.getName()).append(" pour " + Bank.format(m.price) + ". (/hdv pour le retirer)"));
+                    String error = sellHeld(c.getSource().getPlayerOrThrow(), LongArgumentType.getLong(c, "prix"));
+                    if (error != null) throw err(error);
                     return 1;
                 }))));
 
@@ -108,10 +92,50 @@ public final class EconomyCommands {
         }));
     }
 
+    /** Met en vente l'objet tenu en main. @return null si c'est fait, sinon la raison. */
+    public static String sellHeld(ServerPlayerEntity p, long price) {
+        ItemStack held = p.getMainHandStack();
+        if (price <= 0) return "Indique un prix supérieur à 0.";
+        if (held.isEmpty()) return "Tiens en main l'objet à vendre.";
+        if (ObscureStone.isPickaxe(held)) return "La Pioche des ténèbres ne peut pas être vendue.";
+        RpgState state = RpgState.get(p.getServer());
+        long mine = state.auctions.stream().filter(a -> p.getUuid().equals(a.seller)).count();
+        if (mine >= MAX_LISTINGS_PER_PLAYER) return "Tu as déjà " + MAX_LISTINGS_PER_PLAYER + " objets en vente.";
+        MarketItem m = new MarketItem();
+        m.id = state.nextMarketId++;
+        m.seller = p.getUuid();
+        m.sellerName = p.getGameProfile().getName();
+        m.stack = held.copy();
+        m.price = price;
+        p.getInventory().removeOne(held);
+        state.auctions.add(m);
+        state.markDirty();
+        Msg.send(p, Text.literal("Mis en vente : " + m.stack.getCount() + "x ").formatted(Formatting.GREEN)
+                .append(m.stack.getName()).append(" pour " + Bank.format(m.price) + "."));
+        return null;
+    }
+
+    /** Virement vers un joueur (même hors ligne). @return null si c'est fait, sinon la raison. */
+    public static String transfer(ServerPlayerEntity p, String name, long amount) {
+        RpgState state = RpgState.get(p.getServer());
+        Map.Entry<UUID, PlayerData> target = state.findByName(name);
+        if (target == null) return "Joueur inconnu : " + name + ".";
+        if (target.getKey().equals(p.getUuid())) return "Tu ne peux pas te virer de l'argent à toi-même.";
+        if (amount <= 0) return "Montant invalide.";
+        PlayerData me = state.player(p);
+        if (me.money < amount) return "Solde insuffisant (" + Bank.format(me.money) + ").";
+        me.money -= amount;
+        target.getValue().money += amount;
+        state.markDirty();
+        Msg.send(p, Text.literal("Virement de " + Bank.format(amount) + " à " + target.getValue().name + ".").formatted(Formatting.GREEN));
+        Bank.notify(p.getServer(), target.getKey(), p.getGameProfile().getName() + " t'a viré " + Bank.format(amount) + ".");
+        return null;
+    }
+
     private static int deposit(CommandContext<ServerCommandSource> c, int amount) throws CommandSyntaxException {
         ServerPlayerEntity p = c.getSource().getPlayerOrThrow();
         int n = amount < 0 ? Bank.countCurrency(p) : amount;
-        if (n <= 0 || !Bank.deposit(p, n)) throw err("Tu n'as pas assez de poudre de glowstone sur toi.");
+        if (n <= 0 || !Bank.deposit(p, n)) throw err("Tu n'as pas assez de Pièces d'or sur toi.");
         Msg.info(c.getSource(), Text.literal("Dépôt de " + Bank.format(n) + ". Nouveau solde : "
                 + Bank.format(RpgState.get(p.getServer()).player(p).money) + ".").formatted(Formatting.GREEN));
         return 1;

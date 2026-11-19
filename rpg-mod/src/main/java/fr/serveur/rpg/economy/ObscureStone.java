@@ -18,7 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 /**
- * Pierre obscure (= sable des âmes) et la Pioche des ténèbres :
+ * Pierre obscure (minerai violet) et la Pioche des ténèbres :
  * pioche en Netherite incassable, donnée à la première connexion, jamais perdue à la mort,
  * et qui ne récolte que la Pierre obscure.
  */
@@ -26,7 +26,7 @@ public final class ObscureStone {
     private ObscureStone() {}
 
     public static boolean isObscureStone(BlockState state) {
-        return state.isOf(Blocks.SOUL_SAND);
+        return state.isOf(fr.serveur.rpg.blocks.ModBlocks.PIERRE_OBSCURE);
     }
 
     public static ItemStack createPickaxe() {
@@ -54,8 +54,8 @@ public final class ObscureStone {
                 give(player);
                 data.starterGiven = true;
                 state.markDirty();
-                Msg.send(player, Text.literal("Bienvenue ! Voici ta Pioche des ténèbres : elle récolte la Pierre obscure, "
-                        + "à échanger contre de la poudre de glowstone (4 pierres = 1 poudre). Tape /metier pour choisir ton métier.").formatted(Formatting.GOLD));
+                Msg.send(player, Text.literal("Bienvenue ! Voici ta Pioche des ténèbres : elle récolte la Pierre obscure (minerai violet), "
+                        + "4 pierres = 1 Pièce d'or à l'établi. Appuie sur B pour ouvrir ton menu et choisir ton métier.").formatted(Formatting.GOLD));
             }
             if (!data.pendingMessages.isEmpty()) {
                 data.pendingMessages.forEach(m -> Msg.send(player, Text.literal(m).formatted(Formatting.GOLD)));

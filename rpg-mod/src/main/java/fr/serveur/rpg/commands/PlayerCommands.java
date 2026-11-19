@@ -76,18 +76,12 @@ public final class PlayerCommands {
             Msg.info(c.getSource(), Text.literal("Métier inconnu. Choix : " + String.join(", ", Job.ids())).formatted(Formatting.RED));
             return 0;
         }
-        RpgState state = RpgState.get(p.getServer());
-        PlayerData data = state.player(p);
-        if (data.job != null) {
-            Msg.info(c.getSource(), Text.literal("Tu es déjà " + data.job.displayName
-                    + ". Pour changer de métier, demande l'autorisation au GM.").formatted(Formatting.RED));
+        // Premier choix gratuit, changements payants : voir JobService.
+        String error = fr.serveur.rpg.jobs.JobService.choose(p, job);
+        if (error != null) {
+            Msg.info(c.getSource(), Text.literal(error).formatted(Formatting.RED));
             return 0;
         }
-        data.job = job;
-        data.current();
-        state.markDirty();
-        Msg.info(c.getSource(), Text.literal("Tu es maintenant ").append(Text.literal(job.displayName).formatted(job.color))
-                .append(" ! Demande ton outil officiel (" + job.toolName.toLowerCase() + ") au GM."));
         return 1;
     }
 

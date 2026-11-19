@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * Pioche des ténèbres : incassable, rapide sur la Pierre obscure (sable des âmes)
+ * Pioche des ténèbres : incassable, rapide sur la Pierre obscure
  * et inutile sur tout le reste (les règles de récolte refusent les autres blocs).
  */
 public class DarkPickaxeItem extends PickaxeItem {
@@ -24,12 +24,12 @@ public class DarkPickaxeItem extends PickaxeItem {
 
     @Override
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        return state.isOf(Blocks.SOUL_SAND) ? 12.0f : 1.0f;
+        return state.isOf(fr.serveur.rpg.blocks.ModBlocks.PIERRE_OBSCURE) ? 12.0f : 1.0f;
     }
 
     @Override
     public boolean isSuitableFor(BlockState state) {
-        return state.isOf(Blocks.SOUL_SAND);
+        return state.isOf(fr.serveur.rpg.blocks.ModBlocks.PIERRE_OBSCURE);
     }
 
     @Override

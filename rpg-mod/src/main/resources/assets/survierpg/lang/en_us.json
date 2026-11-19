@@ -36,5 +36,15 @@
   "item.survierpg.outil_aventurier_pierre": "Adventurer's Stone Sword",
   "item.survierpg.outil_aventurier_fer": "Adventurer's Iron Sword",
   "item.survierpg.outil_aventurier_diamant": "Adventurer's Diamond Sword",
-  "item.survierpg.outil_aventurier_netherite": "Adventurer's Netherite Sword"
+  "item.survierpg.outil_aventurier_netherite": "Adventurer's Netherite Sword",
+  "block.survierpg.pierre_obscure": "Obscure Stone",
+  "item.survierpg.piece_or": "Gold Coin",
+  "key.survierpg.menu": "Open the Survie RPG menu",
+  "category.survierpg": "Survie RPG",
+  "tooltip.survierpg.piece": "The server currency.",
+  "quest.survierpg.casser": "Harvest %s × %s",
+  "quest.survierpg.tuer": "Kill %s × %s",
+  "quest.survierpg.obscure": "Mine %s × %s",
+  "quest.survierpg.variants": "(any variant)",
+  "quest.survierpg.hostile": "hostile creatures"
 }

@@ -29,3 +29,16 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+// Développement : « gradlew runShots » ouvre le monde de test run/saves/rpgtest
+// et capture chaque onglet de l'interface dans run/screenshots/.
+loom {
+    runs {
+        shots {
+            client()
+            name "Captures interface"
+            vmArg "-Dsurvierpg.devshots=true"
+            programArgs "--quickPlaySingleplayer", "rpgtest", "--width", "1920", "--height", "1080"
+        }
+    }
+}

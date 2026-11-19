@@ -36,5 +36,15 @@
   "item.survierpg.outil_aventurier_pierre": "Épée d'Aventurier en pierre",
   "item.survierpg.outil_aventurier_fer": "Épée d'Aventurier en fer",
   "item.survierpg.outil_aventurier_diamant": "Épée d'Aventurier en diamant",
-  "item.survierpg.outil_aventurier_netherite": "Épée d'Aventurier en netherite"
+  "item.survierpg.outil_aventurier_netherite": "Épée d'Aventurier en netherite",
+  "block.survierpg.pierre_obscure": "Pierre obscure",
+  "item.survierpg.piece_or": "Pièce d'or",
+  "key.survierpg.menu": "Ouvrir le menu Survie RPG",
+  "category.survierpg": "Survie RPG",
+  "tooltip.survierpg.piece": "La monnaie du serveur. /banque ou touche B.",
+  "quest.survierpg.casser": "Récolter %s × %s",
+  "quest.survierpg.tuer": "Tuer %s × %s",
+  "quest.survierpg.obscure": "Extraire %s × %s",
+  "quest.survierpg.variants": "(toutes variantes)",
+  "quest.survierpg.hostile": "créatures hostiles"
 }

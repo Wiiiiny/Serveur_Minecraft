@@ -56,7 +56,7 @@ public final class MarketMenus {
         if (p > 0) inv.setStack(SLOT_PREV, button(Items.ARROW, "Page précédente", Formatting.YELLOW));
         if (p < pages - 1) inv.setStack(SLOT_NEXT, button(Items.ARROW, "Page suivante", Formatting.YELLOW));
         PlayerData me = state.player(player);
-        inv.setStack(SLOT_INFO, button(Items.GLOWSTONE_DUST, "Ton solde : " + Bank.format(me.money), Formatting.GOLD));
+        inv.setStack(SLOT_INFO, button(fr.serveur.rpg.items.ModItems.PIECE_OR, "Ton solde : " + Bank.format(me.money), Formatting.GOLD));
 
         Text title = Text.literal((shop ? "Boutique du GM" : "Hôtel des ventes") + " — " + (p + 1) + "/" + pages);
         ChestMenu.open(player, title, inv, (pl, slot, type, button) -> {
@@ -74,52 +74,49 @@ public final class MarketMenus {
         player.getServer().execute(() -> open(player, page, shop));
     }
 
-    private static void clickAuction(ServerPlayerEntity buyer, int id) {
+    /** Résultat d'un achat, affiché dans le chat et dans l'interface (touche B). */
+    public record Result(boolean ok, String message) {}
+
+    private static Result reply(ServerPlayerEntity player, boolean ok, String message) {
+        Msg.send(player, Text.literal(message).formatted(ok ? Formatting.GREEN : Formatting.RED));
+        return new Result(ok, message);
+    }
+
+    /** Clic sur une annonce : achat, ou retrait si c'est la sienne. */
+    public static Result clickAuction(ServerPlayerEntity buyer, int id) {
         RpgState state = RpgState.get(buyer.getServer());
         MarketItem m = state.auctions.stream().filter(a -> a.id == id).findFirst().orElse(null);
-        if (m == null) {
-            Msg.send(buyer, Text.literal("Cet objet n'est plus en vente.").formatted(Formatting.RED));
-            return;
-        }
+        if (m == null) return reply(buyer, false, "Cet objet n'est plus en vente.");
         if (buyer.getUuid().equals(m.seller)) {
             state.auctions.remove(m);
             state.markDirty();
             giveOrDrop(buyer, m.stack.copy());
-            Msg.send(buyer, Text.literal("Objet retiré de la vente.").formatted(Formatting.YELLOW));
-            return;
+            return reply(buyer, true, "Objet retiré de la vente.");
         }
         PlayerData data = state.player(buyer);
-        if (data.money < m.price) {
-            Msg.send(buyer, Text.literal("Solde insuffisant (" + Bank.format(data.money) + "). Dépose de la poudre avec /banque deposer.").formatted(Formatting.RED));
-            return;
-        }
+        if (data.money < m.price) return reply(buyer, false, "Solde insuffisant (" + Bank.format(data.money) + "). Dépose des pièces à la banque.");
         data.money -= m.price;
         state.auctions.remove(m);
         state.markDirty();
         Bank.credit(buyer.getServer(), m.seller, m.price);
         giveOrDrop(buyer, m.stack.copy());
         buyer.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1f, 1f);
-        Msg.send(buyer, Text.literal("Achat : " + m.stack.getCount() + "x ").formatted(Formatting.GREEN)
-                .append(m.stack.getName()).append(" pour " + Bank.format(m.price) + "."));
         Bank.notify(buyer.getServer(), m.seller, "Hôtel des ventes : " + buyer.getGameProfile().getName() + " a acheté "
                 + m.stack.getCount() + "x " + m.stack.getName().getString() + " — +" + Bank.format(m.price) + " sur ton compte.");
+        return reply(buyer, true, "Achat : " + m.stack.getCount() + "x " + m.stack.getName().getString() + " pour " + Bank.format(m.price) + ".");
     }
 
-    private static void buyFromShop(ServerPlayerEntity buyer, int id) {
+    public static Result buyFromShop(ServerPlayerEntity buyer, int id) {
         RpgState state = RpgState.get(buyer.getServer());
         MarketItem m = state.shop.stream().filter(a -> a.id == id).findFirst().orElse(null);
-        if (m == null) return;
+        if (m == null) return reply(buyer, false, "Cet article n'existe plus.");
         PlayerData data = state.player(buyer);
-        if (data.money < m.price) {
-            Msg.send(buyer, Text.literal("Solde insuffisant (" + Bank.format(data.money) + ").").formatted(Formatting.RED));
-            return;
-        }
+        if (data.money < m.price) return reply(buyer, false, "Solde insuffisant (" + Bank.format(data.money) + ").");
         data.money -= m.price;
         state.markDirty();
         giveOrDrop(buyer, m.stack.copy());
         buyer.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1f, 1f);
-        Msg.send(buyer, Text.literal("Achat : " + m.stack.getCount() + "x ").formatted(Formatting.GREEN)
-                .append(m.stack.getName()).append(" pour " + Bank.format(m.price) + "."));
+        return reply(buyer, true, "Achat : " + m.stack.getCount() + "x " + m.stack.getName().getString() + " pour " + Bank.format(m.price) + ".");
     }
 
     private static void giveOrDrop(ServerPlayerEntity player, ItemStack stack) {

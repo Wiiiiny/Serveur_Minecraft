@@ -3,14 +3,23 @@
   "id": "survierpg",
   "version": "${version}",
   "name": "Survie RPG",
-  "description": "Métiers, progression, économie, protections et règles de mort du serveur Survie RPG.",
-  "authors": ["maxime-knv"],
+  "description": "Métiers, économie, protections, règles de mort et interface (touche B) du serveur Survie RPG.",
+  "authors": [
+    "maxime-knv"
+  ],
   "license": "All-Rights-Reserved",
   "environment": "*",
   "entrypoints": {
-    "main": ["fr.serveur.rpg.SurvieRpg"]
+    "main": [
+      "fr.serveur.rpg.SurvieRpg"
+    ],
+    "client": [
+      "fr.serveur.rpg.client.SurvieRpgClient"
+    ]
   },
-  "mixins": ["survierpg.mixins.json"],
+  "mixins": [
+    "survierpg.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.15.0",
     "minecraft": "~1.20.1",

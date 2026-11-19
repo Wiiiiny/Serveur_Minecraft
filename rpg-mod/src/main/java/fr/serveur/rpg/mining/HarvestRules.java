@@ -61,12 +61,17 @@ public final class HarvestRules {
             // Les cultures sont toujours plantées : on ne regarde que leur maturité.
             Boolean mature = cropMaturity(block, state);
             if (mature != null ? !mature : placedByPlayer) return;
+            if (ObscureStone.isObscureStone(state)) {
+                fr.serveur.rpg.auto.DailyQuests.onObscure(sp);
+                return;
+            }
             PlayerData data = RpgState.get(sp.getServer()).player(sp);
             if (data.job == null) return;
             JobConfig.Tier tier = JobConfig.tier(data.job, block);
             if (tier == null || tier.xp() <= 0) return;
             if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, sp.getMainHandStack()) > 0) return;
             Progression.addXp(sp, tier.xp(), false);
+            fr.serveur.rpg.auto.DailyQuests.onHarvest(sp, block);
         });
 
         // XP de l'Aventurier : tuer des créatures avec son épée officielle.

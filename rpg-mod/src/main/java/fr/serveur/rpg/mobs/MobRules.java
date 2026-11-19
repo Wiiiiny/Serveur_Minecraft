@@ -77,6 +77,7 @@ public final class MobRules {
                 RpgState s = RpgState.get(p.getServer());
                 s.player(p).mobKills++;
                 s.markDirty();
+                fr.serveur.rpg.auto.DailyQuests.onKill(p, killed);
             }
         });
 

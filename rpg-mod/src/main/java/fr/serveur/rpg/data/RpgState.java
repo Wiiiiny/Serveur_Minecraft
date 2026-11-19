@@ -49,6 +49,8 @@ public final class RpgState extends PersistentState {
     public BlockPos waitingRoom;
     /** Accès au Nether et à l'End (débloqués manuellement par le GM). */
     public boolean netherOpen, endOpen;
+    /** La boutique a-t-elle déjà été remplie avec les articles par défaut ? */
+    public boolean shopSeeded;
 
     public static RpgState get(MinecraftServer server) {
         return server.getOverworld().getPersistentStateManager().getOrCreate(RpgState::fromNbt, RpgState::new, ID);
@@ -131,6 +133,7 @@ public final class RpgState extends PersistentState {
         nbt.putInt("nextMarketId", nextMarketId);
         nbt.putInt("lockpickChance", lockpickChance);
         nbt.putBoolean("netherOpen", netherOpen);
+        nbt.putBoolean("shopSeeded", shopSeeded);
         nbt.putBoolean("endOpen", endOpen);
         nbt.putDouble("dayMinutes", dayMinutes);
         nbt.putDouble("nightMinutes", nightMinutes);
@@ -181,6 +184,7 @@ public final class RpgState extends PersistentState {
         s.nextMarketId = Math.max(1, nbt.getInt("nextMarketId"));
         if (nbt.contains("lockpickChance")) s.lockpickChance = nbt.getInt("lockpickChance");
         s.netherOpen = nbt.getBoolean("netherOpen");
+        s.shopSeeded = nbt.getBoolean("shopSeeded");
         s.endOpen = nbt.getBoolean("endOpen");
         if (nbt.contains("dayMinutes")) s.dayMinutes = nbt.getDouble("dayMinutes");
         if (nbt.contains("nightMinutes")) s.nightMinutes = nbt.getDouble("nightMinutes");
