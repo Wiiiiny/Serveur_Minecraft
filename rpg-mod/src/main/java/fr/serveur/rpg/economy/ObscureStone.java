@@ -55,7 +55,7 @@ public final class ObscureStone {
                 data.starterGiven = true;
                 state.markDirty();
                 Msg.send(player, Text.literal("Bienvenue ! Voici ta Pioche des ténèbres : elle récolte la Pierre obscure (minerai violet), "
-                        + "4 pierres = 1 Pièce d'or à l'établi. Appuie sur B pour ouvrir ton menu et choisir ton métier.").formatted(Formatting.GOLD));
+                        + "4 Éclats obscurs = 1 Pièce d'or à l'établi. Appuie sur B pour ouvrir ton menu et choisir ton métier.").formatted(Formatting.GOLD));
             }
             if (!data.pendingMessages.isEmpty()) {
                 data.pendingMessages.forEach(m -> Msg.send(player, Text.literal(m).formatted(Formatting.GOLD)));

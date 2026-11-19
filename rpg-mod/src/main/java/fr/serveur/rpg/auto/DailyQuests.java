@@ -137,7 +137,7 @@ public final class DailyQuests {
     public static net.minecraft.item.ItemStack iconFor(DailyQuest q) {
         switch (q.kind) {
             case "obscure":
-                return new net.minecraft.item.ItemStack(ModBlocks.PIERRE_OBSCURE_ITEM);
+                return new net.minecraft.item.ItemStack(fr.serveur.rpg.items.ModItems.ECLAT_OBSCUR);
             case "casser": {
                 Block b = firstBlock(q.target);
                 net.minecraft.item.Item item = b == null ? net.minecraft.item.Items.AIR : b.asItem();

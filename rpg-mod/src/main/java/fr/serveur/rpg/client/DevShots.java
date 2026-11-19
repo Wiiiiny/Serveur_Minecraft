@@ -58,6 +58,17 @@ final class DevShots {
         SurvieRpgClient.send(action, n);
     }
 
+    private static void act2(String action, String... kv) {
+        net.minecraft.nbt.NbtCompound n = new net.minecraft.nbt.NbtCompound();
+        for (int i = 0; i + 1 < kv.length; i += 2) {
+            String value = kv[i + 1];
+            if (value.matches("-?\\d+")) n.putLong(kv[i], Long.parseLong(value));
+            else if (value.matches("-?\\d+\\.\\d+")) n.putDouble(kv[i], Double.parseDouble(value));
+            else n.putString(kv[i], value);
+        }
+        SurvieRpgClient.send(action, n);
+    }
+
     private static void shot(MinecraftClient client, String name) {
         client.getToastManager().clear();
         ScreenshotRecorder.saveScreenshot(client.runDirectory, "survierpg-" + name + ".png", client.getFramebuffer(), msg -> { });
@@ -120,6 +131,17 @@ final class DevShots {
         STEPS.add(new Step(10, () -> open(client, RpgScreen.Tab.PROFIL, null)));
         STEPS.add(new Step(20, () -> act("job.choose", "job", "BUCHERON")));
         STEPS.add(new Step(30, () -> shot(client, "23-action-metier")));
+        // Valeurs saisies dans le tableau de bord GM.
+        STEPS.add(new Step(10, () -> open(client, RpgScreen.Tab.GM, "monde")));
+        STEPS.add(new Step(20, () -> act2("gm.set", "key", "dayMin", "value", "7.5")));
+        STEPS.add(new Step(30, () -> shot(client, "24-gm-valeur-jour")));
+        STEPS.add(new Step(10, () -> open(client, RpgScreen.Tab.GM, "joueurs")));
+        STEPS.add(new Step(20, () -> act2("gm.player", "name", client.player.getGameProfile().getName(), "op", "setmoney", "value", "1234")));
+        STEPS.add(new Step(30, () -> shot(client, "25-gm-valeur-pieces")));
+        // Nuit (avec Nightfall dans le client de test) : brume, feux follets.
+        STEPS.add(new Step(10, () -> client.setScreen(null)));
+        STEPS.add(new Step(5, () -> server(client, "gm cycle passer nuit", "tp @me ~ ~ ~ 0 0")));
+        STEPS.add(new Step(200, () -> shot(client, "30-nuit")));
         STEPS.add(new Step(20, () -> client.scheduleStop()));
     }
 }

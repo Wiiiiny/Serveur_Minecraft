@@ -21,7 +21,11 @@ import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
@@ -58,6 +62,10 @@ public class RpgScreen extends Screen {
     /** Échelle d'affichage (< 1 si l'écran est trop petit pour l'interface). */
     private float scale = 1f;
     private Job pendingJob;
+    /** Champs de saisie du tableau de bord GM, par clé (réglage, article, joueur...). */
+    private final Map<String, TextFieldWidget> valueFields = new HashMap<>();
+    private final Map<String, String> syncedValues = new HashMap<>();
+    private final Set<String> seenFields = new HashSet<>();
     private boolean confirmPrestige;
 
     public RpgScreen() {
@@ -85,6 +93,8 @@ public class RpgScreen extends Screen {
         cw = w - 114;
         ch = h - 40;
         if (tab == Tab.GM && !isGm()) tab = Tab.PROFIL;
+        valueFields.clear();
+        syncedValues.clear();
         switch (tab) {
             case BANQUE -> {
                 field(cx + 8, cy + 86, 64, amountText, true, s -> amountText = s, "Montant");
@@ -174,6 +184,7 @@ public class RpgScreen extends Screen {
     @Override
     public void render(DrawContext c, int mouseX, int mouseY, float delta) {
         hots.clear();
+        seenFields.clear();
         hoverStack = ItemStack.EMPTY;
         hoverText = null;
         renderBackground(c);
@@ -199,6 +210,13 @@ public class RpgScreen extends Screen {
                 case GM -> gm(c, d);
             }
         }
+        // Les champs qui n'ont pas été dessinés ce tour-ci (autre page, autre sous-onglet) sont cachés.
+        valueFields.forEach((key, f) -> {
+            if (!seenFields.contains(key)) {
+                f.visible = false;
+                f.setFocused(false);
+            }
+        });
         super.render(c, mx, my, delta);
         if (!hoverStack.isEmpty()) c.drawItemTooltip(textRenderer, hoverStack, mx, my);
         else if (hoverText != null) c.drawTooltip(textRenderer, hoverText, mx, my);
@@ -625,24 +643,34 @@ public class RpgScreen extends Screen {
         if (selected.getBoolean("awaiting")) c.drawText(textRenderer, "☠ Mort, attend la nuit", px + 6, y + 43, Ui.RED, false);
 
         int by = y + 60, gw = (pw - 8) / 3;
+        c.drawText(textRenderer, "Valeur :", px, by + 4, Ui.MUTED, false);
+        String valText = valueField("player.value", px + 44, by + 1, 60, "", "\\d*").getText();
+        long val = parse(valText);
+        c.drawText(textRenderer, textRenderer.trimToWidth("+ ajoute, = fixe", pw - 112), px + 110, by + 4, Ui.FAINT, false);
+        by += 20;
+        boolean awaiting = selected.getBoolean("awaiting");
         Object[][] actions = {
-                {"+100 XP", "xp", 100}, {"Niveau −1", "level", -1}, {"Niveau +1", "level", 1},
-                {"+10 pièces", "money", 10}, {"+100 pièces", "money", 100}, {"−10 pièces", "money", -10},
-                {"Larme", "give:larme", 0}, {"Crochet", "give:crochet", 0}, {"Pioche", "give:pioche", 0}};
+                {"+ XP", "xp"}, {"= Niveau", "setlevel"}, {"Pioche", "give:pioche"},
+                {"+ Pièces", "money+"}, {"− Pièces", "money-"}, {"= Pièces", "setmoney"},
+                {"Larmes", "give:larme"}, {"Crochets", "give:crochet"}, {"Réanimer", "revive"}};
         for (int i = 0; i < actions.length; i++) {
-            Object[] a = actions[i];
-            String op = (String) a[1];
-            int value = (int) a[2];
+            String label = (String) actions[i][0], op = (String) actions[i][1];
+            boolean needsValue = op.equals("xp") || op.equals("setlevel") || op.startsWith("money") || op.equals("setmoney");
+            boolean enabled = op.equals("revive") ? awaiting : op.equals("setmoney") ? !valText.isBlank() : !needsValue || val > 0;
             int bx = px + (i % 3) * (gw + 4), byy = by + (i / 3) * 18;
-            button(c, bx, byy, gw, 15, (String) a[0], true, Style.NORMAL, () -> {
-                if (op.startsWith("give:")) act("gm.player", "name", name, "op", "give", "item", op.substring(5));
-                else act("gm.player", "name", name, "op", op, "value", value);
+            button(c, bx, byy, gw, 15, label, enabled, op.equals("revive") ? Style.PRIMARY : Style.NORMAL, () -> {
+                switch (op) {
+                    case "money+" -> act("gm.player", "name", name, "op", "money", "value", val);
+                    case "money-" -> act("gm.player", "name", name, "op", "money", "value", -val);
+                    case "revive" -> act("gm.player", "name", name, "op", "revive");
+                    default -> {
+                        if (op.startsWith("give:")) act("gm.player", "name", name, "op", "give", "item", op.substring(5), "count", Math.max(1, val));
+                        else act("gm.player", "name", name, "op", op, "value", val);
+                    }
+                }
             });
         }
-        by += 55;
-        button(c, px, by, pw, 15, "Réanimer maintenant", selected.getBoolean("awaiting"), Style.PRIMARY,
-                () -> act("gm.player", "name", name, "op", "revive"));
-        by += 19;
+        by += 56;
         c.drawText(textRenderer, "Donner le métier :", px, by + 2, Ui.FAINT, false);
         by += 12;
         int jw = (pw - 4) / 2;
@@ -660,8 +688,8 @@ public class RpgScreen extends Screen {
         button(c, cx + cw - 172, y + 1, 84, 14, "☀ Jour", true, Style.NORMAL, () -> act("gm.time", "to", "day"));
         button(c, cx + cw - 86, y + 1, 84, 14, "☾ Nuit", true, Style.NORMAL, () -> act("gm.time", "to", "night"));
         y += 18;
-        y = stepper(c, y, "Durée du jour", fmt(s.getDouble("dayMin")) + " min", "dayMin", 1);
-        y = stepper(c, y, "Durée de la nuit", fmt(s.getDouble("nightMin")) + " min", "nightMin", 1);
+        y = setting(c, y, "Durée du jour", "min", "dayMin", s.getDouble("dayMin"), true);
+        y = setting(c, y, "Durée de la nuit", "min", "nightMin", s.getDouble("nightMin"), true);
         y = toggle(c, y, "Nether", s.getBoolean("nether"), "Ouvert", "Fermé", "Fermer", "Ouvrir", "nether");
         y = toggle(c, y, "End", s.getBoolean("end"), "Ouvert", "Fermé", "Fermer", "Ouvrir", "end");
         c.drawText(textRenderer, "Salle d'attente des morts", cx + 4, y + 4, Ui.TEXT, false);
@@ -669,12 +697,13 @@ public class RpgScreen extends Screen {
         c.drawText(textRenderer, room ? "définie" : "non définie", cx + 150, y + 4, room ? Ui.GREEN : Ui.RED, false);
         button(c, cx + cw - 86, y + 1, 84, 14, "Définir ici", true, Style.NORMAL, () -> act("gm.room.here"));
         y += 18;
-        c.drawText(textRenderer, "Zone protégée autour de moi", cx + 4, y + 4, Ui.TEXT, false);
-        int[] radii = {10, 20, 30};
-        for (int i = 0; i < radii.length; i++) {
-            int r = radii[i];
-            button(c, cx + cw - 132 + i * 44, y + 1, 42, 14, "r " + r, true, Style.NORMAL, () -> act("gm.zone.protect", "radius", r));
-        }
+        c.drawText(textRenderer, "Zone protégée autour de moi, rayon", cx + 4, y + 4, Ui.TEXT, false);
+        long radius = parse(valueField("zone.radius", cx + cw - 130, y + 1, 40, "20", "\\d*").getText());
+        c.drawText(textRenderer, "blocs", cx + cw - 82, y + 4, Ui.MUTED, false);
+        button(c, cx + cw - 52, y + 1, 50, 14, "Créer", radius >= 3, Style.PRIMARY, () -> {
+            act("gm.zone.protect", "radius", (int) radius);
+            unfocus();
+        });
         y += 22;
         NbtList zones = gm.getList("zones", NbtElement.COMPOUND_TYPE);
         y = title(c, "Zones (" + zones.size() + ")", y);
@@ -693,9 +722,9 @@ public class RpgScreen extends Screen {
 
     private void gmEconomie(DrawContext c, NbtCompound gm, int y) {
         NbtCompound s = gm.getCompound("settings"), st = gm.getCompound("stats");
-        y = stepper(c, y, "Prix du changement de métier", s.getInt("jobPrice") + " pièces", "jobPrice", 10);
-        y = stepper(c, y, "Réussite d'un crochet", s.getInt("lockpick") + " %", "lockpick", 5);
-        y = stepper(c, y, "Bonus d'argent par prestige", s.getInt("prestigeBonus") + " %", "prestigeBonus", 5);
+        y = setting(c, y, "Prix du changement de métier", "pièces", "jobPrice", s.getInt("jobPrice"), false);
+        y = setting(c, y, "Réussite d'un crochet", "%", "lockpick", s.getInt("lockpick"), false);
+        y = setting(c, y, "Bonus d'argent par prestige", "%", "prestigeBonus", s.getInt("prestigeBonus"), false);
         c.drawText(textRenderer, textRenderer.trimToWidth("En circulation : " + Ui.number(st.getLong("totalMoney")) + " pièces · "
                 + st.getInt("auctions") + " annonces · " + st.getInt("chests") + " coffres protégés", cw - 4), cx + 4, y + 2, Ui.FAINT, false);
         y += 14;
@@ -708,13 +737,16 @@ public class RpgScreen extends Screen {
             NbtCompound m = shop.getCompound(i);
             ItemStack stack = ItemStack.fromNbt(m.getCompound("stack"));
             int id = m.getInt("id");
+            long current = m.getLong("price");
             item(c, stack, cx + 2, y);
-            c.drawText(textRenderer, textRenderer.trimToWidth(stack.getName().getString() + (stack.getCount() > 1 ? " ×" + stack.getCount() : ""), cw - 170),
+            c.drawText(textRenderer, textRenderer.trimToWidth(stack.getName().getString() + (stack.getCount() > 1 ? " ×" + stack.getCount() : ""), cw - 146),
                     cx + 22, y + 4, Ui.TEXT, false);
-            textRight(c, Ui.number(m.getLong("price")), cx + cw - 100, y + 4, Ui.GOLD);
-            coin(c, cx + cw - 98, y + 4);
-            button(c, cx + cw - 86, y + 1, 26, 14, "−5", true, Style.NORMAL, () -> act("gm.shop.price", "id", id, "delta", -5L));
-            button(c, cx + cw - 58, y + 1, 26, 14, "+5", true, Style.NORMAL, () -> act("gm.shop.price", "id", id, "delta", 5L));
+            long typed = parse(valueField("shop:" + id, cx + cw - 118, y + 1, 44, String.valueOf(current), "\\d*").getText());
+            coin(c, cx + cw - 70, y + 4);
+            button(c, cx + cw - 58, y + 1, 26, 14, "OK", typed > 0 && typed != current, Style.PRIMARY, () -> {
+                act("gm.shop.price", "id", id, "value", typed);
+                unfocus();
+            });
             button(c, cx + cw - 30, y + 1, 28, 14, "✖", true, Style.DANGER, () -> act("gm.shop.remove", "id", id));
             y += 18;
         }
@@ -729,13 +761,22 @@ public class RpgScreen extends Screen {
 
     private void gmAuto(DrawContext c, NbtCompound d, NbtCompound gm, int y) {
         NbtCompound s = gm.getCompound("settings");
-        y = stepper(c, y, "Quêtes du jour par joueur", String.valueOf(s.getInt("dailyCount")), "dailyCount", 1);
-        y = stepper(c, y, "Multiplicateur des récompenses", "×" + fmt(s.getDouble("rewardMult")), "rewardMult", 0.1);
+        y = setting(c, y, "Quêtes du jour par joueur", "", "dailyCount", s.getInt("dailyCount"), false);
+        y = setting(c, y, "Multiplicateur des récompenses", "×", "rewardMult", s.getDouble("rewardMult"), true);
         y = toggle(c, y, "Événements automatiques", s.getBoolean("autoEvents"), "Activés", "Désactivés", "Désactiver", "Activer", "autoEvents");
-        y = stepper(c, y, "Intervalle entre événements", s.getInt("eventInterval") + " min", "eventInterval", 10);
-        y = stepper(c, y, "Durée d'un événement", s.getInt("eventDuration") + " min", "eventDuration", 5);
-        y = stepper(c, y, "Joueurs connectés minimum", String.valueOf(s.getInt("eventMinPlayers")), "eventMinPlayers", 1);
-        y += 4;
+        y = setting(c, y, "Intervalle entre événements", "min", "eventInterval", s.getInt("eventInterval"), false);
+        y = setting(c, y, "Durée d'un événement", "min", "eventDuration", s.getInt("eventDuration"), false);
+        y = setting(c, y, "Joueurs connectés minimum", "", "eventMinPlayers", s.getInt("eventMinPlayers"), false);
+        // Récompenses du podium : plusieurs nombres séparés par des espaces
+        c.drawText(textRenderer, "Podium (1er 2e 3e...)", cx + 4, y + 4, Ui.TEXT, false);
+        String rewards = s.getString("eventRewards");
+        String typedRewards = valueField("set:eventRewards", cx + cw - 160, y + 1, 82, rewards, "[0-9 ]*").getText();
+        c.drawText(textRenderer, "pièces", cx + cw - 74, y + 4, Ui.MUTED, false);
+        button(c, cx + cw - 32, y + 1, 30, 14, "OK", !typedRewards.isBlank() && !typedRewards.trim().equals(rewards), Style.PRIMARY, () -> {
+            act("gm.set", "key", "eventRewards", "text", typedRewards);
+            unfocus();
+        });
+        y += 22;
         NbtCompound world = d.getCompound("world");
         if (world.contains("eventTitle")) {
             Ui.cardTinted(c, cx, y, cw, 22, Ui.VIOLET_DIM);
@@ -757,7 +798,6 @@ public class RpgScreen extends Screen {
             button(c, cx + 50 + i * (bw + 2), y + 1, bw, 14, types[i][1], true, i == 3 ? Style.PRIMARY : Style.NORMAL,
                     () -> act("gm.event.start", "type", t));
         }
-        c.drawText(textRenderer, "Le podium est payé tout seul à la fin.", cx + 4, y + 24, Ui.FAINT, false);
     }
 
     // ================================================================ éléments
@@ -768,13 +808,56 @@ public class RpgScreen extends Screen {
         return y + 16;
     }
 
-    private int stepper(DrawContext c, int y, String label, String value, String key, double step) {
+    /** Ligne de réglage : libellé, champ de saisie, unité, bouton OK (actif si la valeur a changé). */
+    private int setting(DrawContext c, int y, String label, String unit, String key, double current, boolean decimal) {
         if (in(cx, y, cw, 16)) c.fill(cx, y, cx + cw, y + 16, 0x14FFFFFF);
         c.drawText(textRenderer, label, cx + 4, y + 4, Ui.TEXT, false);
-        textRight(c, value, cx + cw - 46, y + 4, Ui.GOLD);
-        button(c, cx + cw - 42, y + 1, 19, 14, "−", true, Style.NORMAL, () -> act("gm.set", "key", key, "delta", -step));
-        button(c, cx + cw - 21, y + 1, 19, 14, "+", true, Style.NORMAL, () -> act("gm.set", "key", key, "delta", step));
+        String shown = fmt(current);
+        String typed = valueField("set:" + key, cx + cw - 130, y + 1, 52, shown, decimal ? "\\d*([.,]\\d*)?" : "\\d*").getText();
+        c.drawText(textRenderer, unit, cx + cw - 74, y + 4, Ui.MUTED, false);
+        double value = parseDouble(typed);
+        button(c, cx + cw - 32, y + 1, 30, 14, "OK", !typed.isBlank() && value != current, Style.PRIMARY, () -> {
+            act("gm.set", "key", key, "value", value);
+            unfocus();
+        });
         return y + 18;
+    }
+
+    /** Champ de saisie du tableau de bord GM : créé une fois, recalé sur la valeur du serveur tant qu'on n'écrit pas dedans. */
+    private TextFieldWidget valueField(String key, int x, int y, int fw, String serverValue, String regex) {
+        seenFields.add(key);
+        TextFieldWidget f = valueFields.get(key);
+        if (f == null) {
+            f = new TextFieldWidget(textRenderer, x, y, fw, 14, Text.literal(key));
+            f.setMaxLength(24);
+            f.setTextPredicate(t -> t.matches(regex));
+            f.setText(serverValue);
+            valueFields.put(key, f);
+            syncedValues.put(key, serverValue);
+            addDrawableChild(f);
+        }
+        f.setX(x);
+        f.setY(y);
+        f.setWidth(fw);
+        f.visible = true;
+        if (!f.isFocused() && !serverValue.equals(syncedValues.get(key))) {
+            f.setText(serverValue);
+            syncedValues.put(key, serverValue);
+        }
+        return f;
+    }
+
+    private void unfocus() {
+        valueFields.values().forEach(f -> f.setFocused(false));
+        setFocused(null);
+    }
+
+    private static double parseDouble(String s) {
+        try {
+            return s == null || s.isBlank() ? 0 : Double.parseDouble(s.trim().replace(',', '.'));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     private int toggle(DrawContext c, int y, String label, boolean on, String onText, String offText,

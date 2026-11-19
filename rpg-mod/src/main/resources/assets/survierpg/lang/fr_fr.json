@@ -46,5 +46,7 @@
   "quest.survierpg.tuer": "Tuer %s × %s",
   "quest.survierpg.obscure": "Extraire %s × %s",
   "quest.survierpg.variants": "(toutes variantes)",
-  "quest.survierpg.hostile": "créatures hostiles"
+  "quest.survierpg.hostile": "créatures hostiles",
+  "item.survierpg.eclat_obscur": "Éclat obscur",
+  "tooltip.survierpg.eclat": "4 éclats = 1 Pièce d'or à l'établi."
 }

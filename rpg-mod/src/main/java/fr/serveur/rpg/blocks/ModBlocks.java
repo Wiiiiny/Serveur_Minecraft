@@ -18,7 +18,8 @@ import net.minecraft.world.gen.GenerationStep;
 
 /**
  * Pierre obscure : minerai violet qui se génère en filons dans l'Overworld, le Nether et l'End.
- * Seule la Pioche des ténèbres la récolte. 4 Pierres obscures = 1 Pièce d'or.
+ * Seule la Pioche des ténèbres la récolte, et elle donne un Éclat obscur (jamais le bloc).
+ * 4 Éclats obscurs = 1 Pièce d'or.
  * Génération : data/survierpg/worldgen/{configured_feature,placed_feature}/pierre_obscure.json
  */
 public final class ModBlocks {

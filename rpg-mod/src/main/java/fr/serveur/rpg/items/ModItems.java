@@ -67,6 +67,14 @@ public final class ModItems {
             new Item.Settings().maxCount(1).fireproof().rarity(Rarity.EPIC));
     public static final Item LARME_DE_VIE = new TearItem(new Item.Settings().maxCount(16).rarity(Rarity.RARE));
     public static final Item CROCHET = new LockpickItem(new Item.Settings().maxCount(16).rarity(Rarity.UNCOMMON));
+    /** Ce que donne la Pierre obscure : on ne récupère jamais le bloc, donc impossible de le reposer. */
+    public static final Item ECLAT_OBSCUR = new Item(new Item.Settings().rarity(Rarity.UNCOMMON)) {
+        @Override
+        public void appendTooltip(ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.World world,
+                                  java.util.List<Text> tooltip, net.minecraft.client.item.TooltipContext context) {
+            tooltip.add(Text.translatable("tooltip.survierpg.eclat").formatted(net.minecraft.util.Formatting.GRAY));
+        }
+    };
     public static final Item PIECE_OR = new Item(new Item.Settings().rarity(Rarity.UNCOMMON)) {
         @Override
         public void appendTooltip(ItemStack stack, @org.jetbrains.annotations.Nullable net.minecraft.world.World world,
@@ -82,6 +90,7 @@ public final class ModItems {
         register("larme_de_vie", LARME_DE_VIE);
         register("crochet", CROCHET);
         register("piece_or", PIECE_OR);
+        register("eclat_obscur", ECLAT_OBSCUR);
         fr.serveur.rpg.blocks.ModBlocks.register();
 
         for (Job job : Job.values()) {
@@ -109,6 +118,7 @@ public final class ModItems {
                     entries.add(LARME_DE_VIE);
                     entries.add(CROCHET);
                     entries.add(PIECE_OR);
+                    entries.add(ECLAT_OBSCUR);
                     entries.add(fr.serveur.rpg.blocks.ModBlocks.PIERRE_OBSCURE_ITEM);
                     Registries.ITEM.getOrEmpty(new Identifier("nightfall", "shadow_hood")).ifPresent(entries::add);
                     for (Job job : Job.values()) for (Tier tier : Tier.values()) entries.add(OFFICIAL.get(job).get(tier));

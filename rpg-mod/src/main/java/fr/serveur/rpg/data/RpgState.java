@@ -52,6 +52,10 @@ public final class RpgState extends PersistentState {
     /** La boutique a-t-elle déjà été remplie avec les articles par défaut ? */
     public boolean shopSeeded;
 
+    public RpgState() {
+        fr.serveur.rpg.mining.PlacedBlocks.clear(); // nouveau monde : on repart de zéro
+    }
+
     public static RpgState get(MinecraftServer server) {
         return server.getOverworld().getPersistentStateManager().getOrCreate(RpgState::fromNbt, RpgState::new, ID);
     }
@@ -153,6 +157,7 @@ public final class RpgState extends PersistentState {
             chests.put(dim, l);
         });
         nbt.put("chests", chests);
+        nbt.put("placed", fr.serveur.rpg.mining.PlacedBlocks.toNbt());
         return nbt;
     }
 
@@ -202,6 +207,7 @@ public final class RpgState extends PersistentState {
             }
             s.chestOwners.put(dim, m);
         }
+        fr.serveur.rpg.mining.PlacedBlocks.load(nbt.getCompound("placed"));
         return s;
     }
 }

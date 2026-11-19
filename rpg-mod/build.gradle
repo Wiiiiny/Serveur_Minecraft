@@ -13,6 +13,8 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // Développement uniquement : Nightfall dans le client de test (n'est pas inclus dans le jar)
+    modLocalRuntime files("../nightfall-mod/build/libs/nightfall-1.0.0.jar")
 }
 
 processResources {
@@ -38,6 +40,7 @@ loom {
             client()
             name "Captures interface"
             vmArg "-Dsurvierpg.devshots=true"
+            vmArg "-Dnightfall.devshots=true"
             programArgs "--quickPlaySingleplayer", "rpgtest", "--width", "1920", "--height", "1080"
         }
     }

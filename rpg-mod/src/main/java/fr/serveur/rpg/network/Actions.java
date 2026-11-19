@@ -127,19 +127,27 @@ public final class Actions {
             case "gm.player": return gmPlayer(p, state, n);
             case "gm.set": {
                 String key = n.getString("key");
-                double d = n.getDouble("delta");
+                // « value » = valeur saisie par le GM ; sinon « delta » (ancien fonctionnement, interrupteurs).
+                boolean abs = n.contains("value");
+                double v = n.getDouble("value"), d = n.getDouble("delta");
                 switch (key) {
-                    case "dayMin" -> state.dayMinutes = clamp(state.dayMinutes + d, 1, 120);
-                    case "nightMin" -> state.nightMinutes = clamp(state.nightMinutes + d, 1, 120);
-                    case "lockpick" -> state.lockpickChance = (int) clamp(state.lockpickChance + d, 0, 100);
-                    case "prestigeBonus" -> state.prestigeBonusPercent = (int) clamp(state.prestigeBonusPercent + d, 0, 200);
-                    case "jobPrice" -> cfg.prixChangementMetier = (int) clamp(cfg.prixChangementMetier + d, 0, 100000);
-                    case "dailyCount" -> cfg.quetesParJour = (int) clamp(cfg.quetesParJour + d, 1, 6);
-                    case "rewardMult" -> cfg.multiplicateurRecompenses = Math.round(clamp(cfg.multiplicateurRecompenses + d, 0.1, 10) * 10) / 10.0;
+                    case "dayMin" -> state.dayMinutes = clamp(abs ? v : state.dayMinutes + d, 0.5, 600);
+                    case "nightMin" -> state.nightMinutes = clamp(abs ? v : state.nightMinutes + d, 0.5, 600);
+                    case "lockpick" -> state.lockpickChance = (int) clamp(abs ? v : state.lockpickChance + d, 0, 100);
+                    case "prestigeBonus" -> state.prestigeBonusPercent = (int) clamp(abs ? v : state.prestigeBonusPercent + d, 0, 1000);
+                    case "jobPrice" -> cfg.prixChangementMetier = (int) clamp(abs ? v : cfg.prixChangementMetier + d, 0, 1_000_000);
+                    case "dailyCount" -> cfg.quetesParJour = (int) clamp(abs ? v : cfg.quetesParJour + d, 1, 8);
+                    case "rewardMult" -> cfg.multiplicateurRecompenses = Math.round(clamp(abs ? v : cfg.multiplicateurRecompenses + d, 0.1, 100) * 10) / 10.0;
                     case "autoEvents" -> cfg.evenementsAuto = !cfg.evenementsAuto;
-                    case "eventInterval" -> cfg.evenementIntervalleMinutes = (int) clamp(cfg.evenementIntervalleMinutes + d, 10, 1440);
-                    case "eventDuration" -> cfg.evenementDureeMinutes = (int) clamp(cfg.evenementDureeMinutes + d, 1, 180);
-                    case "eventMinPlayers" -> cfg.evenementJoueursMin = (int) clamp(cfg.evenementJoueursMin + d, 1, 50);
+                    case "eventInterval" -> cfg.evenementIntervalleMinutes = (int) clamp(abs ? v : cfg.evenementIntervalleMinutes + d, 5, 10080);
+                    case "eventDuration" -> cfg.evenementDureeMinutes = (int) clamp(abs ? v : cfg.evenementDureeMinutes + d, 1, 600);
+                    case "eventMinPlayers" -> cfg.evenementJoueursMin = (int) clamp(abs ? v : cfg.evenementJoueursMin + d, 1, 100);
+                    case "eventRewards" -> {
+                        java.util.List<Integer> list = new java.util.ArrayList<>();
+                        for (String part : n.getString("text").split("[^0-9]+")) if (!part.isEmpty()) list.add(Integer.parseInt(part));
+                        if (list.isEmpty()) return "!Indique les récompenses, ex. 100 50 25.";
+                        cfg.evenementRecompenses = list;
+                    }
                     case "nether" -> {
                         state.netherOpen = !state.netherOpen;
                         Msg.broadcast(server, Text.literal(state.netherOpen ? "Le Nether est désormais ouvert !" : "Le Nether est scellé.").formatted(Formatting.DARK_PURPLE, Formatting.BOLD));
@@ -169,7 +177,7 @@ public final class Actions {
                 state.markDirty();
                 return "Salle d'attente définie ici.";
             case "gm.zone.protect": {
-                int r = Math.max(3, Math.min(100, n.getInt("radius")));
+                int r = Math.max(3, Math.min(200, n.getInt("radius")));
                 BlockPos c = p.getBlockPos();
                 String name = state.zones.containsKey("mairie") ? "protegee-" + (state.zones.size() + 1) : "mairie";
                 Zone z = Zone.protectedArea(name, p.getWorld().getRegistryKey().getValue().toString(),
@@ -220,7 +228,7 @@ public final class Actions {
                 int id = n.getInt("id");
                 for (MarketItem m : state.shop) {
                     if (m.id == id) {
-                        m.price = Math.max(1, m.price + n.getLong("delta"));
+                        m.price = Math.max(1, n.contains("value") ? n.getLong("value") : m.price + n.getLong("delta"));
                         state.markDirty();
                         return "Prix : " + Bank.format(m.price) + ".";
                     }
@@ -254,19 +262,27 @@ public final class Actions {
         PlayerData data = e.getValue();
         ServerPlayerEntity target = gm.getServer().getPlayerManager().getPlayer(e.getKey());
         String op = n.getString("op");
-        int v = n.getInt("value");
+        long v = n.getLong("value");
         switch (op) {
             case "xp" -> {
                 if (target == null) return "!Le joueur doit être connecté.";
                 if (data.job == null) return "!Ce joueur n'a pas de métier.";
-                Progression.addXp(target, v, false);
+                if (v <= 0) return "!Indique une quantité d'XP.";
+                Progression.addXp(target, (int) Math.min(v, Integer.MAX_VALUE), false);
             }
             case "level" -> {
                 if (data.current() == null) return "!Ce joueur n'a pas de métier.";
-                data.current().level = Math.max(1, Math.min(Job.MAX_LEVEL, data.current().level + v));
+                data.current().level = (int) Math.max(1, Math.min(Job.MAX_LEVEL, data.current().level + v));
+                data.current().xp = 0;
+            }
+            case "setlevel" -> {
+                if (data.current() == null) return "!Ce joueur n'a pas de métier.";
+                if (v < 1 || v > Job.MAX_LEVEL) return "!Le niveau va de 1 à " + Job.MAX_LEVEL + ".";
+                data.current().level = (int) v;
                 data.current().xp = 0;
             }
             case "money" -> data.money = Math.max(0, data.money + v);
+            case "setmoney" -> data.money = Math.max(0, v);
             case "job" -> {
                 Job job = Job.parse(n.getString("job"));
                 if (job == null) return "!Métier inconnu.";
@@ -276,9 +292,10 @@ public final class Actions {
             }
             case "give" -> {
                 if (target == null) return "!Le joueur doit être connecté.";
+                int count = (int) Math.max(1, Math.min(64, n.contains("count") ? n.getLong("count") : 1));
                 ItemStack stack = switch (n.getString("item")) {
-                    case "larme" -> DeathSystem.createTear(1);
-                    case "crochet" -> Lockpick.create(1);
+                    case "larme" -> DeathSystem.createTear(count);
+                    case "crochet" -> Lockpick.create(count);
                     case "pioche" -> ObscureStone.createPickaxe();
                     default -> ItemStack.EMPTY;
                 };

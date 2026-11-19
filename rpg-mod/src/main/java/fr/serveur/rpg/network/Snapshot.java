@@ -206,6 +206,7 @@ public final class Snapshot {
         set.putInt("eventInterval", cfg.evenementIntervalleMinutes);
         set.putInt("eventDuration", cfg.evenementDureeMinutes);
         set.putInt("eventMinPlayers", cfg.evenementJoueursMin);
+        set.putString("eventRewards", cfg.evenementRecompenses.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(" ")));
         set.putBoolean("nether", state.netherOpen);
         set.putBoolean("end", state.endOpen);
         set.putBoolean("waitingRoom", state.waitingRoom != null);

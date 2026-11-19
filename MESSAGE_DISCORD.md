@@ -25,7 +25,7 @@ Demandez les deux premiers fichiers à l'admin. Sans eux, le serveur refuse la c
 ## 🌙 La nuit
 • Brume noire : on voit à **6 blocs**, et on subit de la **Lenteur**.
 • Une **lanterne en main** (normale ou des âmes) enlève la Lenteur et repousse la brume à **16 blocs**.
-• Le ciel disparaît, des **yeux** vous observent dans le noir, des pas vous suivent… Les yeux fuient si vous les fixez.
+• Le ciel disparaît, des **yeux** vous observent dans le noir, des pas vous suivent, des **feux follets** flottent dans la brume… et parfois, la brume se referme d'un coup autour de vous.
 • Mourir la nuit ne coûte rien : vous gardez tout et revenez à votre lit.
 
 ## ☀️ Le jour
@@ -42,8 +42,8 @@ Demandez les deux premiers fichiers à l'admin. Sans eux, le serveur refuse la c
 • Au niveau 25 : **prestige** (bouton dans le Profil). Retour au niveau 1, avec un bonus d'argent sur les quêtes.
 
 ## 💰 L'économie
-• La **Pierre obscure** est un minerai violet, sous terre, dans toutes les dimensions. Seule la **Pioche des ténèbres** peut l'extraire. Elle est incassable et ne se perd jamais.
-• À l'établi : **4 Pierres obscures = 1 Pièce d'or**. La Pièce d'or est **la monnaie** du serveur.
+• La **Pierre obscure** est un minerai violet, sous terre, dans toutes les dimensions. Seule la **Pioche des ténèbres** peut l'extraire : elle donne un **Éclat obscur**. La pioche est incassable et ne se perd jamais.
+• À l'établi : **4 Éclats obscurs = 1 Pièce d'or**. La Pièce d'or est **la monnaie** du serveur.
 • Marché, boutique, forge et changement de métier se paient avec l'argent **en banque** : pensez à déposer vos pièces.
 ---8<---
 ## ⚔️ Combat et créatures
@@ -81,10 +81,11 @@ Il faut être op (`/op <pseudo>`). Presque tout se gère dans le menu **B**, ong
 C'est tout : métiers, outils, quêtes, événements et récompenses tournent tout seuls.
 ---8<---
 ## 🖥️ L'onglet Maître du jeu
-• **Joueurs** : la fiche de chaque joueur, en ligne ou non. En un clic : XP, niveau, pièces, Larme, Crochet, Pioche, réanimer, changer de métier.
+• **Joueurs** : la fiche de chaque joueur, en ligne ou non. Tapez une valeur puis cliquez : + XP, = Niveau, + / − / = Pièces, Larmes et Crochets (en quantité), Pioche, réanimer, changer de métier.
 • **Monde** : passer au jour ou à la nuit, durées, ouvrir le Nether et l'End, salle d'attente, zones protégées.
 • **Économie** : prix du changement de métier, chance des crochets, bonus de prestige, argent en circulation, boutique (prix, retrait, ajout de l'objet tenu en main).
-• **Automatisation** : quêtes par jour, multiplicateur des récompenses, événements automatiques (marche/arrêt, intervalle, durée, joueurs minimum), lancer ou arrêter un événement.
+• **Automatisation** : quêtes par jour, multiplicateur des récompenses, événements automatiques (marche/arrêt, intervalle, durée, joueurs minimum, récompenses du podium), lancer ou arrêter un événement.
+• Chaque réglage se tape dans son champ, puis **OK**.
 
 ## 📁 Où modifier quoi
 • `config/survierpg/automatisation.json` : coûts de la forge (niveau, pièces, matériau de chaque outil), quêtes, événements et récompenses du podium, prix du changement de métier. Le menu GM écrit dans ce fichier.

@@ -27,21 +27,24 @@ Les commandes `/gm` ci-dessous restent disponibles pour tout ce que le menu ne c
 
 ## L'onglet Maître du jeu (touche B)
 
-- **Joueurs** : liste de tous les joueurs connus (en ligne en premier). Sur la fiche : +100 XP, niveau ±1,
-  ±pièces, donner Larme / Crochet / Pioche, réanimer, changer de métier.
+- **Joueurs** : liste de tous les joueurs connus (en ligne en premier). On tape une valeur, puis : + XP, = Niveau,
+  + / − / = Pièces, Larmes et Crochets (la valeur = la quantité), Pioche, réanimer, changer de métier.
 - **Monde** : passer au jour ou à la nuit, durées du jour et de la nuit, ouvrir/fermer le Nether et l'End,
   salle d'attente, zones protégées (création autour de soi, suppression).
 - **Économie** : prix du changement de métier, chance de réussite des crochets, bonus de prestige,
-  argent en circulation, boutique (prix ±5, retrait, ajout de l'objet tenu en main).
+  argent en circulation, boutique (prix saisi, retrait, ajout de l'objet tenu en main).
 - **Automatisation** : quêtes par jour, multiplicateur des récompenses, événements automatiques
-  (marche/arrêt, intervalle, durée, joueurs minimum), lancer ou terminer un événement.
+  (marche/arrêt, intervalle, durée, joueurs minimum, récompenses du podium), lancer ou terminer un événement.
+
+Chaque réglage se tape dans son champ puis **OK** (le bouton s'allume seulement si la valeur a changé).
 
 ## Items du mod (onglet créatif « Survie RPG »)
 
 | Item | ID | Rôle |
 |---|---|---|
-| Pièce d'or | `survierpg:piece_or` | La monnaie. 4 Pierres obscures → 1 pièce à l'établi |
-| Pierre obscure | `survierpg:pierre_obscure` | Minerai violet, en filons dans les 3 dimensions (nouveaux chunks seulement) |
+| Pièce d'or | `survierpg:piece_or` | La monnaie. 4 Éclats obscurs → 1 pièce à l'établi |
+| Pierre obscure | `survierpg:pierre_obscure` | Minerai violet, en filons dans les 3 dimensions (nouveaux chunks seulement). Ne donne jamais le bloc |
+| Éclat obscur | `survierpg:eclat_obscur` | Ce que donne la Pierre obscure à la Pioche des ténèbres |
 | Pioche des ténèbres | `survierpg:pioche_tenebres` | Seul outil qui extrait la Pierre obscure. Incassable, jamais perdue |
 | Larme de vie | `survierpg:larme_de_vie` | Réapparition immédiate après une mort de jour |
 | Crochet | `survierpg:crochet` | Tenter d'ouvrir le coffre d'un autre joueur |
@@ -102,6 +105,8 @@ Quantité de Pierre obscure générée : `src/main/resources/data/survierpg/worl
 ## Règles de jeu (rappel)
 
 - À la main : terre, feuilles, fleurs, sable, gravier, argile, neige, torches. Le reste : outil officiel de son métier.
+- Un bloc posé par un joueur ne donne ni XP ni progression de quête quand on le recasse (mémorisé avec le monde,
+  y compris après un redémarrage).
 - Mort de **nuit** : on garde tout. Mort de **jour** : tout tombe (au tueur, ou à personne), on attend la nuit
   (spectateur ou salle d'attente) sauf avec une Larme de vie.
 - Mairie : pas de destruction, pas de PVP, pistons coupés à 13 blocs. Coffres : à leur propriétaire, entonnoirs bloqués

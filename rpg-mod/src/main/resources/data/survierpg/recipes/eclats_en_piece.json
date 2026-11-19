@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "survierpg:eclat_obscur" },
+    { "item": "survierpg:eclat_obscur" },
+    { "item": "survierpg:eclat_obscur" },
+    { "item": "survierpg:eclat_obscur" }
+  ],
+  "result": { "item": "survierpg:piece_or", "count": 1 }
+}

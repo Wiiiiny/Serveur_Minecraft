@@ -20,6 +20,7 @@ public class NightfallClient implements ClientModInitializer {
     public void onInitializeClient() {
         ClientTickEvents.END_CLIENT_TICK.register(NightfallClient::tick);
         HorrorAmbience.register();
+        fr.serveur.nightfall.client.NightEffects.register();
     }
 
     private static void tick(MinecraftClient client) {
@@ -61,7 +62,8 @@ public class NightfallClient implements ClientModInitializer {
 
     /** Distance de brume de nuit, selon la lanterne. */
     public static float nightFogDistance(float tickDelta) {
-        return MathHelper.lerp(lanternBlend(tickDelta), NightfallConfig.NIGHT_FOG_DISTANCE, NightfallConfig.LANTERN_FOG_DISTANCE);
+        return MathHelper.lerp(lanternBlend(tickDelta), NightfallConfig.NIGHT_FOG_DISTANCE, NightfallConfig.LANTERN_FOG_DISTANCE)
+                * fr.serveur.nightfall.client.NightEffects.fogMultiplier(tickDelta);
     }
 
     /** Début de la brume : collée au joueur sans lanterne, un peu dégagée avec. */
