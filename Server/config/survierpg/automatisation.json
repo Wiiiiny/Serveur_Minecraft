@@ -1,0 +1,48 @@
+{
+  "prixChangementMetier": 50,
+  "quetesParJour": 3,
+  "multiplicateurRecompenses": 1.0,
+  "evenementsAuto": true,
+  "evenementIntervalleMinutes": 120,
+  "evenementDureeMinutes": 15,
+  "evenementJoueursMin": 2,
+  "evenementRecompenses": [
+    100,
+    50,
+    25
+  ],
+  "forge": {
+    "bois": {
+      "niveau": 1,
+      "pieces": 0,
+      "matiere": "",
+      "extra": {}
+    },
+    "pierre": {
+      "niveau": 3,
+      "pieces": 5,
+      "matiere": "#minecraft:stone_tool_materials",
+      "extra": {}
+    },
+    "fer": {
+      "niveau": 8,
+      "pieces": 20,
+      "matiere": "minecraft:iron_ingot",
+      "extra": {}
+    },
+    "diamant": {
+      "niveau": 15,
+      "pieces": 60,
+      "matiere": "minecraft:diamond",
+      "extra": {}
+    },
+    "netherite": {
+      "niveau": 22,
+      "pieces": 150,
+      "matiere": "minecraft:diamond",
+      "extra": {
+        "minecraft:netherite_ingot": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,296 @@
+{
+  "xpBase": 50,
+  "xpParNiveau": 30,
+  "xpAventurierParPv": 0.5,
+  "mainNue": [
+    "#minecraft:dirt",
+    "#minecraft:leaves",
+    "#minecraft:flowers",
+    "#minecraft:saplings",
+    "minecraft:grass",
+    "minecraft:tall_grass",
+    "minecraft:fern",
+    "minecraft:large_fern",
+    "minecraft:dead_bush",
+    "minecraft:vine",
+    "minecraft:glow_lichen",
+    "minecraft:moss_carpet",
+    "minecraft:sand",
+    "minecraft:red_sand",
+    "minecraft:gravel",
+    "minecraft:clay",
+    "minecraft:mud",
+    "minecraft:snow",
+    "minecraft:snow_block",
+    "minecraft:torch",
+    "minecraft:wall_torch",
+    "minecraft:soul_torch",
+    "minecraft:soul_wall_torch"
+  ],
+  "metiers": {
+    "MINEUR": [
+      {
+        "niveau": 1,
+        "xp": 1,
+        "blocs": [
+          "minecraft:stone",
+          "minecraft:cobblestone",
+          "minecraft:mossy_cobblestone",
+          "minecraft:granite",
+          "minecraft:diorite",
+          "minecraft:andesite",
+          "minecraft:tuff",
+          "minecraft:calcite",
+          "minecraft:sandstone",
+          "minecraft:red_sandstone",
+          "minecraft:dripstone_block",
+          "minecraft:pointed_dripstone",
+          "#minecraft:terracotta",
+          "minecraft:ice",
+          "minecraft:packed_ice"
+        ]
+      },
+      {
+        "niveau": 1,
+        "xp": 3,
+        "blocs": [
+          "minecraft:coal_ore"
+        ]
+      },
+      {
+        "niveau": 3,
+        "xp": 2,
+        "blocs": [
+          "minecraft:deepslate",
+          "minecraft:cobbled_deepslate"
+        ]
+      },
+      {
+        "niveau": 5,
+        "xp": 4,
+        "blocs": [
+          "minecraft:copper_ore",
+          "minecraft:deepslate_copper_ore",
+          "minecraft:deepslate_coal_ore"
+        ]
+      },
+      {
+        "niveau": 8,
+        "xp": 6,
+        "blocs": [
+          "minecraft:iron_ore",
+          "minecraft:deepslate_iron_ore",
+          "minecraft:blue_ice"
+        ]
+      },
+      {
+        "niveau": 12,
+        "xp": 8,
+        "blocs": [
+          "minecraft:lapis_ore",
+          "minecraft:deepslate_lapis_ore",
+          "minecraft:redstone_ore",
+          "minecraft:deepslate_redstone_ore"
+        ]
+      },
+      {
+        "niveau": 15,
+        "xp": 10,
+        "blocs": [
+          "minecraft:gold_ore",
+          "minecraft:deepslate_gold_ore",
+          "minecraft:nether_gold_ore",
+          "minecraft:nether_quartz_ore",
+          "minecraft:netherrack",
+          "minecraft:basalt",
+          "minecraft:blackstone",
+          "minecraft:magma_block"
+        ]
+      },
+      {
+        "niveau": 18,
+        "xp": 12,
+        "blocs": [
+          "minecraft:amethyst_block",
+          "minecraft:amethyst_cluster",
+          "minecraft:obsidian",
+          "minecraft:crying_obsidian",
+          "minecraft:end_stone"
+        ]
+      },
+      {
+        "niveau": 20,
+        "xp": 18,
+        "blocs": [
+          "minecraft:diamond_ore",
+          "minecraft:deepslate_diamond_ore"
+        ]
+      },
+      {
+        "niveau": 22,
+        "xp": 22,
+        "blocs": [
+          "minecraft:emerald_ore",
+          "minecraft:deepslate_emerald_ore"
+        ]
+      },
+      {
+        "niveau": 25,
+        "xp": 40,
+        "blocs": [
+          "minecraft:ancient_debris"
+        ]
+      }
+    ],
+    "BUCHERON": [
+      {
+        "niveau": 1,
+        "xp": 2,
+        "blocs": [
+          "#minecraft:oak_logs",
+          "#minecraft:dark_oak_logs",
+          "#minecraft:birch_logs"
+        ]
+      },
+      {
+        "niveau": 5,
+        "xp": 3,
+        "blocs": [
+          "#minecraft:spruce_logs"
+        ]
+      },
+      {
+        "niveau": 8,
+        "xp": 4,
+        "blocs": [
+          "#minecraft:jungle_logs",
+          "#minecraft:acacia_logs"
+        ]
+      },
+      {
+        "niveau": 12,
+        "xp": 5,
+        "blocs": [
+          "#minecraft:mangrove_logs",
+          "#minecraft:cherry_logs",
+          "minecraft:bamboo_block"
+        ]
+      },
+      {
+        "niveau": 15,
+        "xp": 6,
+        "blocs": [
+          "#minecraft:logs"
+        ]
+      },
+      {
+        "niveau": 18,
+        "xp": 7,
+        "blocs": [
+          "minecraft:brown_mushroom_block",
+          "minecraft:red_mushroom_block",
+          "minecraft:mushroom_stem",
+          "minecraft:bee_nest"
+        ]
+      },
+      {
+        "niveau": 22,
+        "xp": 10,
+        "blocs": [
+          "#minecraft:crimson_stems",
+          "#minecraft:warped_stems",
+          "minecraft:shroomlight",
+          "minecraft:nether_wart_block",
+          "minecraft:warped_wart_block"
+        ]
+      }
+    ],
+    "FERMIER": [
+      {
+        "niveau": 1,
+        "xp": 2,
+        "blocs": [
+          "minecraft:wheat",
+          "minecraft:carrots",
+          "minecraft:potatoes"
+        ]
+      },
+      {
+        "niveau": 5,
+        "xp": 3,
+        "blocs": [
+          "minecraft:beetroots",
+          "minecraft:pumpkin",
+          "minecraft:melon"
+        ]
+      },
+      {
+        "niveau": 8,
+        "xp": 3,
+        "blocs": [
+          "minecraft:sugar_cane",
+          "minecraft:bamboo",
+          "minecraft:cactus",
+          "minecraft:kelp",
+          "minecraft:kelp_plant"
+        ]
+      },
+      {
+        "niveau": 12,
+        "xp": 4,
+        "blocs": [
+          "minecraft:sweet_berry_bush",
+          "minecraft:cocoa",
+          "minecraft:hay_block",
+          "minecraft:brown_mushroom",
+          "minecraft:red_mushroom"
+        ]
+      },
+      {
+        "niveau": 15,
+        "xp": 6,
+        "blocs": [
+          "minecraft:nether_wart",
+          "minecraft:cave_vines",
+          "minecraft:cave_vines_plant"
+        ]
+      },
+      {
+        "niveau": 20,
+        "xp": 8,
+        "blocs": [
+          "minecraft:chorus_plant",
+          "minecraft:chorus_flower",
+          "minecraft:torchflower_crop",
+          "minecraft:pitcher_crop"
+        ]
+      }
+    ],
+    "AVENTURIER": [
+      {
+        "niveau": 1,
+        "xp": 2,
+        "blocs": [
+          "minecraft:cobweb"
+        ]
+      },
+      {
+        "niveau": 10,
+        "xp": 4,
+        "blocs": [
+          "minecraft:sculk",
+          "minecraft:sculk_vein"
+        ]
+      },
+      {
+        "niveau": 20,
+        "xp": 8,
+        "blocs": [
+          "minecraft:sculk_sensor",
+          "minecraft:sculk_shrieker",
+          "minecraft:sculk_catalyst"
+        ]
+      }
+    ]
+  }
+}

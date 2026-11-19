@@ -1,0 +1,12 @@
+{
+  "bloques": [
+    "#minecraft:pickaxes",
+    "#minecraft:axes",
+    "#minecraft:hoes",
+    "#minecraft:shovels",
+    "#minecraft:swords",
+    "minecraft:bow",
+    "minecraft:crossbow",
+    "minecraft:shield"
+  ]
+}
