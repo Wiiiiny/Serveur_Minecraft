@@ -1048,12 +1048,6 @@
     },
     "done": true
   },
-  "nemos-carpentry:recipes/tools/stone_saw": {
-    "criteria": {
-      "has_cobblestone": "2026-11-18 18:19:21 +0100"
-    },
-    "done": true
-  },
   "minecraft:recipes/building_blocks/mossy_cobblestone_stairs_from_mossy_cobblestone_stonecutting": {
     "criteria": {
       "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
@@ -1078,15 +1072,75 @@
     },
     "done": true
   },
-  "blockus:recipes/building_blocks/legacy_first_cobblestone_from_cobblestone_stonecutting": {
+  "mcwpaths:recipes/mossy_cobblestone": {
+    "criteria": {
+      "has_wood": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/mossy_cobblestone_bridge": {
+    "criteria": {
+      "has_planks": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/mossy_stone_brick_bridge": {
+    "criteria": {
+      "has_planks": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/mossy_cobblestone_wall": {
+    "criteria": {
+      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/mossy_cobblestone_bridge_stair": {
+    "criteria": {
+      "has_planks": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/mossy_cobblestone_wall_from_mossy_cobblestone_stonecutting": {
+    "criteria": {
+      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/mossy_cobblestone_stairs": {
+    "criteria": {
+      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/mossy_cobblestone_slab_from_mossy_cobblestone_stonecutting": {
+    "criteria": {
+      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "blockus:recipes/building_blocks/legacy_mossy_cobblestone_from_mossy_cobblestone_stonecutting": {
+    "criteria": {
+      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "mcwbridges:recipes/mossy_stone_bridge_pier": {
+    "criteria": {
+      "has_planks": "2026-11-18 18:19:18 +0100"
+    },
+    "done": true
+  },
+  "nemos-carpentry:recipes/tools/stone_saw": {
     "criteria": {
       "has_cobblestone": "2026-11-18 18:19:21 +0100"
     },
     "done": true
   },
-  "mcwpaths:recipes/mossy_cobblestone": {
+  "blockus:recipes/building_blocks/legacy_first_cobblestone_from_cobblestone_stonecutting": {
     "criteria": {
-      "has_wood": "2026-11-18 18:19:18 +0100"
+      "has_cobblestone": "2026-11-18 18:19:21 +0100"
     },
     "done": true
   },
@@ -1162,33 +1216,9 @@
     },
     "done": true
   },
-  "mcwbridges:recipes/mossy_cobblestone_bridge": {
-    "criteria": {
-      "has_planks": "2026-11-18 18:19:18 +0100"
-    },
-    "done": true
-  },
-  "mcwbridges:recipes/mossy_stone_brick_bridge": {
-    "criteria": {
-      "has_planks": "2026-11-18 18:19:18 +0100"
-    },
-    "done": true
-  },
   "mcwbridges:recipes/cobblestone_bridge_pier": {
     "criteria": {
       "has_planks": "2026-11-18 18:19:21 +0100"
-    },
-    "done": true
-  },
-  "minecraft:recipes/decorations/mossy_cobblestone_wall": {
-    "criteria": {
-      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
-    },
-    "done": true
-  },
-  "mcwbridges:recipes/mossy_cobblestone_bridge_stair": {
-    "criteria": {
-      "has_planks": "2026-11-18 18:19:18 +0100"
     },
     "done": true
   },
@@ -1201,12 +1231,6 @@
   "mcwpaths:recipes/cobblestone": {
     "criteria": {
       "has_wood": "2026-11-18 18:19:21 +0100"
-    },
-    "done": true
-  },
-  "minecraft:recipes/decorations/mossy_cobblestone_wall_from_mossy_cobblestone_stonecutting": {
-    "criteria": {
-      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
     },
     "done": true
   },
@@ -1234,12 +1258,6 @@
     },
     "done": true
   },
-  "minecraft:recipes/building_blocks/mossy_cobblestone_stairs": {
-    "criteria": {
-      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
-    },
-    "done": true
-  },
   "minecraft:recipes/tools/stone_pickaxe": {
     "criteria": {
       "has_cobblestone": "2026-11-18 18:19:21 +0100"
@@ -1258,12 +1276,6 @@
     },
     "done": true
   },
-  "minecraft:recipes/building_blocks/mossy_cobblestone_slab_from_mossy_cobblestone_stonecutting": {
-    "criteria": {
-      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
-    },
-    "done": true
-  },
   "blockus:recipes/building_blocks/sturdy_stone": {
     "criteria": {
       "has_cobblestone": "2026-11-18 18:19:21 +0100"
@@ -1273,12 +1285,6 @@
   "minecraft:recipes/tools/stone_shovel": {
     "criteria": {
       "has_cobblestone": "2026-11-18 18:19:21 +0100"
-    },
-    "done": true
-  },
-  "blockus:recipes/building_blocks/legacy_mossy_cobblestone_from_mossy_cobblestone_stonecutting": {
-    "criteria": {
-      "has_mossy_cobblestone": "2026-11-18 18:19:18 +0100"
     },
     "done": true
   },
@@ -1303,12 +1309,6 @@
   "minecraft:recipes/tools/stone_hoe": {
     "criteria": {
       "has_cobblestone": "2026-11-18 18:19:21 +0100"
-    },
-    "done": true
-  },
-  "mcwbridges:recipes/mossy_stone_bridge_pier": {
-    "criteria": {
-      "has_planks": "2026-11-18 18:19:18 +0100"
     },
     "done": true
   },
