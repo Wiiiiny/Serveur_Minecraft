@@ -3,6 +3,10 @@
   "minVersion": "0.8",
   "package": "fr.serveur.rpg.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": ["BlockItemMixin", "ExplosionMixin", "PistonBlockMixin", "FireBlockMixin", "HopperBlockEntityMixin", "MobEntityMixin", "PhantomMoveControlMixin", "PhantomStartAttackGoalMixin", "ServerPlayerEntityMixin", "CraftingScreenHandlerMixin", "SmithingScreenHandlerMixin", "ServerPlayerPortalMixin"],
+  "mixins": ["BlockItemMixin", "ExplosionMixin", "PistonBlockMixin", "FireBlockMixin", "HopperBlockEntityMixin", "MobEntityMixin", "PhantomMoveControlMixin", "PhantomStartAttackGoalMixin", "ServerPlayerEntityMixin", "CraftingScreenHandlerMixin", "SmithingScreenHandlerMixin", "ServerPlayerPortalMixin",
+    "EnchantmentScreenHandlerMixin", "AnvilScreenHandlerMixin", "LootableContainerBlockEntityMixin", "MerchantEntityMixin",
+    "BrewingStandBlockEntityMixin", "BrewingPotionSlotMixin", "FishingBobberEntityMixin", "FishingRodItemMixin",
+    "ItemEntityMixin", "EntityRemoveMixin", "ItemStackMixin"],
+  "client": ["client.PlayerEntityRendererMixin", "client.HandledScreenMixin", "client.InGameHudMixin"],
   "injectors": { "defaultRequire": 1 }
 }

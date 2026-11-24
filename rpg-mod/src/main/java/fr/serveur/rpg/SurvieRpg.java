@@ -42,15 +42,26 @@ public class SurvieRpg implements ModInitializer {
     @Override
     public void onInitialize() {
         fr.serveur.rpg.items.ModItems.register();
+        fr.serveur.rpg.raid.statue.Statues.register();
+        fr.serveur.rpg.raid.thief.Thieves.register();
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             JobConfig.load();
+            fr.serveur.rpg.jobs.SideJobConfig.load();
+            fr.serveur.rpg.economy.EconomyConfig.load();
             fr.serveur.rpg.craft.CraftRules.load();
             fr.serveur.rpg.auto.AutoConfig.load();
+            fr.serveur.rpg.sombre.SombreConfig.load();
+            fr.serveur.rpg.sombre.Rarete.resolve();
+            fr.serveur.rpg.faction.FactionConfig.load();
             seedShop(RpgState.get(server)); // charge les données et remplit la boutique la première fois
+            fr.serveur.rpg.economy.DynamicShop.seed(RpgState.get(server));
+            fr.serveur.rpg.economy.DynamicShop.seedRaid(RpgState.get(server));
+            RpgState.get(server).shop.forEach(fr.serveur.rpg.economy.DynamicShop::refresh);
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resources, success) -> {
             JobConfig.resolve();
+            fr.serveur.rpg.jobs.SideJobConfig.resolve();
             fr.serveur.rpg.craft.CraftRules.resolve();
         });
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> RpgState.get(server).player(handler.player));
@@ -63,12 +74,24 @@ public class SurvieRpg implements ModInitializer {
         fr.serveur.rpg.death.DeathSystem.register();
         fr.serveur.rpg.mobs.MobRules.register();
         fr.serveur.rpg.events.GmEvents.register();
+        fr.serveur.rpg.jobs.SideJobRules.register();
+        fr.serveur.rpg.world.PlayableZone.register();
+        fr.serveur.rpg.world.TravelBeacon.register();
+        fr.serveur.rpg.network.NameTags.register();
+        fr.serveur.rpg.economy.EconomyTicker.register();
+        fr.serveur.rpg.raid.RaidCycle.register();
+        fr.serveur.rpg.sombre.MondeSombre.register();
+        fr.serveur.rpg.faction.Territories.register();
+        fr.serveur.rpg.faction.Wars.register();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             PlayerCommands.register(dispatcher);
             EconomyCommands.register(dispatcher);
             fr.serveur.rpg.commands.RankingCommands.register(dispatcher);
             GmCommands.register(dispatcher, registryAccess);
+            fr.serveur.rpg.commands.RaidCommands.register(dispatcher);
+            fr.serveur.rpg.commands.SombreCommands.register(dispatcher);
+            fr.serveur.rpg.commands.FactionCommands.register(dispatcher);
         });
     }
 }

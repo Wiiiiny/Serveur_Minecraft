@@ -72,6 +72,14 @@ public final class DayCycle {
             overworld.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(false, server);
         }
 
+        if (fr.serveur.rpg.sombre.Lumiere.controls(server)) {
+            // Nuit permanente : seul un Éclat de Lumière appelle le jour.
+            fr.serveur.rpg.sombre.Lumiere.tick(server);
+            boolean nowNight = isNight(overworld);
+            if (wasNight != null && wasNight != nowNight) announce(server, nowNight);
+            wasNight = nowNight;
+            return;
+        }
         long time = overworld.getTimeOfDay();
         boolean night = isNight(overworld);
         // Jour = 14000 ticks de temps de jeu, nuit = 10000 : on adapte la vitesse pour tenir les durées voulues.

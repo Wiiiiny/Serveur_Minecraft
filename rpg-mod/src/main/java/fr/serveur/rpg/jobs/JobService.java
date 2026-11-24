@@ -30,7 +30,9 @@ public final class JobService {
         int price = AutoConfig.get().prixChangementMetier;
         if (!first) {
             if (data.money < price) return "Changer de métier coûte " + Bank.format(price) + " (en banque).";
-            data.money -= price;
+            String e = fr.serveur.rpg.economy.Economy.spend(player.getServer(), player.getUuid(),
+                    fr.serveur.rpg.economy.Economy.Source.CHANGEMENT_METIER, price, "vers " + job.displayName);
+            if (e != null) return e;
         }
         data.job = job;
         data.current();

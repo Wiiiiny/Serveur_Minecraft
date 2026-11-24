@@ -10,6 +10,8 @@ import fr.serveur.rpg.data.RpgState;
 import fr.serveur.rpg.jobs.Job;
 import fr.serveur.rpg.jobs.JobConfig;
 import fr.serveur.rpg.jobs.Progression;
+import fr.serveur.rpg.jobs.SideJob;
+import fr.serveur.rpg.jobs.SideJobs;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -48,6 +50,26 @@ public final class PlayerCommands {
                     Msg.info(c.getSource(), Text.literal("Le prestige est disponible au niveau " + Job.MAX_LEVEL + ".").formatted(Formatting.RED));
                     return 0;
                 })));
+
+        // Métier supplémentaire (en plus du métier principal).
+        d.register(literal("metier2")
+                .executes(c -> showSideInfo(c.getSource(), c.getSource().getPlayerOrThrow()))
+                .then(literal("choisir").then(argument("metier", StringArgumentType.word())
+                        .suggests((c, b) -> CommandSource.suggestMatching(SideJob.ids(), b))
+                        .executes(c -> {
+                            ServerPlayerEntity p = c.getSource().getPlayerOrThrow();
+                            SideJob job = SideJob.parse(StringArgumentType.getString(c, "metier"));
+                            if (job == null) {
+                                Msg.info(c.getSource(), Text.literal("Métier inconnu. Choix : " + String.join(", ", SideJob.ids())).formatted(Formatting.RED));
+                                return 0;
+                            }
+                            String error = SideJobs.choose(p, job);
+                            if (error != null) {
+                                Msg.info(c.getSource(), Text.literal(error).formatted(Formatting.RED));
+                                return 0;
+                            }
+                            return 1;
+                        }))));
 
         d.register(literal("quetes").executes(c -> showQuests(c.getSource(), c.getSource().getPlayerOrThrow())));
 
@@ -100,6 +122,24 @@ public final class PlayerCommands {
         }
         long open = data.quests.stream().filter(q -> !q.done).count();
         t.append(Text.literal("\nQuêtes en cours : " + open + " (/quetes)").formatted(Formatting.GRAY));
+        Msg.info(src, t);
+        return 1;
+    }
+
+    public static int showSideInfo(ServerCommandSource src, ServerPlayerEntity target) {
+        PlayerData data = RpgState.get(target.getServer()).player(target);
+        MutableText t = Text.literal("— Métier supplémentaire —\n").formatted(Formatting.GOLD);
+        if (data.sideJob == null) {
+            t.append(Text.literal("Aucun. Tape /metier2 choisir <" + String.join("|", SideJob.ids()) + "> (le premier choix est gratuit).")
+                    .formatted(Formatting.GRAY));
+        } else {
+            PlayerData.JobProgress p = data.side();
+            String xp = p.level >= Job.MAX_LEVEL ? "MAX" : p.xp + " / " + JobConfig.xpNeeded(p.level);
+            t.append(Text.literal(data.sideJob.displayName + "\n").formatted(data.sideJob.color))
+                    .append(Text.literal(data.sideJob.summary + "\n").formatted(Formatting.GRAY))
+                    .append(Text.literal("Niveau : ").formatted(Formatting.GRAY)).append(Text.literal(p.level + " / " + Job.MAX_LEVEL + "\n").formatted(Formatting.WHITE))
+                    .append(Text.literal("Progression : ").formatted(Formatting.GRAY)).append(Text.literal(xp + " XP " + bar(p)).formatted(Formatting.WHITE));
+        }
         Msg.info(src, t);
         return 1;
     }

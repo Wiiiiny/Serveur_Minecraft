@@ -70,7 +70,7 @@ public final class HarvestRules {
             JobConfig.Tier tier = JobConfig.tier(data.job, block);
             if (tier == null || tier.xp() <= 0) return;
             if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, sp.getMainHandStack()) > 0) return;
-            Progression.addXp(sp, tier.xp(), false);
+            Progression.addActionXp(sp, tier.xp());
             fr.serveur.rpg.auto.DailyQuests.onHarvest(sp, block);
         });
 
@@ -81,7 +81,7 @@ public final class HarvestRules {
             PlayerData data = rs.player(sp);
             if (data.job != Job.AVENTURIER || OfficialTools.jobOf(sp.getMainHandStack(), rs) != Job.AVENTURIER) return;
             int xp = (int) Math.max(1, Math.round(killed.getMaxHealth() * JobConfig.data().xpAventurierParPv));
-            Progression.addXp(sp, xp, false);
+            Progression.addActionXp(sp, xp);
         });
     }
 

@@ -15,6 +15,9 @@
     ],
     "client": [
       "fr.serveur.rpg.client.SurvieRpgClient"
+    ],
+    "terrablender": [
+      "fr.serveur.rpg.world.biome.AshlandsTerraBlender"
     ]
   },
   "mixins": [
@@ -24,6 +27,7 @@
     "fabricloader": ">=0.15.0",
     "minecraft": "~1.20.1",
     "java": ">=17",
-    "fabric-api": "*"
+    "fabric-api": "*",
+    "terrablender": "*"
   }
 }

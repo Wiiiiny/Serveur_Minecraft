@@ -67,6 +67,8 @@ public final class ModItems {
             new Item.Settings().maxCount(1).fireproof().rarity(Rarity.EPIC));
     public static final Item LARME_DE_VIE = new TearItem(new Item.Settings().maxCount(16).rarity(Rarity.RARE));
     public static final Item CROCHET = new LockpickItem(new Item.Settings().maxCount(16).rarity(Rarity.UNCOMMON));
+    /** Balise du Voyageur : objet du métier, jamais perdu. */
+    public static final Item BALISE = new TravelBeaconItem(new Item.Settings().maxCount(1).fireproof().rarity(Rarity.RARE));
     /** Ce que donne la Pierre obscure : on ne récupère jamais le bloc, donc impossible de le reposer. */
     public static final Item ECLAT_OBSCUR = new Item(new Item.Settings().rarity(Rarity.UNCOMMON)) {
         @Override
@@ -91,6 +93,10 @@ public final class ModItems {
         register("crochet", CROCHET);
         register("piece_or", PIECE_OR);
         register("eclat_obscur", ECLAT_OBSCUR);
+        register("balise", BALISE);
+        RaidItems.register();
+        fr.serveur.rpg.sombre.SombreItems.register();
+        fr.serveur.rpg.faction.FactionItems.register();
         fr.serveur.rpg.blocks.ModBlocks.register();
 
         for (Job job : Job.values()) {
@@ -119,6 +125,10 @@ public final class ModItems {
                     entries.add(CROCHET);
                     entries.add(PIECE_OR);
                     entries.add(ECLAT_OBSCUR);
+                    entries.add(BALISE);
+                    RaidItems.ALL.forEach(entries::add);
+                    fr.serveur.rpg.sombre.SombreItems.ALL.forEach(entries::add);
+                    entries.add(fr.serveur.rpg.faction.FactionItems.ETENDARD);
                     entries.add(fr.serveur.rpg.blocks.ModBlocks.PIERRE_OBSCURE_ITEM);
                     Registries.ITEM.getOrEmpty(new Identifier("nightfall", "shadow_hood")).ifPresent(entries::add);
                     for (Job job : Job.values()) for (Tier tier : Tier.values()) entries.add(OFFICIAL.get(job).get(tier));

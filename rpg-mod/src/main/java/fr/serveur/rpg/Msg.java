@@ -27,6 +27,13 @@ public final class Msg {
         src.sendFeedback(() -> prefix().append(text), false);
     }
 
+    /** « 1 h 05 min », « 4 min 12 s », « 30 s ». */
+    public static String duration(long seconds) {
+        if (seconds >= 3600) return seconds / 3600 + " h " + String.format("%02d", (seconds % 3600) / 60) + " min";
+        if (seconds >= 60) return seconds / 60 + " min " + String.format("%02d", seconds % 60) + " s";
+        return seconds + " s";
+    }
+
     public static void broadcast(MinecraftServer server, Text text) {
         server.getPlayerManager().broadcast(prefix().append(text), false);
     }

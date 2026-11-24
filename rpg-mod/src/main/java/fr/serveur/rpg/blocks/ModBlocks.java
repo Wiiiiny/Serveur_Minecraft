@@ -39,7 +39,9 @@ public final class ModBlocks {
         Registry.register(Registries.ITEM, id, PIERRE_OBSCURE_ITEM);
 
         BiomeModifications.addFeature(
-                BiomeSelectors.foundInOverworld().or(BiomeSelectors.foundInTheNether()).or(BiomeSelectors.foundInTheEnd()),
+                BiomeSelectors.foundInOverworld().or(BiomeSelectors.foundInTheNether()).or(BiomeSelectors.foundInTheEnd())
+                        // Biome ajouté par TerraBlender : on le cite pour être sûr qu'il ait aussi sa Pierre obscure.
+                        .or(BiomeSelectors.includeByKey(fr.serveur.rpg.world.biome.AshlandsTerraBlender.TERRES_CENDREES)),
                 GenerationStep.Feature.UNDERGROUND_ORES,
                 RegistryKey.of(RegistryKeys.PLACED_FEATURE, id));
     }

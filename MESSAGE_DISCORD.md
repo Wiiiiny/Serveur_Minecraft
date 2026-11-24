@@ -15,6 +15,8 @@ Demandez les deux premiers fichiers à l'admin. Sans eux, le serveur refuse la c
 ---8<---
 ## 📖 Le menu (touche B)
 • **Profil** : métier, niveau, prestige, statistiques. Changer de métier coûte 50 pièces.
+• **Faction** : créer ou rejoindre une faction, membres et votes, carte des territoires, trésor et boutique, guerre, bannière, podium.
+• **Personnage** : le niveau de votre personnage, votre Obscurcie, l'état de la lumière, et **votre histoire** à écrire (privée ou publique).
 • **Quêtes** : 3 quêtes du jour selon votre métier, renouvelées à minuit. Elles se valident toutes seules et rapportent des pièces et de l'XP.
 • **Forge** : fabriquez vous-même vos outils officiels (bois, pierre, fer, diamant, netherite) avec les matériaux, des pièces et le niveau requis.
 • **Banque** : déposer, retirer, et virer de l'argent à un joueur, même déconnecté.
@@ -22,16 +24,31 @@ Demandez les deux premiers fichiers à l'admin. Sans eux, le serveur refuse la c
 • **Boutique** : crochets, Larmes de vie, lanternes, nourriture…
 • **Classements** : métiers, richesse, combats, morts.
 ---8<---
+## 🌑 Le monde sombre (nouveau)
+• **La nuit ne finit jamais.** Le jour ne revient que si quelqu'un brise un **Éclat de Lumière** (un prisme jaune) : tout le serveur est prévenu, 60 secondes pour se préparer, puis le soleil se lève pour quelques minutes — et il brûle.
+• **Niveau du personnage** : monstres, quêtes, coffres, découvertes… tout fait grandir votre personnage. Mourir coûte un peu d'XP (jamais un niveau).
+• **Obscurcie** : un métier pour tous, sans limite de niveau. Il monte avec les ressources, les combats et l'exploration de nuit. Tous les 5 niveaux, une chance sur deux de recevoir un Éclat de Lumière ; tous les 10, un **Détecteur d'ombre** qui traque les coffres cachés pendant 2 minutes.
+• **Coffres cachés** dans le décor, parfois enfouis : classiques, maudits, magiques, légendaires, de boss (un gardien les protège), exotiques… Certains sont piégés. Ouvert en groupe, un seul d'entre vous remporte le butin !
+• **Raretés** : un contour gris, vert, bleu ou violet autour des objets. Les **exotiques** (contour noir, étincelles jaunes) n'existent qu'en un seul exemplaire sur tout le serveur.
+• **Boutique de découverte** : on ne peut acheter un objet qu'après l'avoir trouvé une fois.
+
+## ⚑ Les factions (nouveau)
+• **Fondez une faction** (gratuit, menu B › Faction ou `/f creer <nom>`), invitez qui vous voulez, dessinez votre **bannière**.
+• Achetez un **Étendard** au trésor de la faction et plantez-le : votre territoire (et votre base, avec son **Cœur de faction**) est protégé. Personne d'autre n'y casse, n'y ouvre et n'y combat… hors guerre.
+• La faction monte de niveau avec vos combats, coffres, quêtes et **missions du jour** : territoires plus grands, trésor, nouveaux articles.
+• **La guerre** : seul le chef la déclare (5 minutes de préparation). On attaque **de jour** — il faut donc un Éclat de Lumière — ou la nuit si les deux chefs l'acceptent. Brisez le **Cœur** ennemi ou obtenez sa **capitulation** : le vaincu perd de l'XP et un territoire. Puis 3 jours de paix.
+• Les virements d'argent entre joueurs sont désormais **illimités** (par la banque).
+
 ## 🌙 La nuit
 • Brume noire : on voit à **6 blocs**, et on subit de la **Lenteur**.
 • Une **lanterne en main** (normale ou des âmes) enlève la Lenteur et repousse la brume à **16 blocs**.
 • Le ciel disparaît, des **yeux** vous observent dans le noir, des pas vous suivent, des **feux follets** flottent dans la brume… et parfois, la brume se referme d'un coup autour de vous.
-• Mourir la nuit ne coûte rien : vous gardez tout et revenez à votre lit.
+• Mourir la nuit : vous gardez tout et revenez à votre lit (seul un peu d'XP de personnage est perdu).
 
 ## ☀️ Le jour
 • La lumière brûle : ½ cœur toutes les 5 secondes, partout, même à l'abri. Ça s'arrête à 2 cœurs : le soleil ne tue pas.
 • La **Capuche d'ombre** protège : 3 cuir sur la ligne du haut, puis cuir / membrane de phantom / cuir sur la ligne du milieu. La membrane s'achète à la boutique.
-• Jour : environ 12 min. Nuit : environ 8 min. Impossible de dormir : le lit sert seulement de point de réapparition.
+• Le jour ne vient qu'avec un Éclat de Lumière, pour une douzaine de minutes. Impossible de dormir : le lit sert seulement de point de réapparition.
 ---8<---
 ## ⛏️ Les métiers (25 niveaux)
 **Mineur** (pioche) · **Bûcheron** (hache) · **Fermier** (houe) · **Aventurier** (épée)
@@ -40,8 +57,23 @@ Demandez les deux premiers fichiers à l'admin. Sans eux, le serveur refuse la c
 • Chaque niveau débloque des blocs. Exemple Mineur : charbon au niveau 1, fer au 8, diamant au 20.
 • On gagne de l'XP en récoltant (l'Aventurier en tuant des créatures avec son épée officielle) et avec les quêtes.
 • Au niveau 25 : **prestige** (bouton dans le Profil). Retour au niveau 1, avec un bonus d'argent sur les quêtes.
+---8<---
+## 🧰 Les métiers supplémentaires (nouveau)
+En plus de votre métier, choisissez une **spécialité** dans l'onglet **2e métier** du menu B (ou `/metier2`). Le premier choix est gratuit, ensuite c'est 50 pièces. Elle a ses propres niveaux, et vos métiers s'affichent maintenant **sous votre pseudo**.
+• **Ingénieur** : le seul à poser la redstone et les pistons (portes, boutons et leviers restent à tous).
+• **Constructeur** : le seul à poser les blocs de prestige (pierres taillées, verre teinté, béton, terracotta émaillée, quartz). XP en construisant.
+• **Enchanteur** : le seul à enchanter (table et livres à l'enclume). XP avec les livres trouvés et le troc avec les villageois.
+• **Voyageur** : sa **balise** lui fait franchir la limite du monde (10 s sans bouger). Personne d'autre ne peut aller au-delà.
+• **Pacificateur** : une prime pour chaque monstre tué **de jour**… et une amende s'il tue la nuit.
+• **Alchimiste** : le seul à utiliser l'alambic.
+• **Pêcheur** : XP en pêchant et en chassant les animaux, et il pêche de mieux en mieux.
+Survolez un métier dans le menu pour voir toutes ses règles.
 
 ## 💰 L'économie
+• **Les métiers paient** : chaque bloc récolté, chaque créature tuée avec son outil, chaque action de votre métier supplémentaire rapporte un peu d'argent, directement en banque. Au-delà d'un plafond par jour, la paie diminue.
+• La **boutique** a des prix qui bougent : plus un article est acheté, plus il est cher ; il redevient moins cher avec le temps. Le serveur rachète aussi certains objets (les poissons).
+• L'**hôtel des ventes** prend une taxe de 5 % sur chaque vente, et les annonces durent 7 jours.
+• Virements : illimités, mais pas pendant les 24 premières heures sur le serveur.
 • La **Pierre obscure** est un minerai violet, sous terre, dans toutes les dimensions. Seule la **Pioche des ténèbres** peut l'extraire : elle donne un **Éclat obscur**. La pioche est incassable et ne se perd jamais.
 • À l'établi : **4 Éclats obscurs = 1 Pièce d'or**. La Pièce d'or est **la monnaie** du serveur.
 • Marché, boutique, forge et changement de métier se paient avec l'argent **en banque** : pensez à déposer vos pièces.
@@ -67,8 +99,18 @@ Demandez les deux premiers fichiers à l'admin. Sans eux, le serveur refuse la c
 ## 🏆 Événements
 Toutes les 2 heures (dès 2 joueurs connectés), un événement se lance tout seul : chasse, récolte ou ruée vers la Pierre obscure. Le podium gagne **100, 50 et 25 pièces**.
 
-## 🌍 Nether et End
-Fermés pour l'instant.
+## 🔥 La zone Nether de raid (nouveau)
+Au hub, le **portail du raid** mène à un labyrinthe du Nether qui change toutes les 3 heures. Entrée payante (menu B › Raid), seul ou en groupe de 4.
+• Fouillez les coffres : reliques, idoles, couronnes, diamants, livres… à revendre à la boutique.
+• Ce butin n'est à vous **qu'une fois sorti** : avec une **Balise de retour** (10 s sans bouger), ou par l'**extraction finale** au cœur de la zone (2 clés de gardien, bonus en pièces). Si la zone se régénère avant, il est perdu.
+• Trois **gardiens** gardent les clés. Les **statues** ne bougent que quand personne ne les regarde… et elles sont rapides. Seul le **Brise-statue** peut les détruire. Plus elles sont proches, plus la peur monte.
+• Les **chapardeurs** volent un objet et s'enfuient : rattrapez-les, ou payez-les en Pièces d'or. Donnez-leur assez de pièces et l'un d'eux deviendra votre compagnon.
+• Mourir laisse un coffre de corps 10 minutes sur place.
+
+## 🌍 Le monde
+• Le monde a maintenant une **limite** : seul le Voyageur peut la franchir. Un rideau de particules violettes la signale.
+• Nouveau biome : les **Terres cendrées**, une terre grise et morte où la cendre tombe sans arrêt. On ne le trouve que dans les zones encore inexplorées.
+• Nether et End : fermés pour l'instant.
 ---8<---
 # 🛠️ Partie admin / GM
 Il faut être op (`/op <pseudo>`). Presque tout se gère dans le menu **B**, onglet **Maître du jeu**, visible seulement des op. Les commandes `/gm` restent disponibles : la liste complète est dans `rpg-mod/GUIDE_GM.md`.
