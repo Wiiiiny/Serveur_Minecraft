@@ -51,6 +51,42 @@ public final class RpgState extends PersistentState {
     public boolean netherOpen, endOpen;
     /** La boutique a-t-elle déjà été remplie avec les articles par défaut ? */
     public boolean shopSeeded;
+    /**
+     * Zone jouable (rectangle défini par deux coins, seule la position X/Z compte) : seul le Voyageur peut en sortir.
+     * Active quand les deux coins sont définis.
+     */
+    public String borderDim;
+    public BlockPos borderCorner1, borderCorner2;
+    /** Économie : multiplicateurs du régulateur (gains, taxes), numéro de la prochaine transaction, alertes, métriques. */
+    public double econGainMult = 1.0, econTaxMult = 1.0;
+    public long nextTxId = 1;
+    public final List<String> econAlerts = new ArrayList<>();
+    public NbtList econMetrics = new NbtList();
+    /** Version des articles ajoutés automatiquement à la boutique (rachat des poissons...). */
+    public int shopSeedVersion;
+
+    public boolean borderActive() {
+        return borderDim != null && borderCorner1 != null && borderCorner2 != null;
+    }
+
+    /** Définit un coin (1 ou 2) ; un coin dans une autre dimension que l'autre efface celui-ci. */
+    public void setBorderCorner(int corner, String dim, BlockPos pos) {
+        if (borderDim != null && !borderDim.equals(dim)) {
+            borderCorner1 = null;
+            borderCorner2 = null;
+        }
+        borderDim = dim;
+        if (corner == 1) borderCorner1 = pos;
+        else borderCorner2 = pos;
+        markDirty();
+    }
+
+    public void clearBorder() {
+        borderDim = null;
+        borderCorner1 = null;
+        borderCorner2 = null;
+        markDirty();
+    }
 
     public RpgState() {
         fr.serveur.rpg.mining.PlacedBlocks.clear(); // nouveau monde : on repart de zéro
@@ -61,7 +97,11 @@ public final class RpgState extends PersistentState {
     }
 
     public PlayerData player(PlayerEntity player) {
-        PlayerData d = players.computeIfAbsent(player.getUuid(), u -> new PlayerData());
+        PlayerData d = players.computeIfAbsent(player.getUuid(), u -> {
+            PlayerData n = new PlayerData();
+            n.firstSeen = System.currentTimeMillis();
+            return n;
+        });
         String name = player.getGameProfile().getName();
         if (!name.equals(d.name)) {
             d.name = name;
@@ -158,6 +198,17 @@ public final class RpgState extends PersistentState {
         });
         nbt.put("chests", chests);
         nbt.put("placed", fr.serveur.rpg.mining.PlacedBlocks.toNbt());
+        nbt.putDouble("econGainMult", econGainMult);
+        nbt.putDouble("econTaxMult", econTaxMult);
+        nbt.putLong("nextTxId", nextTxId);
+        NbtList alerts = new NbtList();
+        econAlerts.forEach(a -> alerts.add(NbtString.of(a)));
+        nbt.put("econAlerts", alerts);
+        nbt.put("econMetrics", econMetrics);
+        nbt.putInt("shopSeedVersion", shopSeedVersion);
+        if (borderDim != null) nbt.putString("borderDim", borderDim);
+        if (borderCorner1 != null) nbt.putLong("borderCorner1", borderCorner1.asLong());
+        if (borderCorner2 != null) nbt.putLong("borderCorner2", borderCorner2.asLong());
         return nbt;
     }
 
@@ -208,6 +259,16 @@ public final class RpgState extends PersistentState {
             s.chestOwners.put(dim, m);
         }
         fr.serveur.rpg.mining.PlacedBlocks.load(nbt.getCompound("placed"));
+        if (nbt.contains("econGainMult")) s.econGainMult = nbt.getDouble("econGainMult");
+        if (nbt.contains("econTaxMult")) s.econTaxMult = nbt.getDouble("econTaxMult");
+        s.nextTxId = Math.max(1, nbt.getLong("nextTxId"));
+        NbtList alerts = nbt.getList("econAlerts", NbtElement.STRING_TYPE);
+        for (int i = 0; i < alerts.size(); i++) s.econAlerts.add(alerts.getString(i));
+        s.econMetrics = nbt.getList("econMetrics", NbtElement.COMPOUND_TYPE);
+        s.shopSeedVersion = nbt.getInt("shopSeedVersion");
+        if (nbt.contains("borderDim")) s.borderDim = nbt.getString("borderDim");
+        if (nbt.contains("borderCorner1")) s.borderCorner1 = BlockPos.fromLong(nbt.getLong("borderCorner1"));
+        if (nbt.contains("borderCorner2")) s.borderCorner2 = BlockPos.fromLong(nbt.getLong("borderCorner2"));
         return s;
     }
 }

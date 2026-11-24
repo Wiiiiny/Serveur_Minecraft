@@ -23,6 +23,8 @@ public abstract class ExplosionMixin {
     @Inject(method = "affectWorld", at = @At("HEAD"))
     private void survierpg$shieldBlocks(boolean particles, CallbackInfo ci) {
         if (world.isClient) return;
-        getAffectedBlocks().removeIf(pos -> Protection.isShielded(world, pos));
+        // Zone de raid : rien ne se détruit.
+        if (world.getRegistryKey() == fr.serveur.rpg.raid.RaidWorld.KEY) getAffectedBlocks().clear();
+        getAffectedBlocks().removeIf(pos -> Protection.isShielded(world, pos) || fr.serveur.rpg.faction.Territories.shielded(world, pos));
     }
 }

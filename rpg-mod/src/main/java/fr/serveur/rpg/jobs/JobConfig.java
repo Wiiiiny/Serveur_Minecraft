@@ -154,7 +154,7 @@ public final class JobConfig {
                 jobs.entrySet().stream().map(e -> e.getKey().displayName + "=" + e.getValue().size()).toList());
     }
 
-    private static void expand(String entry, Consumer<Block> out) {
+    static void expand(String entry, Consumer<Block> out) {
         try {
             if (entry.startsWith("#")) {
                 TagKey<Block> tag = TagKey.of(RegistryKeys.BLOCK, new Identifier(entry.substring(1)));

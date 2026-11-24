@@ -5,6 +5,9 @@ import fr.serveur.rpg.data.MarketItem;
 import fr.serveur.rpg.data.PlayerData;
 import fr.serveur.rpg.data.RpgState;
 import fr.serveur.rpg.economy.Bank;
+import fr.serveur.rpg.economy.DynamicShop;
+import fr.serveur.rpg.economy.Economy;
+import fr.serveur.rpg.economy.EconomyConfig;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -49,7 +52,9 @@ public final class MarketMenus {
             if (idx >= items.size()) break;
             MarketItem m = items.get(idx);
             ids[i] = m.id;
-            inv.setStack(i, display(m, shop, player.getUuid().equals(m.seller)));
+            boolean hidden = shop && m.sold && fr.serveur.rpg.sombre.Decouvertes.canBuy(state.player(player), m) != null;
+            inv.setStack(i, hidden ? button(Items.GRAY_STAINED_GLASS_PANE, "Objet inconnu — à découvrir", Formatting.DARK_GRAY)
+                    : display(m, shop, player.getUuid().equals(m.seller)));
         }
         ItemStack filler = button(Items.BLACK_STAINED_GLASS_PANE, " ", Formatting.BLACK);
         for (int i = 45; i < 54; i++) inv.setStack(i, filler.copy());
@@ -58,12 +63,13 @@ public final class MarketMenus {
         PlayerData me = state.player(player);
         inv.setStack(SLOT_INFO, button(fr.serveur.rpg.items.ModItems.PIECE_OR, "Ton solde : " + Bank.format(me.money), Formatting.GOLD));
 
-        Text title = Text.literal((shop ? "Boutique du GM" : "Hôtel des ventes") + " — " + (p + 1) + "/" + pages);
+        Text title = Text.literal((shop ? "Boutique du royaume" : "Hôtel des ventes") + " — " + (p + 1) + "/" + pages);
         ChestMenu.open(player, title, inv, (pl, slot, type, button) -> {
             if (slot == SLOT_PREV && p > 0) reopen(pl, p - 1, shop);
             else if (slot == SLOT_NEXT && p < pages - 1) reopen(pl, p + 1, shop);
             else if (slot < PER_PAGE && ids[slot] != 0 && type == SlotActionType.PICKUP) {
-                if (shop) buyFromShop(pl, ids[slot]);
+                if (shop && button == 1) sellToShop(pl, ids[slot]);
+                else if (shop) buyFromShop(pl, ids[slot]);
                 else clickAuction(pl, ids[slot]);
                 reopen(pl, p, shop);
             }
@@ -95,14 +101,19 @@ public final class MarketMenus {
         }
         PlayerData data = state.player(buyer);
         if (data.money < m.price) return reply(buyer, false, "Solde insuffisant (" + Bank.format(data.money) + "). Dépose des pièces à la banque.");
-        data.money -= m.price;
+        String what = m.stack.getCount() + "x " + m.stack.getName().getString();
+        String error = Economy.spend(buyer.getServer(), buyer.getUuid(), Economy.Source.HDV_ACHAT, m.price, what + " de " + m.sellerName);
+        if (error != null) return reply(buyer, false, error);
         state.auctions.remove(m);
         state.markDirty();
-        Bank.credit(buyer.getServer(), m.seller, m.price);
+        // Taxe de l'HDV (puits d'argent), ajustée par le régulateur.
+        long tax = Math.round(m.price * EconomyConfig.get().taxeHdv * state.econTaxMult);
+        long net = Math.max(0, m.price - tax);
+        Economy.credit(buyer.getServer(), m.seller, Economy.Source.HDV_VENTE, net, what + " à " + buyer.getGameProfile().getName() + ", taxe " + tax);
         giveOrDrop(buyer, m.stack.copy());
         buyer.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1f, 1f);
         Bank.notify(buyer.getServer(), m.seller, "Hôtel des ventes : " + buyer.getGameProfile().getName() + " a acheté "
-                + m.stack.getCount() + "x " + m.stack.getName().getString() + " — +" + Bank.format(m.price) + " sur ton compte.");
+                + what + " — +" + Bank.format(net) + " sur ton compte (taxe " + Bank.format(tax) + ").");
         return reply(buyer, true, "Achat : " + m.stack.getCount() + "x " + m.stack.getName().getString() + " pour " + Bank.format(m.price) + ".");
     }
 
@@ -110,13 +121,26 @@ public final class MarketMenus {
         RpgState state = RpgState.get(buyer.getServer());
         MarketItem m = state.shop.stream().filter(a -> a.id == id).findFirst().orElse(null);
         if (m == null) return reply(buyer, false, "Cet article n'existe plus.");
-        PlayerData data = state.player(buyer);
-        if (data.money < m.price) return reply(buyer, false, "Solde insuffisant (" + Bank.format(data.money) + ").");
-        data.money -= m.price;
-        state.markDirty();
-        giveOrDrop(buyer, m.stack.copy());
+        String unknown = m.sold ? fr.serveur.rpg.sombre.Decouvertes.canBuy(state.player(buyer), m) : null;
+        if (unknown != null) return reply(buyer, false, unknown);
+        long price = DynamicShop.buyPrice(m);
+        String error = DynamicShop.buy(buyer, m);
+        if (error != null) return reply(buyer, false, error);
         buyer.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1f, 1f);
-        return reply(buyer, true, "Achat : " + m.stack.getCount() + "x " + m.stack.getName().getString() + " pour " + Bank.format(m.price) + ".");
+        return reply(buyer, true, "Achat : " + m.stack.getCount() + "x " + m.stack.getName().getString() + " pour " + Bank.format(price) + ".");
+    }
+
+    /** Revente d'un lot au serveur (articles marqués « rachat »). */
+    public static Result sellToShop(ServerPlayerEntity seller, int id) {
+        RpgState state = RpgState.get(seller.getServer());
+        MarketItem m = state.shop.stream().filter(a -> a.id == id).findFirst().orElse(null);
+        if (m == null) return reply(seller, false, "Cet article n'existe plus.");
+        long[] paid = {0};
+        String error = DynamicShop.sell(seller, m, paid);
+        if (error != null) return reply(seller, false, error);
+        seller.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1f, 0.8f);
+        return reply(seller, true, "Vendu : " + m.stack.getCount() + "x " + m.stack.getName().getString() + " pour " + Bank.format(paid[0])
+                + (paid[0] == 0 ? " (plafond du jour atteint)" : "") + ".");
     }
 
     private static void giveOrDrop(ServerPlayerEntity player, ItemStack stack) {
@@ -127,9 +151,15 @@ public final class MarketMenus {
         ItemStack s = m.stack.copy();
         NbtCompound display = s.getOrCreateSubNbt("display");
         NbtList lore = display.getList("Lore", NbtElement.STRING_TYPE).copy();
-        lore.add(line("Prix : " + Bank.format(m.price), Formatting.GOLD));
-        if (!shop) lore.add(line("Vendeur : " + m.sellerName, Formatting.GRAY));
-        lore.add(line(own ? "Clic : retirer de la vente" : "Clic : acheter", Formatting.YELLOW));
+        if (shop) {
+            if (m.sold) lore.add(line("Prix : " + Bank.format(DynamicShop.buyPrice(m)) + " — clic gauche : acheter", Formatting.GOLD));
+            if (m.buyback) lore.add(line("Rachat : " + Bank.format(DynamicShop.sellPrice(m)) + " — clic droit : vendre", Formatting.YELLOW));
+            lore.add(line("Prix qui varient avec l'offre et la demande", Formatting.DARK_GRAY));
+        } else {
+            lore.add(line("Prix : " + Bank.format(m.price), Formatting.GOLD));
+            lore.add(line("Vendeur : " + m.sellerName, Formatting.GRAY));
+            lore.add(line(own ? "Clic : retirer de la vente" : "Clic : acheter", Formatting.YELLOW));
+        }
         display.put("Lore", lore);
         return s;
     }

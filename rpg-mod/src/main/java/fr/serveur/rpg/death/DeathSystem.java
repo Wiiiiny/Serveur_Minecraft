@@ -65,8 +65,8 @@ public final class DeathSystem {
     }
 
     /** Objets jamais perdus à la mort. */
-    private static boolean isSoulbound(ItemStack s) {
-        return ObscureStone.isPickaxe(s) || isTear(s);
+    public static boolean isSoulbound(ItemStack s) {
+        return ObscureStone.isPickaxe(s) || isTear(s) || fr.serveur.rpg.world.TravelBeacon.isBeacon(s);
     }
 
     // ------------------------------------------------------------------ événements
@@ -99,8 +99,16 @@ public final class DeathSystem {
         DIED_AT_NIGHT.put(player.getUuid(), night);
 
         data.deaths++;
+        fr.serveur.rpg.sombre.Personnage.onDeath(player, data);
         PlayerEntity killer = source.getAttacker() instanceof PlayerEntity pk && pk != player ? pk : null;
         if (killer != null) state.player(killer).pvpKills++;
+
+        // Mort dans la zone de raid : coffre de corps, retour au hub (règles du raid).
+        if (fr.serveur.rpg.raid.RaidDeath.onDeath(player, data, DeathSystem::isSoulbound)) {
+            DIED_AT_NIGHT.put(player.getUuid(), true);
+            state.markDirty();
+            return;
+        }
 
         PlayerInventory inv = player.getInventory();
         // Objets liés à l'âme : mis de côté dans tous les cas.
@@ -146,6 +154,11 @@ public final class DeathSystem {
     }
 
     private static void onRespawn(ServerPlayerEntity player) {
+        if (fr.serveur.rpg.raid.RaidDeath.onRespawn(player)) {
+            DIED_AT_NIGHT.remove(player.getUuid());
+            ObscureStone.returnKeptItems(player);
+            return;
+        }
         RpgState state = RpgState.get(player.getServer());
         PlayerData data = state.player(player);
         boolean night = DIED_AT_NIGHT.getOrDefault(player.getUuid(), true);

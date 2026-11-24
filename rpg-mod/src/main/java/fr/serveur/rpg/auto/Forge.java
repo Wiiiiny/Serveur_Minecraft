@@ -82,6 +82,7 @@ public final class Forge {
         AutoConfig.ForgeTier t = tier(tier);
         if (data.current().level < t.niveau) return "Niveau " + t.niveau + " requis pour forger cet outil.";
         if (data.money < t.pieces) return "Il te faut " + Bank.format(t.pieces) + " en banque.";
+        if (data.frozen) return "Ton compte est gelé : contacte un GM.";
         List<Requirement> reqs = requirements(data.job, tier);
         for (Requirement r : reqs) {
             if (count(player, r.id()) < r.count()) return "Matériaux insuffisants : " + r.count() + " × " + r.icon().getName().getString() + ".";
@@ -97,7 +98,8 @@ public final class Forge {
                 left -= take;
             }
         }
-        data.money -= t.pieces;
+        fr.serveur.rpg.economy.Economy.spend(player.getServer(), player.getUuid(),
+                fr.serveur.rpg.economy.Economy.Source.FORGE, t.pieces, tier.id);
         state.markDirty();
         ItemStack tool = OfficialTools.create(ModItems.OFFICIAL.get(data.job).get(tier), data.job, state);
         if (!inv.insertStack(tool)) player.dropItem(tool, false);

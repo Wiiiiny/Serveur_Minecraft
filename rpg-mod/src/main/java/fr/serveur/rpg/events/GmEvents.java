@@ -152,7 +152,8 @@ public final class GmEvents {
         for (int i = 0; i < Math.min(podium.size(), rewards.size()); i++) {
             int coins = rewards.get(i);
             if (coins <= 0) continue;
-            fr.serveur.rpg.economy.Bank.credit(server, podium.get(i).getKey(), coins);
+            coins = (int) fr.serveur.rpg.economy.Economy.earn(server, podium.get(i).getKey(),
+                    fr.serveur.rpg.economy.Economy.Source.EVENEMENT, coins, title + " — " + (i + 1) + "e place");
             fr.serveur.rpg.economy.Bank.notify(server, podium.get(i).getKey(),
                     "Événement « " + title + " » : " + (i + 1) + "e place, +" + fr.serveur.rpg.economy.Bank.format(coins) + " !");
         }

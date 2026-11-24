@@ -1,6 +1,7 @@
 package fr.serveur.rpg.mixin;
 
 import fr.serveur.rpg.data.RpgState;
+import fr.serveur.rpg.jobs.SideJobRules;
 import fr.serveur.rpg.mining.PlacedBlocks;
 import fr.serveur.rpg.protection.Protection;
 import net.minecraft.block.ChestBlock;
@@ -32,10 +33,25 @@ public abstract class BlockItemMixin {
         }
     }
 
+    /** Blocs réservés à un métier supplémentaire (redstone pour l'Ingénieur, prestige pour le Constructeur). */
+    @Inject(method = "place(Lnet/minecraft/item/ItemPlacementContext;)Lnet/minecraft/util/ActionResult;", at = @At("HEAD"), cancellable = true)
+    private void survierpg$sideJobPlacement(ItemPlacementContext context, CallbackInfoReturnable<ActionResult> cir) {
+        if (context.getWorld().isClient || !(context.getPlayer() instanceof ServerPlayerEntity player)) return;
+        String refusal = fr.serveur.rpg.raid.RaidWorld.isIn(player) && !fr.serveur.rpg.mining.HarvestRules.isExempt(player)
+                ? "Impossible de construire dans la zone de raid." : SideJobRules.checkPlacement(player, ((BlockItem) (Object) this).getBlock());
+        if (refusal != null) {
+            player.sendMessage(Text.literal(refusal).formatted(Formatting.RED), true);
+            cir.setReturnValue(ActionResult.FAIL);
+        }
+    }
+
     @Inject(method = "place(Lnet/minecraft/item/ItemPlacementContext;)Lnet/minecraft/util/ActionResult;", at = @At("RETURN"))
     private void survierpg$trackPlaced(ItemPlacementContext context, CallbackInfoReturnable<ActionResult> cir) {
         if (context.getWorld().isClient || context.getPlayer() == null || !cir.getReturnValue().isAccepted()) return;
         PlacedBlocks.add(context.getWorld(), context.getBlockPos());
+        if (context.getPlayer() instanceof ServerPlayerEntity player) {
+            SideJobRules.afterPlacement(player, context.getWorld(), context.getBlockPos(), ((BlockItem) (Object) this).getBlock());
+        }
         if (context.getPlayer() instanceof ServerPlayerEntity player
                 && context.getWorld().getBlockState(context.getBlockPos()).getBlock() instanceof ChestBlock) {
             RpgState.get(player.getServer()).setChestOwner(context.getWorld(), context.getBlockPos(), player.getUuid());

@@ -15,16 +15,28 @@ import net.minecraft.util.Formatting;
 public final class Progression {
     private Progression() {}
 
+    /** XP gagnée par une action du métier (récolte, combat) : le métier paie aussi quelques pièces. */
+    public static void addActionXp(ServerPlayerEntity player, int amount) {
+        long coins = fr.serveur.rpg.economy.Economy.payJob(player, amount);
+        addXp(player, amount, false, coins);
+    }
+
     /** Ajoute de l'XP au métier actif. {@code silent} = pas de message dans la barre d'action. */
     public static void addXp(ServerPlayerEntity player, int amount, boolean silent) {
+        addXp(player, amount, silent, 0);
+    }
+
+    private static void addXp(ServerPlayerEntity player, int amount, boolean silent, long coins) {
         if (amount <= 0) return;
         RpgState state = RpgState.get(player.getServer());
         PlayerData data = state.player(player);
         PlayerData.JobProgress p = data.current();
         if (p == null) return;
+        fr.serveur.rpg.sombre.MondeSombre.onJobXp(player, amount);
 
         if (p.level >= Job.MAX_LEVEL) {
-            if (!silent) player.sendMessage(Text.literal("Niveau max atteint — tape /prestige").formatted(Formatting.GOLD), true);
+            if (!silent) player.sendMessage(Text.literal("Niveau max atteint — tape /prestige").formatted(Formatting.GOLD)
+                    .append(fr.serveur.rpg.economy.Economy.paySuffix(coins)), true);
             return;
         }
         p.xp += amount;
@@ -32,6 +44,7 @@ public final class Progression {
             p.xp -= JobConfig.xpNeeded(p.level);
             p.level++;
             onLevelUp(player, data.job, p.level);
+            fr.serveur.rpg.sombre.MondeSombre.onJobLevel(player);
         }
         if (p.level >= Job.MAX_LEVEL) p.xp = 0;
         state.markDirty();
@@ -39,7 +52,8 @@ public final class Progression {
         if (!silent) {
             String bar = p.level >= Job.MAX_LEVEL ? "MAX" : p.xp + "/" + JobConfig.xpNeeded(p.level);
             player.sendMessage(Text.literal("+" + amount + " XP ").formatted(Formatting.GREEN)
-                    .append(Text.literal(data.job.displayName + " niv. " + p.level + " (" + bar + ")").formatted(data.job.color)), true);
+                    .append(Text.literal(data.job.displayName + " niv. " + p.level + " (" + bar + ")").formatted(data.job.color))
+                    .append(fr.serveur.rpg.economy.Economy.paySuffix(coins)), true);
         }
     }
 

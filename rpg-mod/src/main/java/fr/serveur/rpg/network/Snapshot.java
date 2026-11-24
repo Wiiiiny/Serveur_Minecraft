@@ -14,10 +14,16 @@ import fr.serveur.rpg.events.GmEvents;
 import fr.serveur.rpg.items.ModItems;
 import fr.serveur.rpg.jobs.Job;
 import fr.serveur.rpg.jobs.JobConfig;
+import fr.serveur.rpg.jobs.SideJob;
+import fr.serveur.rpg.jobs.SideJobConfig;
+import fr.serveur.rpg.jobs.SideJobs;
 import fr.serveur.rpg.world.DayCycle;
+import fr.serveur.rpg.world.PlayableZone;
+import fr.serveur.rpg.world.TravelBeacon;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -60,7 +66,55 @@ public final class Snapshot {
         for (ItemStack s : player.getInventory().main) if (DeathSystem.isTear(s)) tears += s.getCount();
         me.putInt("tears", tears);
         me.putBoolean("gm", player.hasPermissionLevel(2));
+        // économie : compte gelé, plafonds du jour
+        me.putBoolean("frozen", data.frozen);
+        me.putString("capMetier", fr.serveur.rpg.economy.Economy.capInfo(data, fr.serveur.rpg.economy.Economy.Source.METIER));
+        me.putString("capRachat", fr.serveur.rpg.economy.Economy.capInfo(data, fr.serveur.rpg.economy.Economy.Source.RACHAT));
+        me.putLong("transferLeft", fr.serveur.rpg.economy.EconomyConfig.get().virementsIllimites ? -1
+                : Math.max(0, fr.serveur.rpg.economy.EconomyConfig.get().virementPlafondJour - data.transferredToday));
+        me.putLong("conversionMax", fr.serveur.rpg.economy.EconomyConfig.get().conversionMaxParTransaction);
+        // métier supplémentaire
+        PlayerData.JobProgress sp = data.side();
+        me.putString("side", data.sideJob == null ? "" : data.sideJob.name());
+        me.putInt("sideLevel", sp == null ? 0 : sp.level);
+        me.putInt("sideXp", sp == null ? 0 : sp.xp);
+        me.putInt("sideXpNeeded", sp == null ? 0 : JobConfig.xpNeeded(sp.level));
+        me.putBoolean("sideFree", !data.sideChosenOnce);
+        if (data.sideJob == SideJob.VOYAGEUR) me.putLong("beaconLeft", TravelBeacon.secondsLeft(data));
+        // monde sombre : personnage, Obscurcie, lore, découvertes
+        fr.serveur.rpg.sombre.SombreConfig.Data sc = fr.serveur.rpg.sombre.SombreConfig.get();
+        me.putInt("baseLevel", data.baseLevel);
+        me.putInt("baseXp", data.baseXp);
+        me.putInt("baseXpNeeded", fr.serveur.rpg.sombre.Personnage.xpNeeded(data.baseLevel));
+        me.putInt("baseMax", fr.serveur.rpg.sombre.Personnage.maxLevel());
+        me.putDouble("deathLoss", sc.personnage.pertePourcentMort);
+        me.putInt("obsLevel", data.obsLevel);
+        me.putInt("obsXp", data.obsXp);
+        me.putInt("obsXpNeeded", fr.serveur.rpg.sombre.Obscurcie.xpNeeded(data.obsLevel));
+        me.putInt("obsNextEclat", fr.serveur.rpg.sombre.Obscurcie.nextMilestone(data.obsLevel, sc.obscurcie.palierEclat));
+        me.putInt("obsNextDetector", fr.serveur.rpg.sombre.Obscurcie.nextMilestone(data.obsLevel, sc.obscurcie.palierDetecteur));
+        me.putInt("eclatChance", (int) Math.round(sc.obscurcie.chanceEclat * 100));
+        me.putString("lore", data.lore);
+        me.putBoolean("lorePublic", data.lorePublic);
+        int eclats = 0;
+        for (ItemStack s : player.getInventory().main) if (s.isOf(fr.serveur.rpg.sombre.SombreItems.ECLAT_LUMIERE)) eclats += s.getCount();
+        me.putInt("eclats", eclats);
+        int[] disc = fr.serveur.rpg.sombre.Decouvertes.progress(state, data);
+        me.putInt("discKnown", disc[0]);
+        me.putInt("discTotal", disc[1]);
+        me.putInt("chestsOpened", data.chestsOpened);
         root.put("me", me);
+        root.putInt("sidePrice", SideJobConfig.data().prixChangement);
+        root.putBoolean("border", PlayableZone.box(state) != null);
+        NbtCompound sideRules = new NbtCompound();
+        for (SideJob j : SideJob.values()) {
+            NbtList lines = new NbtList();
+            for (net.minecraft.text.Text t : SideJobs.describe(j)) lines.add(NbtString.of(net.minecraft.text.Text.Serializer.toJson(t)));
+            sideRules.put(j.name(), lines);
+        }
+        root.put("sideRules", sideRules);
+        root.put("raid", raid(player, data));
+        root.put("fac", fr.serveur.rpg.faction.FactionSnapshot.build(player));
         root.putInt("jobPrice", AutoConfig.get().prixChangementMetier);
         root.putInt("maxLevel", Job.MAX_LEVEL);
         root.putInt("prestigeBonus", state.prestigeBonusPercent);
@@ -115,7 +169,23 @@ public final class Snapshot {
 
         // ---- marché et boutique
         root.put("auctions", market(state.auctions, player.getUuid()));
-        root.put("shop", market(state.shop, player.getUuid()));
+        NbtList shop = market(state.shop, player.getUuid());
+        for (int i = 0; i < shop.size(); i++) {
+            MarketItem m = state.shop.get(i);
+            NbtCompound c = shop.getCompound(i);
+            c.putLong("price", fr.serveur.rpg.economy.DynamicShop.buyPrice(m));
+            c.putLong("sellPrice", fr.serveur.rpg.economy.DynamicShop.sellPrice(m));
+            c.putLong("base", m.basePrice);
+            c.putInt("stock", (int) Math.round(100 * m.stock / Math.max(1, m.stockTarget)));
+            c.putBoolean("sold", m.sold);
+            c.putBoolean("buyback", m.buyback);
+            // Boutique de découverte : un objet jamais ramassé reste masqué (on n'envoie même pas ce que c'est).
+            boolean known = !m.sold || fr.serveur.rpg.sombre.Decouvertes.canBuy(data, m) == null;
+            c.putBoolean("known", known);
+            if (!known) c.remove("stack");
+        }
+        root.put("shop", shop);
+        root.putDouble("hdvTax", fr.serveur.rpg.economy.EconomyConfig.get().taxeHdv * state.econTaxMult);
 
         // ---- classements
         NbtCompound rank = new NbtCompound();
@@ -133,6 +203,12 @@ public final class Snapshot {
         // ---- monde
         NbtCompound world = new NbtCompound();
         world.putBoolean("night", DayCycle.isNight(server.getOverworld()));
+        NbtCompound lum = new NbtCompound();
+        lum.putString("phase", fr.serveur.rpg.sombre.Lumiere.phase(server).name());
+        lum.putLong("left", fr.serveur.rpg.sombre.Lumiere.secondsLeft(server));
+        lum.putLong("next", fr.serveur.rpg.sombre.Lumiere.secondsToNextEclat(server));
+        lum.putString("by", fr.serveur.rpg.sombre.SombreState.get(server).eclatBy);
+        world.put("lumiere", lum);
         if (GmEvents.running()) {
             world.putString("eventTitle", GmEvents.currentTitle());
             world.putString("eventType", GmEvents.currentType());
@@ -143,6 +219,40 @@ public final class Snapshot {
 
         if (player.hasPermissionLevel(2)) root.put("gm", gm(server, state));
         return root;
+    }
+
+    private static NbtCompound raid(ServerPlayerEntity p, PlayerData data) {
+        var server = p.getServer();
+        var s = fr.serveur.rpg.raid.RaidState.get(server);
+        NbtCompound r = new NbtCompound();
+        r.putString("status", s.status.name());
+        r.putString("threat", s.threat().nom);
+        r.putInt("statues", s.threat().statues);
+        r.putLong("fee", fr.serveur.rpg.raid.RaidCycle.entryFee(server));
+        r.putLong("left", Math.max(0, (s.nextReset - System.currentTimeMillis()) / 1000));
+        r.putInt("progress", fr.serveur.rpg.raid.RaidBuilder.progress());
+        r.putBoolean("inRaid", fr.serveur.rpg.raid.RaidWorld.isIn(p));
+        r.putBoolean("portalSet", s.portal != null);
+        r.putBoolean("nearPortal", s.portal != null && s.hubDim != null
+                && p.getWorld().getRegistryKey().getValue().toString().equals(s.hubDim) && p.getBlockPos().getSquaredDistance(s.portal) <= 36);
+        r.putInt("keys", s.keysInserted);
+        r.putInt("keysNeeded", fr.serveur.rpg.raid.RaidConfig.get().clesRequises);
+        r.putInt("affinity", data.thiefAffinity);
+        r.putBoolean("companionOff", data.companionDisabled);
+        r.putLong("companionCooldown", Math.max(0, (data.companionCooldownUntil - System.currentTimeMillis()) / 1000));
+        NbtList party = new NbtList();
+        for (UUID u : fr.serveur.rpg.raid.Party.members(p.getUuid())) {
+            PlayerData m = RpgState.get(server).players.get(u);
+            party.add(net.minecraft.nbt.NbtString.of(m == null ? "?" : m.name));
+        }
+        r.put("party", party);
+        var held = p.getMainHandStack();
+        if (held.isOf(fr.serveur.rpg.items.RaidItems.BRISE_STATUE)) {
+            r.putInt("breakerDamage", held.getDamage());
+            r.putLong("repairPrice", (long) held.getDamage() * fr.serveur.rpg.raid.RaidConfig.get().reparationBriseStatue);
+        }
+        r.putInt("rooms", s.rooms.size());
+        return r;
     }
 
     private static NbtList market(List<MarketItem> items, UUID viewer) {
@@ -186,9 +296,12 @@ public final class Snapshot {
             c.putString("job", p.job == null ? "" : p.job.name());
             c.putInt("level", p.current() == null ? 0 : p.current().level);
             c.putInt("prestige", p.current() == null ? 0 : p.current().prestige);
+            c.putString("side", p.sideJob == null ? "" : p.sideJob.name());
+            c.putInt("sideLevel", p.side() == null ? 0 : p.side().level);
             c.putLong("money", p.money);
             c.putInt("deaths", p.deaths);
             c.putBoolean("awaiting", p.awaitingRevive);
+            c.putBoolean("frozen", p.frozen);
             list.add(c);
         }
         gm.put("players", list);
@@ -197,6 +310,7 @@ public final class Snapshot {
         NbtCompound set = new NbtCompound();
         set.putDouble("dayMin", state.dayMinutes);
         set.putDouble("nightMin", state.nightMinutes);
+        set.putBoolean("permanentNight", fr.serveur.rpg.sombre.SombreState.get(server).nuitPermanente);
         set.putInt("lockpick", state.lockpickChance);
         set.putInt("prestigeBonus", state.prestigeBonusPercent);
         set.putInt("jobPrice", cfg.prixChangementMetier);
@@ -210,6 +324,10 @@ public final class Snapshot {
         set.putBoolean("nether", state.netherOpen);
         set.putBoolean("end", state.endOpen);
         set.putBoolean("waitingRoom", state.waitingRoom != null);
+        PlayableZone.Box box = PlayableZone.box(state);
+        set.putString("border", box != null ? box.describe()
+                : state.borderCorner1 != null ? "coin 1 seul : X " + state.borderCorner1.getX() + ", Z " + state.borderCorner1.getZ()
+                : state.borderCorner2 != null ? "coin 2 seul : X " + state.borderCorner2.getX() + ", Z " + state.borderCorner2.getZ() : "");
         gm.put("settings", set);
 
         NbtList zones = new NbtList();
@@ -230,6 +348,24 @@ public final class Snapshot {
         for (var m : state.chestOwners.values()) chests += m.size();
         stats.putInt("chests", chests);
         gm.put("stats", stats);
+
+        // économie automatisée : masse, régulateur, flux de la dernière mesure, alertes
+        NbtCompound eco = new NbtCompound();
+        var snap = fr.serveur.rpg.economy.EconomyTicker.snapshot(state);
+        eco.putLong("supply", snap.supply());
+        eco.putInt("active", snap.active());
+        eco.putLong("median", snap.median());
+        eco.putLong("perActive", snap.active() == 0 ? 0 : snap.supply() / snap.active());
+        eco.putLong("target", fr.serveur.rpg.economy.EconomyConfig.get().masseCibleParJoueurActif);
+        eco.putDouble("gainMult", state.econGainMult);
+        eco.putDouble("taxMult", state.econTaxMult);
+        eco.putInt("frozen", (int) state.players.values().stream().filter(d -> d.frozen).count());
+        if (!state.econMetrics.isEmpty()) eco.put("last", state.econMetrics.getCompound(state.econMetrics.size() - 1).copy());
+        NbtList alerts = new NbtList();
+        state.econAlerts.subList(Math.max(0, state.econAlerts.size() - 3), state.econAlerts.size())
+                .forEach(a -> alerts.add(NbtString.of(a)));
+        eco.put("alerts", alerts);
+        gm.put("eco", eco);
         return gm;
     }
 }

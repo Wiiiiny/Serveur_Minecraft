@@ -38,8 +38,9 @@ public final class Bank {
         return s.isOf(fr.serveur.rpg.items.ModItems.PIECE_OR) && !s.hasNbt();
     }
 
-    /** Dépose {@code amount} pièces de l'inventaire vers le compte. */
+    /** Dépose {@code amount} pièces de l'inventaire vers le compte (au plus {@code conversionMaxParTransaction}). */
     public static boolean deposit(ServerPlayerEntity player, int amount) {
+        amount = Math.min(amount, EconomyConfig.get().conversionMaxParTransaction);
         if (amount <= 0 || countCurrency(player) < amount) return false;
         int left = amount;
         PlayerInventory inv = player.getInventory();
@@ -50,19 +51,14 @@ public final class Bank {
             s.decrement(take);
             left -= take;
         }
-        RpgState state = RpgState.get(player.getServer());
-        state.player(player).money += amount;
-        state.markDirty();
+        Economy.credit(player.getServer(), player.getUuid(), Economy.Source.DEPOT, amount, "pièces physiques");
         return true;
     }
 
     /** Retire {@code amount} pièces du compte vers l'inventaire (au sol si plein). */
     public static boolean withdraw(ServerPlayerEntity player, long amount) {
-        RpgState state = RpgState.get(player.getServer());
-        PlayerData data = state.player(player);
-        if (amount <= 0 || data.money < amount) return false;
-        data.money -= amount;
-        state.markDirty();
+        if (amount <= 0 || amount > EconomyConfig.get().conversionMaxParTransaction) return false;
+        if (Economy.spend(player.getServer(), player.getUuid(), Economy.Source.RETRAIT, amount, "pièces physiques") != null) return false;
         long left = amount;
         while (left > 0) {
             int n = (int) Math.min(64, left);
@@ -71,15 +67,6 @@ public final class Bank {
             left -= n;
         }
         return true;
-    }
-
-    /** Crédite un compte (joueur en ligne ou non). */
-    public static void credit(MinecraftServer server, UUID id, long amount) {
-        RpgState state = RpgState.get(server);
-        PlayerData data = state.players.get(id);
-        if (data == null) return;
-        data.money += amount;
-        state.markDirty();
     }
 
     /** Envoie un message au joueur, ou le garde pour sa prochaine connexion. */

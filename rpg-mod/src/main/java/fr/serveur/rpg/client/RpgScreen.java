@@ -2,12 +2,16 @@ package fr.serveur.rpg.client;
 
 import fr.serveur.rpg.items.ModItems;
 import fr.serveur.rpg.jobs.Job;
+import fr.serveur.rpg.jobs.SideJob;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import fr.serveur.rpg.faction.Faction;
+import net.minecraft.client.gui.widget.EditBoxWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -36,8 +40,8 @@ import java.util.function.IntConsumer;
  */
 public class RpgScreen extends Screen {
     enum Tab {
-        PROFIL("Profil"), QUETES("Quêtes"), FORGE("Forge"), BANQUE("Banque"), MARCHE("Marché"),
-        BOUTIQUE("Boutique"), CLASSEMENT("Classements"), GM("Maître du jeu");
+        PROFIL("Profil"), PERSO("Personnage"), FACTION("Faction"), METIER2("2e métier"), QUETES("Quêtes"), FORGE("Forge"), BANQUE("Banque"), MARCHE("Marché"),
+        BOUTIQUE("Boutique"), RAID("Raid"), CLASSEMENT("Classements"), GM("Maître du jeu");
         final String label;
 
         Tab(String label) {
@@ -62,14 +66,29 @@ public class RpgScreen extends Screen {
     /** Échelle d'affichage (< 1 si l'écran est trop petit pour l'interface). */
     private float scale = 1f;
     private Job pendingJob;
+    private SideJob pendingSide;
     /** Champs de saisie du tableau de bord GM, par clé (réglage, article, joueur...). */
     private final Map<String, TextFieldWidget> valueFields = new HashMap<>();
     private final Map<String, String> syncedValues = new HashMap<>();
     private final Set<String> seenFields = new HashSet<>();
     private boolean confirmPrestige;
+    /** Lore personnel : brouillon conservé entre deux ouvertures, chargé une fois depuis le serveur. */
+    private static String loreDraft;
+    private static Boolean lorePublicDraft;
+    /** Vrai quand le brouillon diffère de ce qui est enregistré (on ne l'écrase pas en rouvrant l'onglet). */
+    private static boolean loreDirty;
+    /** Dernière histoire reçue du serveur (ou envoyée), pour ne recharger la zone que si elle a changé côté serveur. */
+    private static String loreServer;
+    private EditBoxWidget loreBox;
 
     public RpgScreen() {
         super(Text.literal("Survie RPG"));
+    }
+
+    /** Outil de développement (DevShots) : sous-page de l'onglet Faction. */
+    static void devFaction(String sub) {
+        facSub = sub;
+        bnBase = -1;
     }
 
     /** Outil de développement (DevShots) : choisit l'onglet à ouvrir. */
@@ -95,6 +114,7 @@ public class RpgScreen extends Screen {
         if (tab == Tab.GM && !isGm()) tab = Tab.PROFIL;
         valueFields.clear();
         syncedValues.clear();
+        loreBox = null;
         switch (tab) {
             case BANQUE -> {
                 field(cx + 8, cy + 86, 64, amountText, true, s -> amountText = s, "Montant");
@@ -102,6 +122,19 @@ public class RpgScreen extends Screen {
                 field(cx + 118, cy + 142, 56, transferText, true, s -> transferText = s, "Montant");
             }
             case MARCHE -> field(cx + cw - 116, cy + ch - 18, 50, priceText, true, s -> priceText = s, "Prix");
+            case PERSO -> {
+                loreBox = new LoreBox(textRenderer, cx, cy + LORE_Y, cw, ch - LORE_Y,
+                        Text.literal("Écris ici l'histoire de ton personnage : origines, quête, secrets…"), Text.literal("Lore"));
+                loreBox.setMaxLength(LORE_MAX);
+                if (ClientData.data != null) loreServer = ClientData.data.getCompound("me").getString("lore");
+                if (!loreDirty && loreServer != null) loreDraft = loreServer;
+                loreBox.setText(loreDraft == null ? "" : loreDraft);
+                loreBox.setChangeListener(s -> {
+                    loreDraft = s;
+                    loreDirty = true;
+                });
+                addDrawableChild(loreBox);
+            }
             case GM -> {
                 if ("economie".equals(gmSub)) field(cx + cw - 116, cy + ch - 18, 50, gmPriceText, true, s -> gmPriceText = s, "Prix");
             }
@@ -123,6 +156,7 @@ public class RpgScreen extends Screen {
         tab = t;
         page = 0;
         pendingJob = null;
+        pendingSide = null;
         confirmPrestige = false;
         clearAndInit();
     }
@@ -130,6 +164,7 @@ public class RpgScreen extends Screen {
     @Override
     public void tick() {
         for (Element e : children()) if (e instanceof TextFieldWidget f) f.tick();
+        if (loreBox != null) loreBox.tick();
         if (++refresh % 40 == 0) SurvieRpgClient.send("refresh", null);
     }
 
@@ -140,7 +175,7 @@ public class RpgScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (getFocused() instanceof TextFieldWidget f && f.isFocused()) {
+        if ((getFocused() instanceof TextFieldWidget f && f.isFocused()) || (getFocused() instanceof EditBoxWidget e && e.isFocused())) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 close();
                 return true;
@@ -201,11 +236,15 @@ public class RpgScreen extends Screen {
         } else {
             switch (tab) {
                 case PROFIL -> profil(c, d);
+                case PERSO -> perso(c, d);
+                case FACTION -> faction(c, d);
+                case METIER2 -> metier2(c, d);
                 case QUETES -> quetes(c, d);
                 case FORGE -> forge(c, d);
                 case BANQUE -> banque(c, d);
                 case MARCHE -> marche(c, d);
                 case BOUTIQUE -> boutique(c, d);
+                case RAID -> raid(c, d);
                 case CLASSEMENT -> classement(c, d);
                 case GM -> gm(c, d);
             }
@@ -253,17 +292,17 @@ public class RpgScreen extends Screen {
         for (Tab t : Tab.values()) {
             if (t == Tab.GM && !isGm()) continue;
             boolean active = t == tab;
-            boolean hover = in(sx, sy, 90, 18);
+            boolean hover = in(sx, sy, 90, 15);
             if (active) {
-                c.fillGradient(sx, sy, sx + 90, sy + 18, 0xFF3D2765, 0xFF221539);
-                c.fill(sx, sy, sx + 2, sy + 18, Ui.GOLD);
+                c.fillGradient(sx, sy, sx + 90, sy + 15, 0xFF3D2765, 0xFF221539);
+                c.fill(sx, sy, sx + 2, sy + 15, Ui.GOLD);
             } else if (hover) {
-                c.fill(sx, sy, sx + 90, sy + 18, 0xFF231A31);
+                c.fill(sx, sy, sx + 90, sy + 15, 0xFF231A31);
             }
             int color = t == Tab.GM ? (active ? Ui.GOLD : Ui.ORANGE) : active ? Ui.GOLD : hover ? Ui.TEXT : Ui.MUTED;
-            c.drawText(textRenderer, t.label, sx + 8, sy + 5, color, active);
-            if (!active) hots.add(new Hot(sx, sy, 90, 18, () -> switchTab(t)));
-            sy += 20;
+            c.drawText(textRenderer, t.label, sx + 8, sy + 4, color, active);
+            if (!active) hots.add(new Hot(sx, sy, 90, 15, () -> switchTab(t)));
+            sy += 16;
         }
         if (d == null) return;
         NbtCompound world = d.getCompound("world");
@@ -368,15 +407,208 @@ public class RpgScreen extends Screen {
         c.drawText(textRenderer, "Quêtes du jour : " + done + " / " + daily.size() + " terminées", cx + 6, y + 7,
                 done == daily.size() && !daily.isEmpty() ? Ui.GREEN : Ui.TEXT, false);
         button(c, cx + cw - 60, y + 4, 56, 14, "Voir", true, Style.NORMAL, () -> switchTab(Tab.QUETES));
+        y += 24;
+        SideJob side = SideJob.parse(me.getString("side"));
+        Ui.card(c, cx, y, cw, 22, false);
+        if (side != null) {
+            c.drawItem(new ItemStack(side.icon()), cx + 4, y + 3);
+            c.drawText(textRenderer, "2e métier : ", cx + 24, y + 7, Ui.TEXT, false);
+            c.drawText(textRenderer, side.displayName + " niv. " + me.getInt("sideLevel"), cx + 24 + textRenderer.getWidth("2e métier : "), y + 7, sideColor(side), false);
+        } else {
+            c.drawText(textRenderer, "2e métier : aucun — le premier choix est gratuit", cx + 6, y + 7, Ui.MUTED, false);
+        }
+        button(c, cx + cw - 60, y + 4, 56, 14, side == null ? "Choisir" : "Voir", true, side == null ? Style.PRIMARY : Style.NORMAL,
+                () -> switchTab(Tab.METIER2));
         NbtList forge = d.getList("forge", NbtElement.COMPOUND_TYPE);
         int ready = 0;
         for (int i = 0; i < forge.size(); i++) if (forge.getCompound(i).getBoolean("ok")) ready++;
         if (ready > 1) {
-            y += 26;
+            y += 24;
             Ui.card(c, cx, y, cw, 22, false);
             c.drawText(textRenderer, "Tu peux forger " + ready + " outils officiels.", cx + 6, y + 7, Ui.GOLD, false);
             button(c, cx + cw - 60, y + 4, 56, 14, "Forge", true, Style.PRIMARY, () -> switchTab(Tab.FORGE));
         }
+    }
+
+    // ---------------------------------------------------------------- Personnage : niveau, Obscurcie, lumière, lore
+
+    private static final int LORE_Y = 140, LORE_MAX = 1500;
+
+    private void perso(DrawContext c, NbtCompound d) {
+        NbtCompound me = d.getCompound("me");
+        int y = cy;
+        // Niveau du personnage
+        int level = me.getInt("baseLevel"), max = me.getInt("baseMax");
+        boolean maxed = level >= max;
+        Ui.card(c, cx, y, cw, 40, true);
+        scaled(c, Text.literal("Niveau " + level), cx + 8, y + 5, 1.4f, 0xFF7FE3F0);
+        textRight(c, maxed ? "Niveau maximum" : me.getInt("baseXp") + " / " + me.getInt("baseXpNeeded") + " XP", cx + cw - 8, y + 6, Ui.TEXT);
+        Ui.bar(c, cx + 8, y + 21, cw - 16, 7, maxed ? 1f : me.getInt("baseXp") / (float) Math.max(1, me.getInt("baseXpNeeded")), 0xFF9FF0F8, 0xFF2A8FA0);
+        c.drawText(textRenderer, textRenderer.trimToWidth("Sans classe · mourir coûte " + Math.round(me.getDouble("deathLoss"))
+                + " % de l'XP du niveau", cw - 16), cx + 8, y + 30, Ui.FAINT, false);
+        if (in(cx, y, cw, 40)) hoverText = List.of(Text.literal("Niveau du personnage").formatted(Formatting.AQUA, Formatting.BOLD),
+                Text.literal("Monstres, quêtes, coffres cachés, découvertes,").formatted(Formatting.GRAY),
+                Text.literal("niveaux de métier et une part de l'XP des métiers.").formatted(Formatting.GRAY),
+                Text.literal("Coffres ouverts : " + me.getInt("chestsOpened")).formatted(Formatting.DARK_GRAY));
+        y += 44;
+        // Obscurcie
+        int obs = me.getInt("obsLevel");
+        Ui.card(c, cx, y, cw, 44, false);
+        c.drawItem(new ItemStack(fr.serveur.rpg.sombre.SombreItems.DETECTEUR), cx + 6, y + 5);
+        scaled(c, Text.literal("Obscurcie " + obs), cx + 26, y + 6, 1.2f, 0xFFB98CFF);
+        textRight(c, me.getInt("obsXp") + " / " + me.getInt("obsXpNeeded") + " XP · sans limite", cx + cw - 8, y + 7, Ui.MUTED);
+        Ui.bar(c, cx + 8, y + 23, cw - 16, 7, me.getInt("obsXp") / (float) Math.max(1, me.getInt("obsXpNeeded")), 0xFFC9A6FF, 0xFF5B2CA8);
+        c.drawText(textRenderer, textRenderer.trimToWidth("Niv. " + me.getInt("obsNextEclat") + " : " + me.getInt("eclatChance")
+                + " % d'Éclat · niv. " + me.getInt("obsNextDetector") + " : détecteur de coffres", cw - 16), cx + 8, y + 33, Ui.FAINT, false);
+        if (in(cx, y, cw, 44)) hoverText = List.of(Text.literal("Obscurcie").formatted(Formatting.DARK_PURPLE, Formatting.BOLD),
+                Text.literal("Ressources, combats de nuit, quêtes, exploration").formatted(Formatting.GRAY),
+                Text.literal("nocturne, Éclats, détecteurs et coffres cachés.").formatted(Formatting.GRAY));
+        y += 48;
+        // Lumière
+        NbtCompound lum = d.getCompound("world").getCompound("lumiere");
+        String phase = lum.getString("phase");
+        long left = lum.getLong("left"), next = lum.getLong("next");
+        int eclats = me.getInt("eclats");
+        Ui.card(c, cx, y, cw, 26, false);
+        String status;
+        int color;
+        switch (phase) {
+            case "JOUR" -> { status = "☀ Jour · encore " + Ui.duration(left); color = Ui.ORANGE; }
+            case "PREPARATION" -> { status = "☀ Le jour se lève dans " + left + " s"; color = Ui.GOLD; }
+            case "NUIT" -> { status = next > 0 ? "☾ Nuit · Éclat possible dans " + Ui.duration(next) : "☾ Nuit permanente · Éclat possible"; color = Ui.VIOLET; }
+            default -> { status = "Cycle jour/nuit normal"; color = Ui.MUTED; }
+        }
+        c.drawItem(new ItemStack(fr.serveur.rpg.sombre.SombreItems.ECLAT_LUMIERE), cx + 5, y + 5);
+        c.drawText(textRenderer, textRenderer.trimToWidth(status, cw - 140), cx + 25, y + 9, color, false);
+        if ("JOUR".equals(phase) && in(cx, y, cw - 112, 26)) hoverText = List.of(Text.literal("Jour invoqué par " + lum.getString("by")).formatted(Formatting.GOLD));
+        boolean canUse = eclats > 0 && "NUIT".equals(phase) && next == 0;
+        button(c, cx + cw - 110, y + 6, 104, 14, "Briser un Éclat (" + eclats + ")", canUse, Style.PRIMARY, () -> act("eclat.use"));
+        y += 30;
+        // Lore
+        boolean pub = lorePublicDraft != null ? lorePublicDraft : me.getBoolean("lorePublic");
+        // Données arrivées après l'ouverture de l'onglet : on affiche l'histoire enregistrée.
+        if (!me.getString("lore").equals(loreServer)) {
+            loreServer = me.getString("lore");
+            if (!loreDirty && loreBox != null && !loreBox.isFocused()) {
+                loreDraft = loreServer;
+                loreBox.setText(loreDraft);
+                loreDirty = false;
+            }
+        }
+        c.drawText(textRenderer, "Mon histoire", cx, y + 3, Ui.GOLD, true);
+        int len = loreDraft == null ? 0 : loreDraft.length();
+        c.drawText(textRenderer, len + " / " + LORE_MAX, cx + 72, y + 3, Ui.FAINT, false);
+        button(c, cx + cw - 156, y, 72, 14, pub ? "Publique" : "Privée", true, Style.NORMAL,
+                () -> lorePublicDraft = !(lorePublicDraft != null ? lorePublicDraft : me.getBoolean("lorePublic")));
+        if (in(cx + cw - 156, y, 72, 14)) hoverText = List.of(Text.literal(pub ? "Les autres joueurs peuvent la lire (/lore " + me.getString("name") + ")."
+                : "Toi seul (et les GM) peux la lire.").formatted(Formatting.GRAY));
+        button(c, cx + cw - 80, y, 80, 14, "Enregistrer", true, Style.PRIMARY, () -> {
+            boolean p = lorePublicDraft != null ? lorePublicDraft : me.getBoolean("lorePublic");
+            act("lore.save", "text", loreDraft == null ? "" : loreDraft, "public", p ? 1 : 0);
+            lorePublicDraft = null;
+            loreDirty = false;
+            loreServer = loreDraft == null ? "" : loreDraft;
+        });
+    }
+
+    /**
+     * Zone de texte de l'histoire : la découpe (scissor) d'EditBoxWidget ignore la mise à l'échelle du menu, ce qui rognait
+     * le texte ; on la recalcule avec la matrice courante. Le compteur de caractères est dessiné dans l'en-tête.
+     */
+    private static final class LoreBox extends EditBoxWidget {
+        LoreBox(net.minecraft.client.font.TextRenderer tr, int x, int y, int w, int h, Text placeholder, Text message) {
+            super(tr, x, y, w, h, placeholder, message);
+        }
+
+        @Override
+        public void renderButton(DrawContext c, int mouseX, int mouseY, float delta) {
+            if (!visible) return;
+            drawBox(c);
+            org.joml.Matrix4f m = c.getMatrices().peek().getPositionMatrix();
+            org.joml.Vector3f a = m.transformPosition(new org.joml.Vector3f(getX() + 1, getY() + 1, 0));
+            org.joml.Vector3f b = m.transformPosition(new org.joml.Vector3f(getX() + width - 1, getY() + height - 1, 0));
+            c.enableScissor((int) Math.floor(a.x), (int) Math.floor(a.y), (int) Math.ceil(b.x), (int) Math.ceil(b.y));
+            c.getMatrices().push();
+            c.getMatrices().translate(0, -getScrollY(), 0);
+            renderContents(c, mouseX, mouseY, delta);
+            c.getMatrices().pop();
+            c.disableScissor();
+        }
+    }
+
+    private void metier2(DrawContext c, NbtCompound d) {
+        NbtCompound me = d.getCompound("me");
+        SideJob side = SideJob.parse(me.getString("side"));
+        int level = me.getInt("sideLevel"), max = d.getInt("maxLevel"), price = d.getInt("sidePrice");
+        boolean free = me.getBoolean("sideFree");
+        NbtCompound rules = d.getCompound("sideRules");
+        int y = cy;
+        Ui.card(c, cx, y, cw, 56, true);
+        if (side != null) {
+            item(c, new ItemStack(side.icon()), cx + 8, y + 8);
+            scaled(c, Text.literal(side.displayName), cx + 30, y + 8, 1.5f, sideColor(side));
+            textRight(c, "Niveau " + level + " / " + max, cx + cw - 8, y + 8, Ui.TEXT);
+            if (me.contains("beaconLeft")) {
+                long left = me.getLong("beaconLeft");
+                textRight(c, left > 0 ? "Balise : " + Ui.duration(left) : "Balise prête", cx + cw - 8, y + 19, left > 0 ? Ui.MUTED : Ui.GREEN);
+            }
+            boolean maxed = level >= max;
+            float progress = maxed ? 1f : me.getInt("sideXp") / (float) Math.max(1, me.getInt("sideXpNeeded"));
+            Ui.bar(c, cx + 8, y + 31, cw - 16, 9, progress, 0xFF9FE8EC, 0xFF2F8C96);
+            c.drawText(textRenderer, maxed ? "Niveau maximum" : me.getInt("sideXp") + " / " + me.getInt("sideXpNeeded") + " XP",
+                    cx + 8, y + 44, Ui.MUTED, false);
+            if (in(cx, y, cw, 56)) hoverText = rulesTooltip(side, rules);
+        } else {
+            scaled(c, Text.literal("Aucun métier supplémentaire"), cx + 10, y + 8, 1.3f, Ui.TEXT);
+            c.drawText(textRenderer, "En plus de ton métier principal, choisis une spécialité.", cx + 10, y + 27, Ui.MUTED, false);
+            c.drawText(textRenderer, "Le premier choix est gratuit.", cx + 10, y + 38, Ui.MUTED, false);
+        }
+        y += 62;
+        c.drawText(textRenderer, free ? "Choisir — gratuit" : "Changer — " + price + " pièces", cx, y, Ui.GOLD, false);
+        textRight(c, "survole un métier pour ses règles", cx + cw, y, Ui.FAINT);
+        y += 13;
+        int bw = (cw - 4) / 2, bh = 30;
+        SideJob[] all = SideJob.values();
+        for (int i = 0; i < all.length; i++) {
+            SideJob j = all[i];
+            int bx = cx + (i % 2) * (bw + 4), by = y + (i / 2) * (bh + 3);
+            boolean current = j == side, hover = !current && in(bx, by, bw, bh);
+            c.fill(bx, by, bx + bw, by + bh, current ? 0xFF30224A : hover ? 0xFF2A2039 : Ui.CARD);
+            Ui.border(c, bx, by, bw, bh, current ? Ui.GOLD : hover ? Ui.GOLD_DIM : Ui.LINE);
+            c.drawItem(new ItemStack(j.icon()), bx + 6, by + 7);
+            c.drawText(textRenderer, j.displayName, bx + 27, by + 5, sideColor(j), false);
+            if (current) textRight(c, "actuel", bx + bw - 5, by + 5, Ui.GOLD);
+            c.drawText(textRenderer, textRenderer.trimToWidth(j.tagline, bw - 31), bx + 27, by + 17, Ui.FAINT, false);
+            if (in(bx, by, bw, bh)) hoverText = rulesTooltip(j, rules);
+            if (!current) hots.add(new Hot(bx, by, bw, bh, () -> {
+                if (free) act("side.choose", "job", j.name());
+                else pendingSide = j;
+            }));
+        }
+        y += 4 * (bh + 3) + 2;
+        if (pendingSide != null) {
+            c.drawText(textRenderer, "Devenir " + pendingSide.displayName + " pour " + price + " pièces ?", cx, y + 3, Ui.TEXT, false);
+            SideJob target = pendingSide;
+            button(c, cx + cw - 148, y, 72, 15, "Confirmer", true, Style.PRIMARY, () -> {
+                act("side.choose", "job", target.name());
+                pendingSide = null;
+            });
+            button(c, cx + cw - 72, y, 72, 15, "Annuler", true, Style.NORMAL, () -> pendingSide = null);
+        } else if (side == SideJob.VOYAGEUR && !d.getBoolean("border")) {
+            c.drawText(textRenderer, "Le GM n'a pas encore défini la zone jouable : ta balise attend.", cx, y + 3, Ui.ORANGE, false);
+        }
+    }
+
+    /** Règles d'un métier supplémentaire (envoyées par le serveur, calculées depuis sa config). */
+    private static List<Text> rulesTooltip(SideJob j, NbtCompound rules) {
+        List<Text> lines = new ArrayList<>();
+        lines.add(Text.literal(j.displayName).formatted(j.color, Formatting.BOLD));
+        NbtList l = rules.getList(j.name(), NbtElement.STRING_TYPE);
+        for (int i = 0; i < l.size(); i++) {
+            Text t = Text.Serializer.fromJson(l.getString(i));
+            if (t != null) lines.add(t.copy().formatted(Formatting.GRAY));
+        }
+        return lines;
     }
 
     private void quetes(DrawContext c, NbtCompound d) {
@@ -479,8 +711,14 @@ public class RpgScreen extends Screen {
         long tAmount = parse(transferText);
         button(c, cx + 180, cy + 142, 70, 16, "Envoyer", !nameText.isBlank() && tAmount > 0, Style.PRIMARY,
                 () -> act("bank.transfer", "name", nameText, "amount", tAmount));
-        c.drawText(textRenderer, "Marché, boutique, forge et changement de métier", cx, cy + 172, Ui.FAINT, false);
-        c.drawText(textRenderer, "se paient avec l'argent de ton compte.", cx, cy + 183, Ui.FAINT, false);
+        if (me.getBoolean("frozen")) {
+            c.drawText(textRenderer, "❄ Ton compte est gelé : contacte un GM.", cx, cy + 166, Ui.RED, false);
+        } else {
+            c.drawText(textRenderer, me.getLong("transferLeft") < 0 ? "Virements illimités, même vers un joueur déconnecté."
+                    : "Virements : encore " + Ui.number(me.getLong("transferLeft")) + " pièces aujourd'hui.", cx, cy + 166, Ui.FAINT, false);
+        }
+        c.drawText(textRenderer, "Paie des métiers aujourd'hui : " + me.getString("capMetier") + " pièces (au-delà, paie réduite).", cx, cy + 177, Ui.FAINT, false);
+        c.drawText(textRenderer, "Marché, boutique, forge et métiers se paient depuis ton compte.", cx, cy + 188, Ui.FAINT, false);
     }
 
     private void marche(DrawContext c, NbtCompound d) {
@@ -515,7 +753,8 @@ public class RpgScreen extends Screen {
         Ui.rule(c, cx, by - 4, cw);
         ItemStack held = client != null && client.player != null ? client.player.getMainHandStack() : ItemStack.EMPTY;
         if (!held.isEmpty()) item(c, held, cx + 2, by);
-        c.drawText(textRenderer, held.isEmpty() ? "Prends un objet en main pour le vendre" : "Vendre l'objet en main pour",
+        c.drawText(textRenderer, held.isEmpty() ? "Prends un objet en main pour le vendre"
+                        : "Vendre l'objet en main (taxe " + Math.round(d.getDouble("hdvTax") * 100) + " %) pour",
                 cx + 22, by + 4, held.isEmpty() ? Ui.FAINT : Ui.TEXT, false);
         long price = parse(priceText);
         coin(c, cx + cw - 64, by + 4);
@@ -525,26 +764,119 @@ public class RpgScreen extends Screen {
     private void boutique(DrawContext c, NbtCompound d) {
         NbtList list = d.getList("shop", NbtElement.COMPOUND_TYPE);
         int y = title(c, "Boutique du royaume", cy);
+        NbtCompound meShop = d.getCompound("me");
+        textRight(c, "Découverts " + meShop.getInt("discKnown") + " / " + meShop.getInt("discTotal") + " · prix selon l'offre", cx + cw, cy, Ui.FAINT);
         long money = d.getCompound("me").getLong("money");
+        c.drawText(textRenderer, textRenderer.trimToWidth("Reventes au serveur aujourd'hui : " + d.getCompound("me").getString("capRachat")
+                + " pièces (au-delà, prix réduit)", cw), cx, y, Ui.FAINT, false);
+        y += 12;
         int rows = Math.max(1, (cy + ch - 26 - y) / 22);
         int pages = Math.max(1, (list.size() + rows - 1) / rows);
         page = Math.max(0, Math.min(page, pages - 1));
         if (list.isEmpty()) centered(c, "La boutique est vide.", cx + cw / 2, y + 30, Ui.FAINT);
         for (int i = page * rows; i < Math.min(list.size(), (page + 1) * rows); i++) {
             NbtCompound m = list.getCompound(i);
+            if (m.contains("known") && !m.getBoolean("known")) {
+                // Objet jamais ramassé : masqué.
+                Ui.card(c, cx, y, cw, 20, false);
+                c.fill(cx + 3, y + 2, cx + 19, y + 18, 0xFF120D18);
+                Ui.border(c, cx + 3, y + 2, 16, 16, Ui.LINE);
+                centered(c, "?", cx + 11, y + 6, Ui.FAINT);
+                c.drawText(textRenderer, "Objet inconnu — ramasse-le une fois pour l'acheter", cx + 23, y + 6, Ui.FAINT, false);
+                textRight(c, "???", cx + cw - 8, y + 6, Ui.FAINT);
+                if (in(cx, y, cw, 20)) hoverText = List.of(Text.literal("Objet inconnu").formatted(Formatting.GRAY),
+                        Text.literal("Il apparaîtra ici dès que tu l'auras ramassé.").formatted(Formatting.DARK_GRAY));
+                y += 22;
+                continue;
+            }
             ItemStack stack = ItemStack.fromNbt(m.getCompound("stack"));
-            long price = m.getLong("price");
+            long price = m.getLong("price"), base = m.getLong("base"), sell = m.getLong("sellPrice");
+            boolean sold = m.getBoolean("sold"), buyback = m.getBoolean("buyback");
             Ui.card(c, cx, y, cw, 20, false);
             item(c, stack, cx + 3, y + 2);
-            c.drawText(textRenderer, textRenderer.trimToWidth(stack.getName().getString() + (stack.getCount() > 1 ? " ×" + stack.getCount() : ""), cw - 140),
+            c.drawText(textRenderer, textRenderer.trimToWidth(stack.getName().getString() + (stack.getCount() > 1 ? " ×" + stack.getCount() : ""), cw - 210),
                     cx + 23, y + 6, Ui.TEXT, false);
-            textRight(c, Ui.number(price), cx + cw - 72, y + 6, Ui.GOLD);
-            coin(c, cx + cw - 70, y + 6);
             int id = m.getInt("id");
-            button(c, cx + cw - 58, y + 3, 54, 14, "Acheter", money >= price, Style.PRIMARY, () -> act("shop.buy", "id", id));
+            if (sold) {
+                // Tendance : ▲ plus cher que d'habitude (stock bas), ▼ moins cher.
+                if (price != base) c.drawText(textRenderer, price > base ? "▲" : "▼", cx + cw - 104, y + 6, price > base ? Ui.RED : Ui.GREEN, false);
+                textRight(c, Ui.number(price), cx + cw - 72, y + 6, Ui.GOLD);
+                coin(c, cx + cw - 70, y + 6);
+                button(c, cx + cw - 58, y + 3, 54, 14, "Acheter", money >= price, Style.PRIMARY, () -> act("shop.buy", "id", id));
+            }
+            if (buyback) button(c, cx + cw - (sold ? 178 : 98), y + 3, 70, 14, "Vendre " + sell, true, Style.NORMAL, () -> act("shop.sell", "id", id));
             y += 22;
         }
         pager(c, cy + ch - 18, page, pages, p -> page = p);
+    }
+
+    private void raid(DrawContext c, NbtCompound d) {
+        NbtCompound r = d.getCompound("raid");
+        int y = title(c, "Zone Nether de raid", cy);
+        String status = r.getString("status");
+        Ui.card(c, cx, y, cw, 50, true);
+        if (status.equals("OUVERT")) {
+            scaled(c, Text.literal("Ouverte — " + r.getString("threat")), cx + 8, y + 6, 1.3f, Ui.VIOLET);
+            c.drawText(textRenderer, textRenderer.trimToWidth("Régénération dans " + Ui.duration(r.getLong("left")) + " · " + r.getInt("statues") + " statues",
+                    cw - 124), cx + 8, y + 22, Ui.MUTED, false);
+            c.drawText(textRenderer, textRenderer.trimToWidth("Extraction : " + r.getInt("keys") + " / " + r.getInt("keysNeeded") + " clés sur le socle",
+                    cw - 124), cx + 8, y + 34, Ui.FAINT, false);
+        } else {
+            scaled(c, Text.literal(status.equals("GENERATION") ? "Génération… " + r.getInt("progress") + " %" : "Fermée"), cx + 8, y + 6, 1.3f, Ui.ORANGE);
+            c.drawText(textRenderer, "La zone se reconstruit toutes les quelques heures.", cx + 8, y + 24, Ui.MUTED, false);
+        }
+        long fee = r.getLong("fee");
+        boolean in = r.getBoolean("inRaid"), near = r.getBoolean("nearPortal") || isGm();
+        if (!in) {
+            button(c, cx + cw - 104, y + 16, 96, 18, "Entrer (" + fee + ")", status.equals("OUVERT") && near, Style.PRIMARY, () -> act("raid.enter"));
+            if (!near) textRight(c, r.getBoolean("portalSet") ? "Va au portail du hub" : "Portail pas encore placé", cx + cw - 8, y + 38, Ui.FAINT);
+        } else {
+            textRight(c, "Tu es dans le raid", cx + cw - 8, y + 20, Ui.GREEN);
+        }
+        y += 56;
+        c.drawText(textRenderer, textRenderer.trimToWidth("Sortir : balise de retour (10 s immobile) ou extraction (2 clés de gardien).", cw), cx, y, Ui.FAINT, false);
+        c.drawText(textRenderer, textRenderer.trimToWidth("Mort : coffre de corps 10 min. Butin non extrait : perdu.", cw), cx, y + 10, Ui.FAINT, false);
+        y += 26;
+        // Groupe
+        y = title(c, "Groupe (" + r.getList("party", NbtElement.STRING_TYPE).size() + " / 4)", y);
+        NbtList party = r.getList("party", NbtElement.STRING_TYPE);
+        StringBuilder names = new StringBuilder();
+        for (int i = 0; i < party.size(); i++) names.append(i > 0 ? ", " : "").append(party.getString(i));
+        c.drawText(textRenderer, textRenderer.trimToWidth(names.toString(), cw - 182), cx, y + 4, Ui.TEXT, false);
+        String invite = valueField("raid.invite", cx + cw - 176, y, 64, "", "[A-Za-z0-9_]*").getText();
+        button(c, cx + cw - 108, y + 1, 48, 14, "Inviter", !invite.isBlank(), Style.NORMAL, () -> {
+            act("raid.invite", "name", invite);
+            unfocus();
+        });
+        button(c, cx + cw - 58, y + 1, 58, 14, party.size() > 1 ? "Quitter" : "Accepter", true, Style.NORMAL,
+                () -> act(party.size() > 1 ? "raid.leave" : "raid.accept"));
+        y += 22;
+        // Voleurs et Brise-statue
+        y = title(c, "Chapardeurs et statues", y);
+        int a = r.getInt("affinity");
+        String tier = a >= 100 ? "compagnon fidèle" : a >= 50 ? "il te suit" : a >= 20 ? "il ne te vole plus" : "hostile";
+        c.drawText(textRenderer, "Affinité avec les voleurs : " + a + " (" + tier + ")", cx, y + 4, Ui.TEXT, false);
+        if (a >= 100) {
+            long cd = r.getLong("companionCooldown");
+            button(c, cx + cw - 96, y + 1, 96, 14, cd > 0 ? "Revient dans " + Ui.duration(cd) : r.getBoolean("companionOff") ? "Activer" : "Désactiver",
+                    cd == 0, Style.NORMAL, () -> act("raid.companion"));
+        }
+        y += 18;
+        if (r.contains("breakerDamage")) {
+            c.drawText(textRenderer, "Brise-statue : " + (12 - r.getInt("breakerDamage")) + " / 12 statues restantes", cx, y + 4, Ui.TEXT, false);
+            button(c, cx + cw - 96, y + 1, 96, 14, "Réparer (" + r.getLong("repairPrice") + ")", r.getInt("breakerDamage") > 0, Style.PRIMARY, () -> act("raid.repair"));
+        } else {
+            c.drawText(textRenderer, "Prends ton Brise-statue en main pour le réparer ici.", cx, y + 4, Ui.FAINT, false);
+        }
+        if (isGm()) {
+            int by = cy + ch - 16;
+            Ui.rule(c, cx, by - 4, cw);
+            int bw = (cw - 12) / 4;
+            button(c, cx, by, bw, 14, "Régénérer", true, Style.DANGER, () -> act("gm.raid.regen"));
+            button(c, cx + bw + 4, by, bw, 14, "Hub ici", true, Style.NORMAL, () -> act("gm.raid.hub"));
+            button(c, cx + 2 * (bw + 4), by, bw, 14, "Portail ici", true, Style.NORMAL, () -> act("gm.raid.portal"));
+            button(c, cx + 3 * (bw + 4), by, bw, 14, "Relire salles", true, Style.NORMAL, () -> act("gm.raid.rooms"));
+        }
     }
 
     private void classement(DrawContext c, NbtCompound d) {
@@ -569,6 +901,597 @@ public class RpgScreen extends Screen {
             y += 16;
         }
         if (list.isEmpty()) centered(c, "Personne pour l'instant.", cx + cw / 2, y + 20, Ui.FAINT);
+    }
+
+    // ================================================================ onglet Faction
+
+    private static String facSub = "accueil", facRank = "power";
+    private static int facPage, facShopPage, facMapScale = 2;
+    private static boolean confirmLeave;
+    private static int confirmWar;
+    /** Éditeur de bannière : brouillon (fond, motifs, couleurs) et élément sélectionné (−1 = fond). */
+    private static int bnBase = -1, bnSel = -1;
+    private static final List<String> bnPat = new ArrayList<>();
+    private static final List<Integer> bnCol = new ArrayList<>();
+    private static final int[] DYE = new int[16];
+
+    static {
+        for (net.minecraft.util.DyeColor dc : net.minecraft.util.DyeColor.values()) DYE[dc.getId()] = 0xFF000000 | dc.getFireworkColor();
+    }
+
+    private void faction(DrawContext c, NbtCompound d) {
+        NbtCompound fac = d.getCompound("fac");
+        boolean has = fac.contains("mine");
+        String[][] subs = has
+                ? new String[][]{{"accueil", "Accueil"}, {"membres", "Membres"}, {"carte", "Carte"}, {"tresor", "Trésor"}, {"guerre", "Guerre"},
+                {"banniere", "Bannière"}, {"podium", "Podium"}}
+                : new String[][]{{"accueil", "Accueil"}, {"carte", "Carte"}, {"podium", "Podium"}};
+        boolean known = false;
+        for (String[] s : subs) known |= s[0].equals(facSub);
+        if (!known) facSub = "accueil";
+        int x = cx, textW = 0;
+        for (String[] s : subs) textW += textRenderer.getWidth(s[1]);
+        int pad = Math.max(4, (cw - textW - 3 * (subs.length - 1)) / subs.length);
+        for (String[] s : subs) {
+            int bw = textRenderer.getWidth(s[1]) + pad;
+            String key = s[0];
+            button(c, x, cy, bw, 15, s[1], true, key.equals(facSub) ? Style.PRIMARY : Style.NORMAL, () -> {
+                facSub = key;
+                facPage = 0;
+                bnBase = -1;
+                confirmLeave = false;
+                confirmWar = 0;
+                clearAndInit();
+            });
+            x += bw + 3;
+        }
+        int y = cy + 20;
+        switch (facSub) {
+            case "membres" -> facMembres(c, fac, y);
+            case "carte" -> facCarte(c, fac, y);
+            case "tresor" -> facTresor(c, fac, y);
+            case "guerre" -> facGuerre(c, fac, y);
+            case "banniere" -> facBanniere(c, fac, y);
+            case "podium" -> facPodium(c, fac, y);
+            default -> {
+                if (has) facAccueil(c, fac, y);
+                else facSansFaction(c, fac, y);
+            }
+        }
+    }
+
+    private void bannerIcon(DrawContext c, NbtCompound stackNbt, int x, int y, float scale) {
+        ItemStack st = ItemStack.fromNbt(stackNbt);
+        if (st.isEmpty()) return;
+        c.getMatrices().push();
+        c.getMatrices().translate(x, y, 0);
+        c.getMatrices().scale(scale, scale, 1f);
+        c.drawItem(st, 0, 0);
+        c.getMatrices().pop();
+    }
+
+    private void facSansFaction(DrawContext c, NbtCompound fac, int y) {
+        Ui.card(c, cx, y, cw, 40, true);
+        c.drawText(textRenderer, "Fonder une faction — gratuit", cx + 8, y + 6, Ui.GOLD, true);
+        c.drawText(textRenderer, "Tu en deviens le chef ; invite qui tu veux.", cx + 8, y + 18, Ui.MUTED, false);
+        String name = valueField("fac.name", cx + cw - 172, y + 20, 104, "", "[\\p{L}0-9 '_-]*").getText();
+        button(c, cx + cw - 64, y + 20, 58, 15, "Fonder", name.trim().length() >= 3, Style.PRIMARY, () -> {
+            act("fac.create", "name", name);
+            unfocus();
+        });
+        y += 46;
+        NbtList inv = fac.getList("invites", NbtElement.COMPOUND_TYPE);
+        if (!inv.isEmpty()) {
+            y = title(c, "Invitations", y);
+            for (int i = 0; i < inv.size(); i++) {
+                NbtCompound f = inv.getCompound(i);
+                bannerIcon(c, f.getCompound("banner"), cx + 2, y, 1f);
+                c.drawText(textRenderer, f.getString("name") + "  ·  niv. " + f.getInt("level") + " · " + f.getInt("members") + " membres", cx + 22, y + 4, Ui.TEXT, false);
+                int id = f.getInt("id");
+                button(c, cx + cw - 70, y + 1, 70, 14, "Rejoindre", true, Style.PRIMARY, () -> act("fac.join", "id", id));
+                y += 18;
+            }
+            y += 4;
+        }
+        NbtList all = fac.getList("all", NbtElement.COMPOUND_TYPE);
+        y = title(c, "Factions du monde (" + all.size() + ")", y);
+        int rows = Math.max(1, (cy + ch - 18 - y) / 18);
+        int pages = Math.max(1, (all.size() + rows - 1) / rows);
+        facPage = Math.max(0, Math.min(facPage, pages - 1));
+        for (int i = facPage * rows; i < Math.min(all.size(), (facPage + 1) * rows); i++) {
+            NbtCompound f = all.getCompound(i);
+            bannerIcon(c, f.getCompound("banner"), cx + 2, y, 1f);
+            c.drawText(textRenderer, f.getString("name"), cx + 22, y + 4, Ui.TEXT, false);
+            textRight(c, "niv. " + f.getInt("level") + " · " + f.getInt("members") + " membre(s) · " + f.getInt("territories") + " terr."
+                    + (f.getBoolean("atWar") ? " · en guerre" : ""), cx + cw - 4, y + 4, f.getBoolean("atWar") ? Ui.RED : Ui.MUTED);
+            y += 18;
+        }
+        if (all.isEmpty()) centered(c, "Aucune faction pour l'instant : fonde la première !", cx + cw / 2, y + 10, Ui.FAINT);
+        pager(c, cy + ch - 15, facPage, pages, p -> facPage = p);
+    }
+
+    private void facAccueil(DrawContext c, NbtCompound fac, int y) {
+        NbtCompound m = fac.getCompound("mine");
+        Ui.card(c, cx, y, cw, 48, true);
+        bannerIcon(c, m.getCompound("banner"), cx + 6, y + 6, 2.2f);
+        scaled(c, Text.literal(m.getString("name")), cx + 46, y + 6, 1.4f, Ui.GOLD);
+        textRight(c, "Niveau " + m.getInt("level") + " · rayon " + m.getInt("radius"), cx + cw - 8, y + 7, Ui.TEXT);
+        Ui.bar(c, cx + 46, y + 22, cw - 54, 7, m.getLong("xp") / (float) Math.max(1, m.getLong("xpNeeded")), 0xFF9FE8EC, 0xFF2F8C96);
+        int nb = m.getInt("members");
+        c.drawText(textRenderer, textRenderer.trimToWidth(m.getLong("xp") + " / " + m.getLong("xpNeeded") + " XP · " + nb + (nb > 1 ? " membres · " : " membre · ")
+                + m.getInt("territories") + " terr. · trésor " + Ui.number(m.getLong("bank")) + " · guerres " + m.getInt("warsWon") + "/" + m.getInt("warsLost"),
+                cw - 54), cx + 46, y + 34, Ui.MUTED, false);
+        y += 52;
+        // Missions du jour
+        NbtList mi = m.getList("missions", NbtElement.COMPOUND_TYPE);
+        c.drawText(textRenderer, "Missions du jour", cx, y, Ui.GOLD, false);
+        y += 11;
+        for (int i = 0; i < mi.size(); i++) {
+            NbtCompound q = mi.getCompound(i);
+            boolean done = q.getBoolean("done");
+            c.drawText(textRenderer, textRenderer.trimToWidth((done ? "✔ " : "• ") + q.getString("text"), cw - 150), cx + 4, y, done ? Ui.GREEN : Ui.TEXT, false);
+            textRight(c, (done ? "" : q.getInt("progress") + " / " + q.getInt("total") + " · ") + "+" + q.getInt("xp") + " XP, +" + q.getLong("pieces"),
+                    cx + cw - 4, y, done ? Ui.GREEN : Ui.MUTED);
+            y += 11;
+        }
+        y += 4;
+        // Base principale
+        Ui.card(c, cx, y, cw, 22, false);
+        boolean base = m.contains("heartX");
+        c.drawText(textRenderer, textRenderer.trimToWidth(base ? "Base " + m.getInt("heartX") + " / " + m.getInt("heartZ") + " · Cœur " + m.getInt("heartHp") + "/" + fac.getInt("heartMax")
+                : "Pas de base : achète un Étendard (Trésor) et plante-le.", base ? cw - 120 : cw - 8), cx + 6, y + 7, base ? Ui.TEXT : Ui.ORANGE, false);
+        if (base) {
+            button(c, cx + cw - 112, y + 4, 52, 14, "Y aller", true, Style.NORMAL, () -> act("fac.base.tp"));
+            button(c, cx + cw - 56, y + 4, 52, 14, "Coffre", true, Style.NORMAL, () -> act("fac.chest"));
+        }
+        y += 26;
+        // Historique
+        NbtList hs = m.getList("history", NbtElement.STRING_TYPE);
+        c.drawText(textRenderer, "Historique", cx, y, Ui.GOLD, false);
+        button(c, cx + cw - 96, y - 3, 96, 13, confirmLeave ? "Confirmer le départ" : "Quitter la faction", true, Style.DANGER, () -> {
+            if (confirmLeave) {
+                act("fac.leave");
+                confirmLeave = false;
+            } else confirmLeave = true;
+        });
+        y += 12;
+        for (int i = 0; i < hs.size() && y < cy + ch - 9; i++) {
+            String line = hs.getString(i);
+            int dash = line.indexOf(" — ");
+            String text = dash > 0 ? line.substring(dash + 3) : line;
+            c.drawText(textRenderer, textRenderer.trimToWidth(text, cw - 4), cx + 2, y, Ui.FAINT, false);
+            if (in(cx, y, cw, 10)) hoverText = List.of(Text.literal(line).formatted(Formatting.GRAY));
+            y += 10;
+        }
+    }
+
+    private void facMembres(DrawContext c, NbtCompound fac, int y) {
+        NbtCompound m = fac.getCompound("mine");
+        boolean chief = m.getBoolean("chief");
+        c.drawText(textRenderer, "Inviter un joueur", cx, y + 4, Ui.TEXT, false);
+        String who = valueField("fac.invite", cx + 100, y, 100, "", "[A-Za-z0-9_]*").getText();
+        button(c, cx + 204, y + 1, 58, 14, "Inviter", !who.isBlank(), Style.PRIMARY, () -> {
+            act("fac.invite", "name", who);
+            unfocus();
+        });
+        y += 20;
+        NbtList votes = m.getList("votes", NbtElement.COMPOUND_TYPE);
+        if (!votes.isEmpty()) {
+            c.drawText(textRenderer, "Votes en cours (adoptés à plus de 50 % des membres)", cx, y, Ui.GOLD, false);
+            y += 11;
+            for (int i = 0; i < votes.size(); i++) {
+                NbtCompound v = votes.getCompound(i);
+                int id = v.getInt("id"), my = v.getInt("my");
+                Ui.card(c, cx, y, cw, 17, false);
+                c.drawText(textRenderer, textRenderer.trimToWidth(v.getString("label"), cw - 170), cx + 4, y + 5, Ui.TEXT, false);
+                textRight(c, v.getInt("yes") + " oui · " + v.getInt("no") + " non · " + Ui.duration(v.getLong("left")), cx + cw - 82, y + 5, Ui.MUTED);
+                button(c, cx + cw - 78, y + 2, 36, 13, "Oui", true, my == 1 ? Style.PRIMARY : Style.NORMAL, () -> act("fac.vote", "id", id, "yes", true));
+                button(c, cx + cw - 40, y + 2, 36, 13, "Non", true, my == -1 ? Style.DANGER : Style.NORMAL, () -> act("fac.vote", "id", id, "yes", false));
+                y += 19;
+            }
+            y += 3;
+        }
+        NbtList ms = m.getList("memberList", NbtElement.COMPOUND_TYPE);
+        c.drawText(textRenderer, "Membres (" + ms.size() + ")", cx, y, Ui.GOLD, false);
+        textRight(c, chief ? "▲▼ rang · Exclure : direct" : "Élire = vote pour le chef · Exclure = vote", cx + cw, y, Ui.FAINT);
+        y += 12;
+        int rows = Math.max(1, (cy + ch - 18 - y) / 16);
+        int pages = Math.max(1, (ms.size() + rows - 1) / rows);
+        facPage = Math.max(0, Math.min(facPage, pages - 1));
+        String myName = ClientData.data == null ? "" : ClientData.data.getCompound("me").getString("name");
+        for (int i = facPage * rows; i < Math.min(ms.size(), (facPage + 1) * rows); i++) {
+            NbtCompound mb = ms.getCompound(i);
+            String uuid = mb.getString("uuid");
+            Faction.Rank rank = Faction.Rank.parse(mb.getString("rank"));
+            boolean self = mb.getString("name").equals(myName);
+            c.fill(cx, y, cx + cw, y + 15, self ? 0x40A06AFF : i % 2 == 0 ? 0x18FFFFFF : 0);
+            c.fill(cx + 4, y + 5, cx + 8, y + 9, mb.getBoolean("online") ? Ui.GREEN : 0xFF555555);
+            c.drawText(textRenderer, mb.getString("name"), cx + 12, y + 4, rank == Faction.Rank.CHEF ? Ui.GOLD : Ui.TEXT, false);
+            c.drawText(textRenderer, rank.nom, cx + 110, y + 4, rank == Faction.Rank.CHEF ? Ui.GOLD : rank == Faction.Rank.OFFICIER ? Ui.VIOLET : Ui.MUTED, false);
+            long seen = mb.getLong("seenDays");
+            if (in(cx, y, 170, 15)) hoverText = List.of(Text.literal(mb.getString("name")).formatted(Formatting.WHITE),
+                    Text.literal(mb.getBoolean("online") ? "Connecté" : seen < 0 ? "Jamais vu" : "Vu il y a " + seen + " jour(s)").formatted(Formatting.GRAY),
+                    Text.literal("Dons au trésor : " + mb.getLong("contributed") + " pièces").formatted(Formatting.GOLD));
+            int bx = cx + cw - 2;
+            if (rank != Faction.Rank.CHEF) {
+                bx -= 50;
+                button(c, bx, y + 1, 48, 13, chief ? "Exclure" : "Exclure ?", !self, Style.DANGER, () -> {
+                    if (chief) act("fac.kick", "uuid", uuid);
+                    else act("fac.vote.start", "type", "EXCLUSION", "uuid", uuid, "territory", 0);
+                });
+                bx -= 38;
+                button(c, bx, y + 1, 36, 13, "Élire", true, Style.NORMAL, () -> act("fac.vote.start", "type", "CHEF", "uuid", uuid, "territory", 0));
+                if (chief) {
+                    bx -= 18;
+                    button(c, bx, y + 1, 16, 13, "▼", rank != Faction.Rank.RECRUE, Style.NORMAL, () -> act("fac.rank", "uuid", uuid, "delta", -1));
+                    bx -= 18;
+                    button(c, bx, y + 1, 16, 13, "▲", rank != Faction.Rank.OFFICIER, Style.NORMAL, () -> act("fac.rank", "uuid", uuid, "delta", 1));
+                }
+            }
+            y += 16;
+        }
+        pager(c, cy + ch - 15, facPage, pages, p -> facPage = p);
+    }
+
+    private void facCarte(DrawContext c, NbtCompound fac, int y) {
+        int mapH = fac.contains("mine") ? 140 : cy + ch - y - 16;
+        int mx0 = cx, my0 = y, mw = cw;
+        c.fill(mx0, my0, mx0 + mw, my0 + mapH, 0xFF0C0A12);
+        Ui.border(c, mx0, my0, mw, mapH, Ui.LINE);
+        int px = fac.getInt("px"), pz = fac.getInt("pz");
+        int scale = facMapScale;
+        int ccx = mx0 + mw / 2, ccy = my0 + mapH / 2;
+        // Quadrillage tous les 100 blocs.
+        for (int gx = Math.floorDiv(px - mw / 2 * scale, 100) * 100; gx <= px + mw / 2 * scale; gx += 100) {
+            int sx = ccx + (gx - px) / scale;
+            if (sx > mx0 && sx < mx0 + mw) c.fill(sx, my0 + 1, sx + 1, my0 + mapH - 1, 0x14FFFFFF);
+        }
+        for (int gz = Math.floorDiv(pz - mapH / 2 * scale, 100) * 100; gz <= pz + mapH / 2 * scale; gz += 100) {
+            int sy = ccy + (gz - pz) / scale;
+            if (sy > my0 && sy < my0 + mapH) c.fill(mx0 + 1, sy, mx0 + mw - 1, sy + 1, 0x14FFFFFF);
+        }
+        NbtList map = fac.getList("map", NbtElement.COMPOUND_TYPE);
+        int myFaction = fac.contains("mine") ? fac.getCompound("mine").getInt("id") : -1;
+        List<Text> tip = null;
+        for (int i = 0; i < map.size(); i++) {
+            NbtCompound t = map.getCompound(i);
+            int tx = ccx + (t.getInt("x") - px) / scale, ty = ccy + (t.getInt("z") - pz) / scale, rp = Math.max(2, t.getInt("r") / scale);
+            int col = brighten(DYE[Math.max(0, Math.min(15, t.getInt("color")))]);
+            if (t.getInt("fid") == myFaction) col = 0xFF7CF07C;
+            for (int dy = -rp; dy <= rp; dy++) {
+                int row = ty + dy;
+                if (row <= my0 || row >= my0 + mapH - 1) continue;
+                int half = (int) Math.sqrt((double) rp * rp - (double) dy * dy);
+                int x1 = Math.max(mx0 + 1, tx - half), x2 = Math.min(mx0 + mw - 1, tx + half + 1);
+                if (x2 <= x1) continue;
+                c.fill(x1, row, x2, row + 1, (col & 0x00FFFFFF) | 0x40000000);
+                if (tx - half >= mx0 + 1) c.fill(tx - half, row, tx - half + 1, row + 1, col);
+                if (tx + half < mx0 + mw - 1) c.fill(tx + half, row, tx + half + 1, row + 1, col);
+            }
+            if (ty - rp > my0 && ty - rp < my0 + mapH) c.fill(Math.max(mx0 + 1, tx - 2), ty - rp, Math.min(mx0 + mw - 1, tx + 3), ty - rp + 1, col);
+            if (ty + rp > my0 && ty + rp < my0 + mapH) c.fill(Math.max(mx0 + 1, tx - 2), ty + rp, Math.min(mx0 + mw - 1, tx + 3), ty + rp + 1, col);
+            if (rp >= 9 && tx - 8 > mx0 && tx + 8 < mx0 + mw && ty - 8 > my0 && ty + 8 < my0 + mapH) bannerIcon(c, t.getCompound("banner"), tx - 8, ty - 8, 1f);
+            else if (tx > mx0 && tx < mx0 + mw && ty > my0 && ty < my0 + mapH) c.fill(tx - 1, ty - 1, tx + 2, ty + 2, col);
+            long ddx = mx - tx, ddy = my - ty;
+            if (in(mx0, my0, mw, mapH) && ddx * ddx + ddy * ddy <= (long) rp * rp) {
+                tip = List.of(Text.literal(t.getString("name")).formatted(t.getInt("fid") == myFaction ? Formatting.GREEN : Formatting.AQUA, Formatting.BOLD),
+                        Text.literal((t.getBoolean("base") ? "Base principale · " : "Territoire · ") + "niv. " + t.getInt("level") + " · rayon " + t.getInt("r")).formatted(Formatting.GRAY),
+                        Text.literal(t.getInt("x") + " / " + t.getInt("z")).formatted(Formatting.DARK_GRAY));
+            }
+        }
+        // Le joueur au centre, avec sa direction.
+        c.fill(ccx - 2, ccy - 2, ccx + 3, ccy + 3, 0xFFFFFFFF);
+        double yaw = Math.toRadians(fac.getFloat("yaw"));
+        for (int k = 3; k <= 7; k++) c.fill(ccx + (int) Math.round(-Math.sin(yaw) * k), ccy + (int) Math.round(Math.cos(yaw) * k),
+                ccx + (int) Math.round(-Math.sin(yaw) * k) + 1, ccy + (int) Math.round(Math.cos(yaw) * k) + 1, 0xFFFFFFFF);
+        c.drawText(textRenderer, "N", ccx - 2, my0 + 3, Ui.FAINT, false);
+        c.drawText(textRenderer, "1 px = " + scale + " blocs", mx0 + 4, my0 + mapH - 10, Ui.FAINT, false);
+        button(c, mx0 + mw - 34, my0 + 3, 14, 13, "+", scale > 1, Style.NORMAL, () -> facMapScale = Math.max(1, facMapScale / 2));
+        button(c, mx0 + mw - 18, my0 + 3, 14, 13, "−", scale < 16, Style.NORMAL, () -> facMapScale = Math.min(16, facMapScale * 2));
+        if (tip != null) hoverText = tip;
+        y += mapH + 4;
+        String here = fac.contains("hereName") ? "Tu es dans le territoire de « " + fac.getString("hereName") + " »." : "Tu es en terres sauvages.";
+        c.drawText(textRenderer, textRenderer.trimToWidth(here, cw), cx, y, Ui.MUTED, false);
+        if (!fac.contains("mine")) return;
+        NbtCompound m = fac.getCompound("mine");
+        y += 12;
+        NbtList ts = m.getList("terr", NbtElement.COMPOUND_TYPE);
+        if (ts.isEmpty()) {
+            c.drawText(textRenderer, textRenderer.trimToWidth("Revendique avec un Étendard (Trésor), à " + fac.getInt("distanceMin")
+                    + " blocs au moins des autres factions.", cw), cx, y, Ui.FAINT, false);
+            return;
+        }
+        int rows = Math.max(1, (cy + ch - y) / 15);
+        for (int i = 0; i < Math.min(ts.size(), rows); i++) {
+            NbtCompound t = ts.getCompound(i);
+            int tid = t.getInt("id");
+            c.drawText(textRenderer, (t.getBoolean("base") ? "★ Base " : "⚑ Territoire ") + t.getInt("x") + " / " + t.getInt("z") + " (" + t.getString("dim") + ")",
+                    cx + 2, y + 3, t.getBoolean("base") ? Ui.GOLD : Ui.TEXT, false);
+            boolean inside = fac.getInt("hereTerritory") == tid;
+            if (m.getBoolean("chief") && inside && !t.getBoolean("base")) {
+                button(c, cx + cw - 154, y, 70, 13, "Base ici", true, Style.NORMAL, () -> act("fac.base.move"));
+            }
+            if (m.getBoolean("leader")) {
+                button(c, cx + cw - 80, y, 80, 13, "Abandonner ?", true, Style.DANGER, () -> act("fac.vote.start", "type", "ABANDON", "uuid", "", "territory", tid));
+            }
+            y += 15;
+        }
+    }
+
+    /** Couleur éclaircie (mélangée à 45 % de blanc) pour rester visible sur le fond sombre de la carte. */
+    private static int brighten(int argb) {
+        int r = (argb >> 16) & 255, g = (argb >> 8) & 255, b = argb & 255;
+        r = r + (255 - r) * 45 / 100;
+        g = g + (255 - g) * 45 / 100;
+        b = b + (255 - b) * 45 / 100;
+        return 0xFF000000 | (r << 16) | (g << 8) | b;
+    }
+
+    private void facTresor(DrawContext c, NbtCompound fac, int y) {
+        NbtCompound m = fac.getCompound("mine");
+        Ui.card(c, cx, y, cw, 24, true);
+        coin(c, cx + 6, y + 8);
+        c.drawText(textRenderer, "Trésor : " + Ui.number(m.getLong("bank")), cx + 18, y + 8, Ui.GOLD, true);
+        long amount = parse(valueField("fac.amount", cx + cw - 196, y + 4, 56, "", "\\d*").getText());
+        button(c, cx + cw - 136, y + 5, 44, 14, "Donner", amount > 0, Style.PRIMARY, () -> {
+            act("fac.deposit", "amount", amount);
+            unfocus();
+        });
+        button(c, cx + cw - 90, y + 5, 44, 14, "Retirer", amount > 0 && m.getBoolean("chief"), Style.NORMAL, () -> {
+            act("fac.withdraw", "amount", amount);
+            unfocus();
+        });
+        button(c, cx + cw - 44, y + 5, 40, 14, "Coffre", true, Style.NORMAL, () -> act("fac.chest"));
+        if (in(cx + cw - 90, y + 5, 44, 14) && !m.getBoolean("chief")) hoverText = List.of(Text.literal("Seul le chef retire de l'argent.").formatted(Formatting.GRAY));
+        y += 28;
+        y = title(c, "Boutique de faction (payée par le trésor)", y);
+        NbtList shop = m.getList("shop", NbtElement.COMPOUND_TYPE);
+        int rows = Math.max(1, (cy + ch - 18 - y) / 19);
+        int pages = Math.max(1, (shop.size() + rows - 1) / rows);
+        facShopPage = Math.max(0, Math.min(facShopPage, pages - 1));
+        int level = m.getInt("level");
+        long bank = m.getLong("bank");
+        for (int i = facShopPage * rows; i < Math.min(shop.size(), (facShopPage + 1) * rows); i++) {
+            NbtCompound a = shop.getCompound(i);
+            int idx = a.getInt("index"), need = a.getInt("level");
+            long price = a.getLong("price");
+            Ui.card(c, cx, y, cw, 17, false);
+            item(c, ItemStack.fromNbt(a.getCompound("stack")), cx + 2, y + 1);
+            c.drawText(textRenderer, textRenderer.trimToWidth(a.getString("label"), level >= need ? cw - 160 : cw - 200), cx + 22, y + 5, level >= need ? Ui.TEXT : Ui.FAINT, false);
+            if (level < need) textRight(c, "niveau " + need, cx + cw - 110, y + 5, Ui.ORANGE);
+            textRight(c, Ui.number(price), cx + cw - 66, y + 5, Ui.GOLD);
+            coin(c, cx + cw - 64, y + 5);
+            button(c, cx + cw - 52, y + 2, 50, 13, "Acheter", level >= need && bank >= price, Style.PRIMARY, () -> act("fac.buy", "index", idx));
+            y += 19;
+        }
+        pager(c, cy + ch - 15, facShopPage, pages, p -> facShopPage = p);
+    }
+
+    private void facGuerre(DrawContext c, NbtCompound fac, int y) {
+        NbtCompound m = fac.getCompound("mine");
+        boolean chief = m.getBoolean("chief");
+        int heartMax = fac.getInt("heartMax");
+        if (m.contains("war")) {
+            NbtCompound w = m.getCompound("war");
+            Ui.cardTinted(c, cx, y, cw, 70, Ui.RED);
+            bannerIcon(c, w.getCompound("otherBanner"), cx + 6, y + 6, 2f);
+            scaled(c, Text.literal("En guerre contre " + w.getString("otherName")), cx + 44, y + 6, 1.2f, Ui.RED);
+            c.drawText(textRenderer, textRenderer.trimToWidth((w.getBoolean("attacker") ? "Déclarée par vous · " : "Déclarée par eux · ") + w.getString("status"), cw - 50),
+                    cx + 44, y + 20, w.getBoolean("open") ? Ui.ORANGE : Ui.MUTED, false);
+            c.drawText(textRenderer, "Notre Cœur", cx + 44, y + 33, Ui.TEXT, false);
+            Ui.bar(c, cx + 104, y + 33, 70, 7, m.getInt("heartHp") / (float) Math.max(1, heartMax), 0xFF8CF08C, 0xFF2E8B3A);
+            c.drawText(textRenderer, "Le leur", cx + 184, y + 33, Ui.TEXT, false);
+            Ui.bar(c, cx + 226, y + 33, 70, 7, w.getInt("heartOther") / (float) Math.max(1, heartMax), 0xFFF08C8C, 0xFF8B2E2E);
+            c.drawText(textRenderer, "Combats de nuit : nous " + (w.getBoolean("nightMine") ? "oui" : "non") + ", eux " + (w.getBoolean("nightTheirs") ? "oui" : "non")
+                    + " (il faut les deux)", cx + 44, y + 46, Ui.MUTED, false);
+            if (w.getInt("offer") == 1) c.drawText(textRenderer, "Vous avez proposé de capituler.", cx + 44, y + 57, Ui.ORANGE, false);
+            if (w.getInt("offer") == 2) c.drawText(textRenderer, "Ils proposent de capituler !", cx + 44, y + 57, Ui.GREEN, false);
+            y += 76;
+            if (chief) {
+                boolean night = w.getBoolean("nightMine");
+                button(c, cx, y, 118, 15, night ? "Refuser la nuit" : "Accepter la nuit", true, Style.NORMAL, () -> act("fac.war.night", "on", !night));
+                if (w.getInt("offer") == 2) {
+                    button(c, cx + 122, y, 100, 15, "Accepter", true, Style.PRIMARY, () -> act("fac.war.answer", "yes", true));
+                    button(c, cx + 226, y, 100, 15, "Refuser", true, Style.NORMAL, () -> act("fac.war.answer", "yes", false));
+                } else {
+                    button(c, cx + 122, y, 130, 15, "Proposer de capituler", w.getInt("offer") != 1, Style.DANGER, () -> act("fac.war.offer"));
+                }
+            } else {
+                c.drawText(textRenderer, "Seul le chef déclare, accepte la nuit et capitule.", cx, y + 4, Ui.FAINT, false);
+            }
+            y += 22;
+            c.drawText(textRenderer, textRenderer.trimToWidth("Victoire : briser leur Cœur (frapper, aux heures d'attaque) ou leur capitulation.", cw), cx, y, Ui.FAINT, false);
+            y += 14;
+        } else {
+            long peace = 0;
+            for (int i = 0; i < fac.getList("all", NbtElement.COMPOUND_TYPE).size(); i++) {
+                NbtCompound f = fac.getList("all", NbtElement.COMPOUND_TYPE).getCompound(i);
+                if (f.getBoolean("mine")) peace = f.getLong("peaceLeft");
+            }
+            c.drawText(textRenderer, peace > 0 ? "Paix obligatoire encore " + Ui.duration(peace) + "." : "Aucune guerre. Seul le chef peut en déclarer une.",
+                    cx, y, peace > 0 ? Ui.GREEN : Ui.MUTED, false);
+            y += 12;
+            NbtList all = fac.getList("all", NbtElement.COMPOUND_TYPE);
+            int shown = 0;
+            for (int i = 0; i < all.size() && shown < 6; i++) {
+                NbtCompound f = all.getCompound(i);
+                if (f.getBoolean("mine")) continue;
+                shown++;
+                int id = f.getInt("id");
+                bannerIcon(c, f.getCompound("banner"), cx + 2, y, 1f);
+                boolean calm = f.getLong("peaceLeft") > 0, busy = f.getBoolean("atWar");
+                c.drawText(textRenderer, textRenderer.trimToWidth(f.getString("name") + " · niv. " + f.getInt("level") + " · " + f.getInt("members") + " membre(s)"
+                        + (calm ? " · en paix" : busy ? " · déjà en guerre" : ""), cw - 96), cx + 22, y + 4, calm ? Ui.GREEN : Ui.TEXT, false);
+                boolean can = chief && peace == 0 && !busy && !calm;
+                button(c, cx + cw - 70, y + 1, 70, 14, confirmWar == id ? "Confirmer ?" : "Déclarer", can, Style.DANGER, () -> {
+                    if (confirmWar == id) {
+                        act("fac.war.declare", "id", id);
+                        confirmWar = 0;
+                    } else confirmWar = id;
+                });
+                y += 18;
+            }
+            if (shown == 0) c.drawText(textRenderer, "Aucune autre faction pour l'instant.", cx, y, Ui.FAINT, false);
+            y += 6;
+        }
+        NbtList wh = m.getList("warHistory", NbtElement.COMPOUND_TYPE);
+        if (!wh.isEmpty() && y < cy + ch - 24) {
+            c.drawText(textRenderer, "Guerres passées", cx, y, Ui.GOLD, false);
+            y += 11;
+            for (int i = 0; i < wh.size() && y < cy + ch - 9; i++) {
+                NbtCompound h = wh.getCompound(i);
+                int r = h.getInt("result");
+                c.drawText(textRenderer, textRenderer.trimToWidth((r > 0 ? "Victoire" : r < 0 ? "Défaite" : "Fin") + " contre " + h.getString("other") + " — " + h.getString("reason"), cw),
+                        cx + 2, y, r > 0 ? Ui.GREEN : r < 0 ? Ui.RED : Ui.MUTED, false);
+                y += 10;
+            }
+        }
+    }
+
+    private void facBanniere(DrawContext c, NbtCompound fac, int y) {
+        NbtCompound m = fac.getCompound("mine");
+        List<String> codes = fr.serveur.rpg.faction.Banners.patterns();
+        if (bnBase < 0) {
+            bnBase = m.getInt("base");
+            bnPat.clear();
+            bnCol.clear();
+            NbtList ls = m.getList("layers", NbtElement.COMPOUND_TYPE);
+            for (int i = 0; i < ls.size(); i++) {
+                bnPat.add(ls.getCompound(i).getString("p"));
+                bnCol.add(ls.getCompound(i).getInt("c"));
+            }
+            bnSel = -1;
+        }
+        List<Faction.Layer> layers = new ArrayList<>();
+        for (int i = 0; i < bnPat.size(); i++) layers.add(new Faction.Layer(bnPat.get(i), bnCol.get(i)));
+        // Aperçu
+        Ui.card(c, cx, y, 64, 116, true);
+        c.getMatrices().push();
+        c.getMatrices().translate(cx + 8, y + 10, 0);
+        c.getMatrices().scale(3f, 3f, 1f);
+        c.drawItem(fr.serveur.rpg.faction.Banners.stack(bnBase, layers), 0, 0);
+        c.getMatrices().pop();
+        int lx = cx + 70;
+        // Palette (applique la couleur au fond ou au motif choisi)
+        c.drawText(textRenderer, bnSel < 0 ? "Couleur du fond" : "Couleur du motif " + (bnSel + 1), lx, y, Ui.GOLD, false);
+        for (int i = 0; i < 16; i++) {
+            int sx = lx + i * 15, sy = y + 11;
+            int col = i;
+            boolean on = bnSel < 0 ? bnBase == i : bnSel < bnCol.size() && bnCol.get(bnSel) == i;
+            c.fill(sx, sy, sx + 13, sy + 13, DYE[i]);
+            Ui.border(c, sx - 1, sy - 1, 15, 15, on ? Ui.GOLD : Ui.LINE);
+            hots.add(new Hot(sx, sy, 13, 13, () -> {
+                if (bnSel < 0) bnBase = col;
+                else if (bnSel < bnCol.size()) bnCol.set(bnSel, col);
+            }));
+        }
+        int ly = y + 30;
+        boolean fond = bnSel < 0;
+        c.fill(lx, ly, lx + cw - 70, ly + 14, fond ? 0xFF30224A : 0x18FFFFFF);
+        c.drawText(textRenderer, "Fond", lx + 4, ly + 3, fond ? Ui.GOLD : Ui.TEXT, false);
+        hots.add(new Hot(lx, ly, cw - 70, 14, () -> bnSel = -1));
+        ly += 15;
+        for (int i = 0; i < bnPat.size(); i++) {
+            int li = i;
+            boolean sel = bnSel == i;
+            c.fill(lx, ly, lx + cw - 70, ly + 14, sel ? 0xFF30224A : i % 2 == 0 ? 0x18FFFFFF : 0);
+            c.fill(lx + 3, ly + 3, lx + 11, ly + 11, DYE[Math.max(0, Math.min(15, bnCol.get(i)))]);
+            int pi = Math.max(0, codes.indexOf(bnPat.get(i)));
+            String label = patternName(bnPat.get(i));
+            c.drawText(textRenderer, textRenderer.trimToWidth((i + 1) + ". " + label, cw - 150), lx + 15, ly + 3, sel ? Ui.GOLD : Ui.TEXT, false);
+            hots.add(new Hot(lx, ly, cw - 140, 14, () -> bnSel = li));
+            button(c, lx + cw - 136, ly + 1, 14, 12, "◀", true, Style.NORMAL, () -> bnPat.set(li, codes.get(Math.floorMod(pi - 1, codes.size()))));
+            button(c, lx + cw - 120, ly + 1, 14, 12, "▶", true, Style.NORMAL, () -> bnPat.set(li, codes.get(Math.floorMod(pi + 1, codes.size()))));
+            button(c, lx + cw - 104, ly + 1, 14, 12, "↑", li > 0, Style.NORMAL, () -> {
+                java.util.Collections.swap(bnPat, li, li - 1);
+                java.util.Collections.swap(bnCol, li, li - 1);
+            });
+            button(c, lx + cw - 88, ly + 1, 14, 12, "✕", true, Style.DANGER, () -> {
+                bnPat.remove(li);
+                bnCol.remove(li);
+                bnSel = -1;
+            });
+            ly += 15;
+        }
+        int by = y + 126;
+        boolean leader = m.getBoolean("leader");
+        button(c, cx, by, 64, 15, "+ Motif", bnPat.size() < fr.serveur.rpg.faction.Banners.MAX_LAYERS, Style.NORMAL, () -> {
+            bnPat.add(codes.get(0));
+            bnCol.add(bnBase == 15 ? 0 : 15);
+            bnSel = bnPat.size() - 1;
+        });
+        button(c, cx + 68, by, 110, 15, "Copier celle en main", leader, Style.NORMAL, () -> {
+            act("fac.banner.copy");
+            bnBase = -1;
+        });
+        button(c, cx + cw - 80, by, 80, 15, "Enregistrer", leader, Style.PRIMARY, () -> {
+            NbtList ls = new NbtList();
+            for (int i = 0; i < bnPat.size(); i++) {
+                NbtCompound l = new NbtCompound();
+                l.putString("p", bnPat.get(i));
+                l.putInt("c", bnCol.get(i));
+                ls.add(l);
+            }
+            NbtCompound n = new NbtCompound();
+            n.putInt("base", bnBase);
+            n.put("layers", ls);
+            SurvieRpgClient.send("fac.banner", n);
+        });
+        button(c, cx + cw - 140, by, 56, 15, "Annuler", true, Style.NORMAL, () -> bnBase = -1);
+        c.drawText(textRenderer, textRenderer.trimToWidth(leader ? "Clique un motif, puis une couleur de la palette. 6 motifs au plus."
+                : "Seuls le chef et les officiers modifient la bannière.", cw), cx, by + 20, Ui.FAINT, false);
+    }
+
+    private static String patternName(String code) {
+        for (net.minecraft.block.entity.BannerPattern p : net.minecraft.registry.Registries.BANNER_PATTERN) {
+            if (p.getId().equals(code)) {
+                net.minecraft.util.Identifier id = net.minecraft.registry.Registries.BANNER_PATTERN.getId(p);
+                String key = "block.minecraft.banner." + (id == null ? code : id.getPath()) + ".white";
+                String t = net.minecraft.client.resource.language.I18n.translate(key);
+                if (!t.equals(key)) return t.replaceAll("(?i)\\s*(blanc|blanche|white)\\s*", " ").trim();
+                return id == null ? code : id.getPath().replace('_', ' ');
+            }
+        }
+        return code;
+    }
+
+    private void facPodium(DrawContext c, NbtCompound fac, int y) {
+        String[][] crits = {{"power", "Puissance"}, {"level", "Niveau"}, {"totalXp", "XP"}, {"territories", "Terr."}, {"warsWon", "Guerres"},
+                {"bank", "Richesse"}, {"active", "Activité"}};
+        int x = cx;
+        for (String[] k : crits) {
+            int bw = textRenderer.getWidth(k[1]) + 8;
+            String key = k[0];
+            button(c, x, y, bw, 14, k[1], true, key.equals(facRank) ? Style.PRIMARY : Style.NORMAL, () -> facRank = key);
+            x += bw + 3;
+        }
+        y += 20;
+        NbtList all = fac.getList("all", NbtElement.COMPOUND_TYPE);
+        List<NbtCompound> list = new ArrayList<>();
+        for (int i = 0; i < all.size(); i++) list.add(all.getCompound(i));
+        list.sort((a, b) -> Long.compare(b.getLong(facRank), a.getLong(facRank)));
+        int[] medals = {0xFFE9C25B, 0xFFC9D1DB, 0xFFCD8B4E};
+        for (int i = 0; i < Math.min(10, list.size()); i++) {
+            NbtCompound f = list.get(i);
+            boolean mine = f.getBoolean("mine");
+            c.fill(cx, y, cx + cw, y + 17, mine ? 0x40A06AFF : i % 2 == 0 ? 0x18FFFFFF : 0);
+            c.drawText(textRenderer, String.valueOf(i + 1), cx + 6, y + 5, i < 3 ? medals[i] : Ui.FAINT, i < 3);
+            bannerIcon(c, f.getCompound("banner"), cx + 20, y, 1f);
+            c.drawText(textRenderer, f.getString("name"), cx + 40, y + 5, mine ? Ui.GOLD : Ui.TEXT, false);
+            String v = switch (facRank) {
+                case "level" -> "niveau " + f.getInt("level");
+                case "totalXp" -> Ui.number(f.getLong("totalXp")) + " XP";
+                case "territories" -> f.getInt("territories") + " territoire(s)";
+                case "warsWon" -> f.getInt("warsWon") + " victoire(s), " + f.getInt("warsLost") + " défaite(s)";
+                case "bank" -> Ui.number(f.getLong("bank")) + " pièces";
+                case "active" -> f.getInt("active") + " / " + f.getInt("members") + " membres actifs";
+                default -> Ui.number(f.getLong("power")) + " de puissance";
+            };
+            textRight(c, v, cx + cw - 6, y + 5, Ui.MUTED);
+            y += 18;
+        }
+        if (list.isEmpty()) centered(c, "Aucune faction pour l'instant.", cx + cw / 2, y + 20, Ui.FAINT);
+        c.drawText(textRenderer, "Classements pour comparer, sans récompense.", cx, cy + ch - 10, Ui.FAINT, false);
     }
 
     // ================================================================ tableau de bord GM
@@ -640,9 +1563,15 @@ public class RpgScreen extends Screen {
         c.drawText(textRenderer, jobLine, px + 6, y + 22, job == null ? Ui.MUTED : jobColor(job), false);
         c.drawText(textRenderer, Ui.number(selected.getLong("money")) + " pièces · " + selected.getInt("deaths") + " morts",
                 px + 6, y + 33, Ui.MUTED, false);
+        SideJob side = SideJob.parse(selected.getString("side"));
+        if (side != null) textRight(c, side.displayName + " " + selected.getInt("sideLevel"), px + pw - 6, y + 33, sideColor(side));
         if (selected.getBoolean("awaiting")) c.drawText(textRenderer, "☠ Mort, attend la nuit", px + 6, y + 43, Ui.RED, false);
+        else if (selected.getBoolean("frozen")) c.drawText(textRenderer, "❄ Compte gelé", px + 6, y + 43, Ui.RED, false);
+        boolean frozen = selected.getBoolean("frozen");
+        button(c, px + pw - 58, y + 39, 52, 12, frozen ? "Dégeler" : "Geler", true, frozen ? Style.PRIMARY : Style.DANGER,
+                () -> act("gm.player", "name", name, "op", "freeze"));
 
-        int by = y + 60, gw = (pw - 8) / 3;
+        int by = y + 58, gw = (pw - 8) / 3;
         c.drawText(textRenderer, "Valeur :", px, by + 4, Ui.MUTED, false);
         String valText = valueField("player.value", px + 44, by + 1, 60, "", "\\d*").getText();
         long val = parse(valText);
@@ -680,6 +1609,22 @@ public class RpgScreen extends Screen {
             button(c, px + (i % 2) * (jw + 4), by + (i / 2) * 17, jw, 15, j.displayName, j != job, Style.NORMAL,
                     () -> act("gm.player", "name", name, "op", "job", "job", j.name()));
         }
+        by += 34;
+        c.drawText(textRenderer, "Métier supplémentaire :", px, by + 1, Ui.FAINT, false);
+        by += 11;
+        SideJob[] sides = SideJob.values();
+        int iw = (pw - 2 * sides.length) / (sides.length + 1);
+        for (int i = 0; i <= sides.length; i++) {
+            SideJob j = i == 0 ? null : sides[i - 1];
+            int bx = px + i * (iw + 2);
+            boolean current = j == side, hover = !current && in(bx, by, iw, 18);
+            c.fill(bx, by, bx + iw, by + 18, current ? 0xFF30224A : hover ? 0xFF2A2039 : Ui.CARD);
+            Ui.border(c, bx, by, iw, 18, current ? Ui.GOLD : hover ? Ui.GOLD_DIM : Ui.LINE);
+            c.drawItem(new ItemStack(j == null ? Items.BARRIER : j.icon()), bx + (iw - 16) / 2, by + 1);
+            if (in(bx, by, iw, 18)) hoverText = List.of(j == null ? Text.literal("Retirer le métier supplémentaire")
+                    : Text.literal(j.displayName).formatted(j.color));
+            if (!current) hots.add(new Hot(bx, by, iw, 18, () -> act("gm.player", "name", name, "op", "side", "job", j == null ? "" : j.name())));
+        }
     }
 
     private void gmMonde(DrawContext c, NbtCompound gm, int y) {
@@ -688,8 +1633,10 @@ public class RpgScreen extends Screen {
         button(c, cx + cw - 172, y + 1, 84, 14, "☀ Jour", true, Style.NORMAL, () -> act("gm.time", "to", "day"));
         button(c, cx + cw - 86, y + 1, 84, 14, "☾ Nuit", true, Style.NORMAL, () -> act("gm.time", "to", "night"));
         y += 18;
-        y = setting(c, y, "Durée du jour", "min", "dayMin", s.getDouble("dayMin"), true);
-        y = setting(c, y, "Durée de la nuit", "min", "nightMin", s.getDouble("nightMin"), true);
+        boolean perm = s.getBoolean("permanentNight");
+        y = toggle(c, y, "Nuit permanente", perm, "Active", "Cycle normal", "Désactiver", "Activer", "permanentNight");
+        y = setting(c, y, perm ? "Jour invoqué par un Éclat" : "Durée du jour", "min", "dayMin", s.getDouble("dayMin"), true);
+        y = setting(c, y, perm ? "Nuit minimale entre 2 Éclats" : "Durée de la nuit", "min", "nightMin", s.getDouble("nightMin"), true);
         y = toggle(c, y, "Nether", s.getBoolean("nether"), "Ouvert", "Fermé", "Fermer", "Ouvrir", "nether");
         y = toggle(c, y, "End", s.getBoolean("end"), "Ouvert", "Fermé", "Fermer", "Ouvrir", "end");
         c.drawText(textRenderer, "Salle d'attente des morts", cx + 4, y + 4, Ui.TEXT, false);
@@ -697,6 +1644,18 @@ public class RpgScreen extends Screen {
         c.drawText(textRenderer, room ? "définie" : "non définie", cx + 150, y + 4, room ? Ui.GREEN : Ui.RED, false);
         button(c, cx + cw - 86, y + 1, 84, 14, "Définir ici", true, Style.NORMAL, () -> act("gm.room.here"));
         y += 18;
+        c.drawText(textRenderer, "Zone jouable", cx + 4, y + 4, Ui.TEXT, false);
+        String border = s.getString("border");
+        boolean partial = border.startsWith("coin");
+        int zb = 64;
+        button(c, cx + cw - 3 * zb - 4, y + 1, zb, 14, "Coin 1 ici", true, Style.NORMAL, () -> act("gm.border.corner", "corner", 1));
+        button(c, cx + cw - 2 * zb - 2, y + 1, zb, 14, "Coin 2 ici", true, Style.NORMAL, () -> act("gm.border.corner", "corner", 2));
+        button(c, cx + cw - zb, y + 1, zb, 14, "Retirer", !border.isEmpty(), Style.DANGER, () -> act("gm.border.clear"));
+        y += 16;
+        c.drawText(textRenderer, textRenderer.trimToWidth(border.isEmpty()
+                        ? "Non définie. Place-toi sur un coin du monde (Coin 1), puis sur le coin opposé (Coin 2)." : border, cw - 8),
+                cx + 4, y + 1, border.isEmpty() ? Ui.RED : partial ? Ui.ORANGE : Ui.GREEN, false);
+        y += 13;
         c.drawText(textRenderer, "Zone protégée autour de moi, rayon", cx + 4, y + 4, Ui.TEXT, false);
         long radius = parse(valueField("zone.radius", cx + cw - 130, y + 1, 40, "20", "\\d*").getText());
         c.drawText(textRenderer, "blocs", cx + cw - 82, y + 4, Ui.MUTED, false);
@@ -725,11 +1684,24 @@ public class RpgScreen extends Screen {
         y = setting(c, y, "Prix du changement de métier", "pièces", "jobPrice", s.getInt("jobPrice"), false);
         y = setting(c, y, "Réussite d'un crochet", "%", "lockpick", s.getInt("lockpick"), false);
         y = setting(c, y, "Bonus d'argent par prestige", "%", "prestigeBonus", s.getInt("prestigeBonus"), false);
-        c.drawText(textRenderer, textRenderer.trimToWidth("En circulation : " + Ui.number(st.getLong("totalMoney")) + " pièces · "
-                + st.getInt("auctions") + " annonces · " + st.getInt("chests") + " coffres protégés", cw - 4), cx + 4, y + 2, Ui.FAINT, false);
-        y += 14;
+        NbtCompound eco = gm.getCompound("eco");
+        boolean high = eco.getLong("perActive") > eco.getLong("target");
+        c.drawText(textRenderer, textRenderer.trimToWidth("Masse " + Ui.number(eco.getLong("supply")) + " · " + Ui.number(eco.getLong("perActive"))
+                + " par actif (cible " + Ui.number(eco.getLong("target")) + ") · médiane " + Ui.number(eco.getLong("median")), cw - 4),
+                cx + 4, y + 2, high ? Ui.ORANGE : Ui.TEXT, false);
+        y += 11;
+        c.drawText(textRenderer, textRenderer.trimToWidth("Régulateur : gains ×" + fmt2(eco.getDouble("gainMult")) + ", taxes ×" + fmt2(eco.getDouble("taxMult"))
+                + " · " + eco.getInt("frozen") + " compte(s) gelé(s)", cw - 4),
+                cx + 4, y + 2, eco.getInt("frozen") > 0 ? Ui.RED : Ui.FAINT, false);
+        y += 11;
+        NbtList alerts = eco.getList("alerts", NbtElement.STRING_TYPE);
+        if (!alerts.isEmpty()) {
+            c.drawText(textRenderer, textRenderer.trimToWidth("⚠ " + alerts.getString(alerts.size() - 1), cw - 4), cx + 4, y + 2, Ui.RED, false);
+            y += 11;
+        }
+        y += 3;
         NbtList shop = ClientData.data.getList("shop", NbtElement.COMPOUND_TYPE);
-        y = title(c, "Boutique (" + shop.size() + " articles)", y);
+        y = title(c, "Boutique (" + shop.size() + " articles) — prix de base, actuel · stock", y);
         int rows = Math.max(1, (cy + ch - 42 - y) / 18);
         int pages = Math.max(1, (shop.size() + rows - 1) / rows);
         shopPage = Math.max(0, Math.min(shopPage, pages - 1));
@@ -737,23 +1709,27 @@ public class RpgScreen extends Screen {
             NbtCompound m = shop.getCompound(i);
             ItemStack stack = ItemStack.fromNbt(m.getCompound("stack"));
             int id = m.getInt("id");
-            long current = m.getLong("price");
+            long current = m.getLong("base");
             item(c, stack, cx + 2, y);
-            c.drawText(textRenderer, textRenderer.trimToWidth(stack.getName().getString() + (stack.getCount() > 1 ? " ×" + stack.getCount() : ""), cw - 146),
+            c.drawText(textRenderer, textRenderer.trimToWidth(stack.getName().getString() + (stack.getCount() > 1 ? " ×" + stack.getCount() : ""), cw - 250),
                     cx + 22, y + 4, Ui.TEXT, false);
-            long typed = parse(valueField("shop:" + id, cx + cw - 118, y + 1, 44, String.valueOf(current), "\\d*").getText());
-            coin(c, cx + cw - 70, y + 4);
-            button(c, cx + cw - 58, y + 1, 26, 14, "OK", typed > 0 && typed != current, Style.PRIMARY, () -> {
+            c.drawText(textRenderer, m.getLong("price") + " · " + m.getInt("stock") + "%", cx + cw - 222, y + 4, Ui.FAINT, false);
+            long typed = parse(valueField("shop:" + id, cx + cw - 166, y + 1, 40, String.valueOf(current), "\\d*").getText());
+            coin(c, cx + cw - 124, y + 4);
+            button(c, cx + cw - 114, y + 1, 24, 14, "OK", typed > 0 && typed != current, Style.PRIMARY, () -> {
                 act("gm.shop.price", "id", id, "value", typed);
                 unfocus();
             });
-            button(c, cx + cw - 30, y + 1, 28, 14, "✖", true, Style.DANGER, () -> act("gm.shop.remove", "id", id));
+            boolean sold = m.getBoolean("sold"), buyback = m.getBoolean("buyback");
+            button(c, cx + cw - 88, y + 1, 30, 14, "Vend", true, sold ? Style.PRIMARY : Style.NORMAL, () -> act("gm.shop.toggle", "id", id, "what", "sold"));
+            button(c, cx + cw - 56, y + 1, 30, 14, "Rach", true, buyback ? Style.PRIMARY : Style.NORMAL, () -> act("gm.shop.toggle", "id", id, "what", "buyback"));
+            button(c, cx + cw - 24, y + 1, 22, 14, "✖", true, Style.DANGER, () -> act("gm.shop.remove", "id", id));
             y += 18;
         }
         pager(c, cy + ch - 38, shopPage, pages, p -> shopPage = p);
         int by = cy + ch - 18;
         Ui.rule(c, cx, by - 4, cw);
-        c.drawText(textRenderer, "Ajouter l'objet en main au prix de", cx + 2, by + 4, Ui.TEXT, false);
+        c.drawText(textRenderer, "Ajouter l'objet en main, prix de base", cx + 2, by + 4, Ui.TEXT, false);
         long price = parse(gmPriceText);
         coin(c, cx + cw - 64, by + 4);
         button(c, cx + cw - 56, by, 54, 16, "Ajouter", price > 0, Style.PRIMARY, () -> act("gm.shop.add", "price", price));
@@ -924,6 +1900,7 @@ public class RpgScreen extends Screen {
         if (stack.isEmpty()) return;
         c.drawItem(stack, x, y);
         c.drawItemInSlot(textRenderer, stack, x, y);
+        RareteClient.outline(c, stack, x, y);
         if (in(x, y, 16, 16)) hoverStack = stack;
     }
 
@@ -980,12 +1957,28 @@ public class RpgScreen extends Screen {
         };
     }
 
+    private static int sideColor(SideJob job) {
+        return switch (job) {
+            case INGENIEUR -> 0xFFE0524A;
+            case CONSTRUCTEUR -> 0xFFF0D264;
+            case ENCHANTEUR -> 0xFFE38CF5;
+            case VOYAGEUR -> 0xFF6FE3E8;
+            case PACIFICATEUR -> 0xFF7F9CFF;
+            case ALCHIMISTE -> 0xFFC07CF0;
+            case PECHEUR -> 0xFF4FC3B0;
+        };
+    }
+
     private static long parse(String s) {
         try {
             return s == null || s.isBlank() ? 0 : Long.parseLong(s.trim());
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    private static String fmt2(double v) {
+        return String.format("%.2f", v);
     }
 
     private static String fmt(double v) {

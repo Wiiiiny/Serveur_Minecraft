@@ -14,6 +14,8 @@ import fr.serveur.rpg.data.Zone;
 import fr.serveur.rpg.jobs.Job;
 import fr.serveur.rpg.jobs.JobConfig;
 import fr.serveur.rpg.jobs.Progression;
+import fr.serveur.rpg.jobs.SideJob;
+import fr.serveur.rpg.jobs.SideJobs;
 import fr.serveur.rpg.mining.HarvestRules;
 import fr.serveur.rpg.tools.OfficialTools;
 import net.minecraft.command.CommandRegistryAccess;
@@ -39,6 +41,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 /** /gm ... : commandes du Game Master (opérateurs niveau 2). */
 public final class GmCommands {
     private static final SuggestionProvider<ServerCommandSource> JOBS = (c, b) -> CommandSource.suggestMatching(Job.ids(), b);
+    private static final SuggestionProvider<ServerCommandSource> SIDE_JOBS = (c, b) -> CommandSource.suggestMatching(SideJob.ids(), b);
 
     private GmCommands() {}
 
@@ -492,9 +495,63 @@ public final class GmCommands {
                 .executes(c -> PlayerCommands.showInfo(c.getSource(), EntityArgumentType.getPlayer(c, "joueur")))));
         gm.then(literal("recharger").executes(c -> {
             JobConfig.load();
-            Msg.ok(c.getSource(), "Config des métiers rechargée (config/survierpg/metiers.json).");
+            fr.serveur.rpg.jobs.SideJobConfig.load();
+            fr.serveur.rpg.economy.EconomyConfig.load();
+            fr.serveur.rpg.sombre.MondeSombre.reload(c.getSource().getServer());
+            Msg.ok(c.getSource(), "Config rechargée (metiers.json, metiers2.json, economie.json, monde_sombre.json, objets_rares.json, factions.json).");
             return 1;
         }));
+
+        // ---- économie automatisée : audit, gel, annulation, sauvegardes
+        gm.then(EconomyAdminCommands.build());
+        gm.then(RaidCommands.gm());
+
+        // ---- métier supplémentaire
+        gm.then(literal("metier2")
+                .then(literal("definir").then(argument("joueur", StringArgumentType.word()).suggests(EconomyCommands.KNOWN_PLAYERS)
+                        .then(argument("metier", StringArgumentType.word()).suggests(SIDE_JOBS).executes(c -> {
+                            SideJob job = SideJob.parse(StringArgumentType.getString(c, "metier"));
+                            if (job == null) {
+                                Msg.info(c.getSource(), Text.literal("Métier inconnu. Choix : " + String.join(", ", SideJob.ids())).formatted(Formatting.RED));
+                                return 0;
+                            }
+                            return setSideJob(c, job);
+                        }))))
+                .then(literal("retirer").then(argument("joueur", StringArgumentType.word()).suggests(EconomyCommands.KNOWN_PLAYERS)
+                        .executes(c -> setSideJob(c, null))))
+                .then(literal("niveau").then(argument("joueur", StringArgumentType.word()).suggests(EconomyCommands.KNOWN_PLAYERS)
+                        .then(argument("niveau", IntegerArgumentType.integer(1, Job.MAX_LEVEL)).executes(c -> {
+                            var e = state(c).findByName(StringArgumentType.getString(c, "joueur"));
+                            if (e == null || e.getValue().side() == null) {
+                                Msg.info(c.getSource(), Text.literal("Joueur inconnu ou sans métier supplémentaire.").formatted(Formatting.RED));
+                                return 0;
+                            }
+                            e.getValue().side().level = IntegerArgumentType.getInteger(c, "niveau");
+                            e.getValue().side().xp = 0;
+                            state(c).markDirty();
+                            Msg.ok(c.getSource(), e.getValue().name + " : " + e.getValue().sideJob.displayName + " niveau " + e.getValue().side().level + ".");
+                            return 1;
+                        })))));
+
+        // ---- zone jouable (seul le Voyageur peut en sortir)
+        gm.then(literal("bordure")
+                .then(literal("coin1").executes(c -> borderCorner(c, 1, null))
+                        .then(argument("x", IntegerArgumentType.integer()).then(argument("z", IntegerArgumentType.integer())
+                                .executes(c -> borderCorner(c, 1, new BlockPos(IntegerArgumentType.getInteger(c, "x"), 0, IntegerArgumentType.getInteger(c, "z")))))))
+                .then(literal("coin2").executes(c -> borderCorner(c, 2, null))
+                        .then(argument("x", IntegerArgumentType.integer()).then(argument("z", IntegerArgumentType.integer())
+                                .executes(c -> borderCorner(c, 2, new BlockPos(IntegerArgumentType.getInteger(c, "x"), 0, IntegerArgumentType.getInteger(c, "z")))))))
+                .then(literal("retirer").executes(c -> {
+                    state(c).clearBorder();
+                    Msg.ok(c.getSource(), "Zone jouable retirée : plus aucune limite.");
+                    return 1;
+                }))
+                .then(literal("info").executes(c -> {
+                    var box = fr.serveur.rpg.world.PlayableZone.box(state(c));
+                    Msg.info(c.getSource(), Text.literal(box == null ? "Zone jouable non définie (il faut les deux coins : /gm bordure coin1 puis coin2)."
+                            : "Zone jouable — " + box.describe()).formatted(Formatting.GOLD));
+                    return 1;
+                })));
 
         d.register(gm);
     }
@@ -516,8 +573,8 @@ public final class GmCommands {
         if (money > 0) {
             PlayerData data = s.player(p);
             int prestige = data.current() == null ? 0 : data.current().prestige;
-            paid = Math.round(money * (1 + s.prestigeBonusPercent * prestige / 100.0));
-            data.money += paid;
+            paid = fr.serveur.rpg.economy.Economy.earn(c.getSource().getServer(), p.getUuid(), fr.serveur.rpg.economy.Economy.Source.QUETE,
+                    Math.round(money * (1 + s.prestigeBonusPercent * prestige / 100.0)), "quête #" + id + " (GM)");
             s.markDirty();
             Msg.send(p, Text.literal("Récompense : +" + fr.serveur.rpg.economy.Bank.format(paid) + " sur ton compte"
                     + (paid > money ? " (bonus prestige inclus)" : "") + ".").formatted(Formatting.GOLD));
@@ -550,7 +607,17 @@ public final class GmCommands {
     }
 
     private static int setTime(CommandContext<ServerCommandSource> c, long target) {
-        var ow = c.getSource().getServer().getOverworld();
+        var server = c.getSource().getServer();
+        if (fr.serveur.rpg.sombre.Lumiere.controls(server)) {
+            // Nuit permanente : l'heure est fixée par la lumière (jour invoqué ou nuit).
+            boolean night = target == fr.serveur.rpg.world.DayCycle.NIGHT_START;
+            if (night) fr.serveur.rpg.sombre.Lumiere.forceNight(server);
+            else fr.serveur.rpg.sombre.Lumiere.forceDay(server, "le destin");
+            fr.serveur.rpg.sombre.Journal.write(server, "gm", night ? "lumiere_nuit" : "lumiere_jour", "gm", c.getSource().getName());
+            Msg.ok(c.getSource(), night ? "La nuit retombe." : "Le jour se lève (jour invoqué).");
+            return 1;
+        }
+        var ow = server.getOverworld();
         long day = ow.getTimeOfDay() - Math.floorMod(ow.getTimeOfDay(), 24000L);
         long t = day + target;
         if (t <= ow.getTimeOfDay()) t += 24000;
@@ -581,8 +648,8 @@ public final class GmCommands {
                     RpgState s = state(c);
                     var e = EconomyCommands.resolve(c, s);
                     long amount = com.mojang.brigadier.arguments.LongArgumentType.getLong(c, "montant");
-                    e.getValue().money = op.applyAsLong(e.getValue().money, amount);
-                    s.markDirty();
+                    fr.serveur.rpg.economy.Economy.admin(c.getSource().getServer(), e.getKey(),
+                            op.applyAsLong(e.getValue().money, amount), true, c.getSource().getName());
                     Msg.ok(c.getSource(), e.getValue().name + " : " + fr.serveur.rpg.economy.Bank.format(e.getValue().money) + ".");
                     return 1;
                 })));
@@ -601,6 +668,38 @@ public final class GmCommands {
 
     private static RpgState state(CommandContext<ServerCommandSource> c) {
         return RpgState.get(c.getSource().getServer());
+    }
+
+    /** /gm metier2 definir|retirer : le joueur peut être hors ligne (sa balise sera ajustée à sa connexion). */
+    private static int setSideJob(CommandContext<ServerCommandSource> c, SideJob job) {
+        RpgState s = state(c);
+        var e = s.findByName(StringArgumentType.getString(c, "joueur"));
+        if (e == null) {
+            Msg.info(c.getSource(), Text.literal("Joueur inconnu.").formatted(Formatting.RED));
+            return 0;
+        }
+        ServerPlayerEntity target = c.getSource().getServer().getPlayerManager().getPlayer(e.getKey());
+        SideJobs.apply(target, e.getValue(), job);
+        if (job != null) e.getValue().sideChosenOnce = true;
+        s.markDirty();
+        if (target != null) {
+            Msg.send(target, job == null ? Text.literal("Le GM t'a retiré ton métier supplémentaire.")
+                    : Text.literal("Le GM t'a attribué le métier supplémentaire ").append(Text.literal(job.displayName).formatted(job.color)).append("."));
+        }
+        Msg.ok(c.getSource(), e.getValue().name + (job == null ? " n'a plus de métier supplémentaire." : " est maintenant " + job.displayName + "."));
+        return 1;
+    }
+
+    /** /gm bordure coin1|coin2 [x z] : sans coordonnées, prend la position du GM. */
+    private static int borderCorner(CommandContext<ServerCommandSource> c, int corner, BlockPos pos) {
+        ServerCommandSource src = c.getSource();
+        BlockPos p = pos != null ? pos : BlockPos.ofFloored(src.getPosition());
+        RpgState s = state(c);
+        s.setBorderCorner(corner, src.getWorld().getRegistryKey().getValue().toString(), p);
+        var box = fr.serveur.rpg.world.PlayableZone.box(s);
+        Msg.ok(src, "Coin " + corner + " : X " + p.getX() + ", Z " + p.getZ() + "."
+                + (box == null ? " Définis l'autre coin pour activer la zone." : " Zone jouable active — " + box.describe()));
+        return 1;
     }
 
     private static Job job(CommandContext<ServerCommandSource> c) throws CommandSyntaxException {

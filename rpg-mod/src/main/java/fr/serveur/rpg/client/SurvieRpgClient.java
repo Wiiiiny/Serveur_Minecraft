@@ -4,6 +4,7 @@ import fr.serveur.rpg.network.RpgNetwork;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.option.KeyBinding;
@@ -34,6 +35,23 @@ public class SurvieRpgClient implements ClientModInitializer {
             NbtCompound nbt = buf.readNbt();
             if (nbt != null) client.execute(() -> ClientData.update(nbt));
         });
+        // Métiers affichés sous le pseudo des joueurs.
+        ClientPlayNetworking.registerGlobalReceiver(fr.serveur.rpg.network.NameTags.TAGS, (client, handler, buf, responseSender) -> {
+            NbtCompound nbt = buf.readNbt();
+            if (nbt != null) client.execute(() -> NameTagCache.update(nbt));
+        });
+        // Raretés des objets (contours colorés).
+        ClientPlayNetworking.registerGlobalReceiver(fr.serveur.rpg.sombre.MondeSombre.RARETES, (client, handler, buf, responseSender) -> {
+            NbtCompound nbt = buf.readNbt();
+            if (nbt != null) client.execute(() -> RareteClient.update(nbt));
+        });
+        RareteClient.register();
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> client.execute(() -> {
+            NameTagCache.clear();
+            RareteClient.clear();
+            RaidClient.reset();
+        }));
+        RaidClient.register();
 
         // Captures automatiques de l'interface, pour le développement uniquement.
         if (Boolean.getBoolean("survierpg.devshots")) DevShots.register();

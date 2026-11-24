@@ -17,8 +17,11 @@ import fr.serveur.rpg.items.ModItems;
 import fr.serveur.rpg.jobs.Job;
 import fr.serveur.rpg.jobs.JobService;
 import fr.serveur.rpg.jobs.Progression;
+import fr.serveur.rpg.jobs.SideJob;
+import fr.serveur.rpg.jobs.SideJobs;
 import fr.serveur.rpg.protection.Lockpick;
 import fr.serveur.rpg.world.DayCycle;
+import fr.serveur.rpg.world.PlayableZone;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
@@ -53,6 +56,11 @@ public final class Actions {
         return s == null ? null : "!" + s;
     }
 
+    /** Résultat d'une action de faction : l'erreur, ou le message de réussite. */
+    private static String fac(String error, String ok) {
+        return error != null ? "!" + error : ok;
+    }
+
     // ------------------------------------------------------------------ joueur
 
     private static String player(ServerPlayerEntity p, String a, NbtCompound n) {
@@ -67,6 +75,40 @@ public final class Actions {
                 String e = JobService.choose(p, job);
                 return e != null ? err(e) : "Tu es maintenant " + job.displayName + ".";
             }
+            case "side.choose": {
+                SideJob job = SideJob.parse(n.getString("job"));
+                if (job == null) return "!Métier inconnu.";
+                String e = SideJobs.choose(p, job);
+                return e != null ? err(e) : "Métier supplémentaire : " + job.displayName + ".";
+            }
+            case "raid.enter": {
+                String e = fr.serveur.rpg.raid.RaidCycle.enter(p);
+                return e != null ? err(e) : null;
+            }
+            case "raid.repair": {
+                String e = fr.serveur.rpg.commands.RaidCommands.repair(p);
+                return e != null ? err(e) : "Brise-statue réparé.";
+            }
+            case "raid.companion":
+                data.companionDisabled = !data.companionDisabled;
+                state.markDirty();
+                return data.companionDisabled ? "Compagnon désactivé." : "Compagnon activé.";
+            case "raid.invite": {
+                ServerPlayerEntity to = p.getServer().getPlayerManager().getPlayer(n.getString("name").trim());
+                if (to == null) return "!Joueur introuvable (il doit être connecté).";
+                String e = fr.serveur.rpg.raid.Party.invite(p, to);
+                if (e != null) return err(e);
+                Msg.send(to, Text.literal(p.getGameProfile().getName() + " t'invite dans son groupe de raid : menu B › Raid, ou /raid groupe accepter")
+                        .formatted(Formatting.GOLD));
+                return "Invitation envoyée.";
+            }
+            case "raid.accept": {
+                String e = fr.serveur.rpg.raid.Party.accept(p);
+                return e != null ? err(e) : "Tu as rejoint le groupe.";
+            }
+            case "raid.leave":
+                fr.serveur.rpg.raid.Party.leave(p.getUuid());
+                return "Tu as quitté ton groupe.";
             case "prestige":
                 return Progression.prestige(p) ? "Prestige atteint ! Retour au niveau 1." : "!Le prestige est disponible au niveau " + Job.MAX_LEVEL + ".";
             case "forge": {
@@ -102,6 +144,63 @@ public final class Actions {
                 MarketMenus.Result r = MarketMenus.buyFromShop(p, n.getInt("id"));
                 return (r.ok() ? "" : "!") + r.message();
             }
+            case "fac.create": return fac(fr.serveur.rpg.faction.Factions.create(p, n.getString("name")), "Faction fondée !");
+            case "fac.invite": return fac(fr.serveur.rpg.faction.Factions.invite(p, n.getString("name")), "Invitation envoyée à " + n.getString("name") + ".");
+            case "fac.join": return fac(fr.serveur.rpg.faction.Factions.join(p, n.getInt("id")), "Bienvenue dans ta faction !");
+            case "fac.leave": return fac(fr.serveur.rpg.faction.Factions.leave(p), "Tu as quitté ta faction.");
+            case "fac.kick": return fac(fr.serveur.rpg.faction.Factions.kick(p, UUID.fromString(n.getString("uuid"))), "Membre exclu.");
+            case "fac.rank": return fac(fr.serveur.rpg.faction.Factions.setRank(p, UUID.fromString(n.getString("uuid")), n.getInt("delta")), "Rang modifié.");
+            case "fac.vote.start": {
+                fr.serveur.rpg.faction.Faction.VoteType type = fr.serveur.rpg.faction.Faction.VoteType.valueOf(n.getString("type"));
+                UUID target = n.getString("uuid").isEmpty() ? null : UUID.fromString(n.getString("uuid"));
+                return fac(fr.serveur.rpg.faction.Factions.startVote(p, type, target, n.getInt("territory")), "Vote ouvert.");
+            }
+            case "fac.vote": return fac(fr.serveur.rpg.faction.Factions.vote(p, n.getInt("id"), n.getBoolean("yes")), "Vote enregistré.");
+            case "fac.deposit": return fac(fr.serveur.rpg.faction.Factions.deposit(p, n.getLong("amount")), "Merci pour ta contribution !");
+            case "fac.withdraw": return fac(fr.serveur.rpg.faction.Factions.withdraw(p, n.getLong("amount")), "Retrait fait.");
+            case "fac.buy": return fac(fr.serveur.rpg.faction.Factions.buy(p, n.getInt("index")), "Achat fait.");
+            case "fac.chest": {
+                fr.serveur.rpg.faction.Faction f = fr.serveur.rpg.faction.Factions.of(p);
+                return fac(f == null ? "Tu n'es dans aucune faction." : fr.serveur.rpg.faction.Territories.openChest(p, f), null);
+            }
+            case "fac.base.tp": return fac(fr.serveur.rpg.faction.Territories.teleportBase(p), "Ne bouge plus…");
+            case "fac.base.move": return fac(fr.serveur.rpg.faction.Territories.moveBase(p), "Base déplacée ici.");
+            case "fac.war.declare": return fac(fr.serveur.rpg.faction.Wars.declare(p, n.getInt("id")), "Guerre déclarée.");
+            case "fac.war.night": return fac(fr.serveur.rpg.faction.Wars.setNight(p, n.getBoolean("on")), "Choix enregistré.");
+            case "fac.war.offer": return fac(fr.serveur.rpg.faction.Wars.offerCapitulation(p), "Capitulation proposée.");
+            case "fac.war.answer": return fac(fr.serveur.rpg.faction.Wars.answerCapitulation(p, n.getBoolean("yes")), n.getBoolean("yes") ? "Capitulation acceptée." : "Capitulation refusée.");
+            case "fac.banner": {
+                java.util.List<fr.serveur.rpg.faction.Faction.Layer> layers = new java.util.ArrayList<>();
+                net.minecraft.nbt.NbtList l = n.getList("layers", net.minecraft.nbt.NbtElement.COMPOUND_TYPE);
+                for (int i = 0; i < l.size(); i++) layers.add(new fr.serveur.rpg.faction.Faction.Layer(l.getCompound(i).getString("p"), l.getCompound(i).getInt("c")));
+                return fac(fr.serveur.rpg.faction.Factions.setBanner(p, n.getInt("base"), layers), "Bannière enregistrée.");
+            }
+            case "fac.banner.copy": {
+                fr.serveur.rpg.faction.Faction held = fr.serveur.rpg.faction.Banners.readHeld(p.getMainHandStack());
+                if (held == null) return "!Prends une bannière en main (faite au métier à tisser).";
+                return fac(fr.serveur.rpg.faction.Factions.setBanner(p, held.bannerBase, held.layers), "Bannière copiée.");
+            }
+            case "lore.save": {
+                String text = n.getString("text").replace("§", "");
+                if (text.length() > 1500) text = text.substring(0, 1500);
+                data.lore = text;
+                data.lorePublic = n.getBoolean("public");
+                state.markDirty();
+                return data.lorePublic ? "Histoire enregistrée (publique : /lore " + data.name + ")." : "Histoire enregistrée (privée).";
+            }
+            case "eclat.use": {
+                ItemStack eclat = ItemStack.EMPTY;
+                for (ItemStack s : p.getInventory().main) if (s.isOf(fr.serveur.rpg.sombre.SombreItems.ECLAT_LUMIERE)) { eclat = s; break; }
+                if (eclat.isEmpty()) return "!Tu n'as pas d'Éclat de Lumière.";
+                String e = fr.serveur.rpg.sombre.Lumiere.use(p);
+                if (e != null) return err(e);
+                if (!p.getAbilities().creativeMode) eclat.decrement(1);
+                return "L'Éclat s'éveille : le jour approche.";
+            }
+            case "shop.sell": {
+                MarketMenus.Result r = MarketMenus.sellToShop(p, n.getInt("id"));
+                return (r.ok() ? "" : "!") + r.message();
+            }
             case "death.spectator":
                 if (!data.awaitingRevive) return "!Tu n'es pas mort.";
                 DeathSystem.goSpectator(p);
@@ -132,6 +231,12 @@ public final class Actions {
                 double v = n.getDouble("value"), d = n.getDouble("delta");
                 switch (key) {
                     case "dayMin" -> state.dayMinutes = clamp(abs ? v : state.dayMinutes + d, 0.5, 600);
+                    case "permanentNight" -> {
+                        fr.serveur.rpg.sombre.SombreState ss = fr.serveur.rpg.sombre.SombreState.get(server);
+                        ss.nuitPermanente = !ss.nuitPermanente;
+                        ss.markDirty();
+                        fr.serveur.rpg.sombre.Journal.write(server, "gm", "nuit_permanente_" + ss.nuitPermanente, "gm", p.getGameProfile().getName());
+                    }
                     case "nightMin" -> state.nightMinutes = clamp(abs ? v : state.nightMinutes + d, 0.5, 600);
                     case "lockpick" -> state.lockpickChance = (int) clamp(abs ? v : state.lockpickChance + d, 0, 100);
                     case "prestigeBonus" -> state.prestigeBonusPercent = (int) clamp(abs ? v : state.prestigeBonusPercent + d, 0, 1000);
@@ -163,6 +268,13 @@ public final class Actions {
                 return "Réglage enregistré.";
             }
             case "gm.time": {
+                if (fr.serveur.rpg.sombre.Lumiere.controls(server)) {
+                    boolean night = "night".equals(n.getString("to"));
+                    if (night) fr.serveur.rpg.sombre.Lumiere.forceNight(server);
+                    else fr.serveur.rpg.sombre.Lumiere.forceDay(server, "le destin");
+                    fr.serveur.rpg.sombre.Journal.write(server, "gm", night ? "lumiere_nuit" : "lumiere_jour", "gm", p.getGameProfile().getName());
+                    return night ? "La nuit retombe." : "Le jour se lève (jour invoqué).";
+                }
                 ServerWorld ow = server.getOverworld();
                 long target = "night".equals(n.getString("to")) ? DayCycle.NIGHT_START : DayCycle.NIGHT_END;
                 long day = ow.getTimeOfDay() - Math.floorMod(ow.getTimeOfDay(), 24000L);
@@ -171,6 +283,40 @@ public final class Actions {
                 ow.setTimeOfDay(t);
                 return "night".equals(n.getString("to")) ? "La nuit tombe." : "Le jour se lève.";
             }
+            case "gm.border.corner": {
+                int corner = n.getInt("corner") == 2 ? 2 : 1;
+                state.setBorderCorner(corner, p.getWorld().getRegistryKey().getValue().toString(), p.getBlockPos());
+                PlayableZone.Box box = PlayableZone.box(state);
+                return "Coin " + corner + " défini ici." + (box == null ? " Définis l'autre coin pour activer la zone." : " Zone jouable active.");
+            }
+            case "gm.border.clear":
+                state.clearBorder();
+                return "Zone jouable retirée.";
+            case "gm.raid.regen": {
+                String e = fr.serveur.rpg.raid.RaidCycle.startCycle(server, "GM");
+                return e != null ? err(e) : "Régénération de la zone de raid lancée.";
+            }
+            case "gm.raid.hub": {
+                var s = fr.serveur.rpg.raid.RaidState.get(server);
+                s.hubDim = p.getWorld().getRegistryKey().getValue().toString();
+                s.hub = p.getBlockPos();
+                s.hubYaw = p.getYaw();
+                s.markDirty();
+                return "Point de retour du raid défini ici.";
+            }
+            case "gm.raid.portal": {
+                var s = fr.serveur.rpg.raid.RaidState.get(server);
+                s.portal = p.getBlockPos();
+                if (s.hub == null) {
+                    s.hubDim = p.getWorld().getRegistryKey().getValue().toString();
+                    s.hub = p.getBlockPos();
+                    s.hubYaw = p.getYaw();
+                }
+                s.markDirty();
+                return "Portail du raid défini ici.";
+            }
+            case "gm.raid.rooms":
+                return fr.serveur.rpg.raid.RoomLibrary.load();
             case "gm.room.here":
                 state.waitingRoomDim = p.getWorld().getRegistryKey().getValue().toString();
                 state.waitingRoom = p.getBlockPos();
@@ -215,23 +361,35 @@ public final class Actions {
                 long price = n.getLong("price");
                 if (held.isEmpty()) return "!Tiens en main l'objet à mettre en boutique.";
                 if (price <= 0) return "!Indique un prix.";
-                MarketItem m = new MarketItem();
-                m.id = state.nextMarketId++;
-                m.sellerName = "GM";
-                m.stack = held.copy();
-                m.price = price;
+                MarketItem m = fr.serveur.rpg.economy.DynamicShop.create(state, held, price, true, false);
                 state.shop.add(m);
                 state.markDirty();
-                return "Ajouté à la boutique : " + m.stack.getCount() + "x " + m.stack.getName().getString() + ".";
+                return "Ajouté à la boutique : " + m.stack.getCount() + "x " + m.stack.getName().getString() + " (prix de base " + price + ").";
             }
             case "gm.shop.price": {
                 int id = n.getInt("id");
                 for (MarketItem m : state.shop) {
                     if (m.id == id) {
-                        m.price = Math.max(1, n.contains("value") ? n.getLong("value") : m.price + n.getLong("delta"));
+                        // Le GM règle le prix de base ; les bornes suivent (moitié / double).
+                        m.basePrice = Math.max(1, n.contains("value") ? n.getLong("value") : m.basePrice + n.getLong("delta"));
+                        m.minPrice = Math.max(1, m.basePrice / 2);
+                        m.maxPrice = Math.max(2, m.basePrice * 2);
+                        fr.serveur.rpg.economy.DynamicShop.refresh(m);
                         state.markDirty();
-                        return "Prix : " + Bank.format(m.price) + ".";
+                        return "Prix de base : " + Bank.format(m.basePrice) + " (actuel " + Bank.format(m.price) + ").";
                     }
+                }
+                return "!Article introuvable.";
+            }
+            case "gm.shop.toggle": {
+                int id = n.getInt("id");
+                for (MarketItem m : state.shop) {
+                    if (m.id != id) continue;
+                    if ("buyback".equals(n.getString("what"))) m.buyback = !m.buyback;
+                    else m.sold = !m.sold;
+                    if (!m.sold && !m.buyback) m.sold = true;
+                    state.markDirty();
+                    return (m.sold ? "Vendu" : "Pas vendu") + " · " + (m.buyback ? "racheté" : "pas racheté") + " par le serveur.";
                 }
                 return "!Article introuvable.";
             }
@@ -281,14 +439,26 @@ public final class Actions {
                 data.current().level = (int) v;
                 data.current().xp = 0;
             }
-            case "money" -> data.money = Math.max(0, data.money + v);
-            case "setmoney" -> data.money = Math.max(0, v);
+            case "money" -> fr.serveur.rpg.economy.Economy.admin(gm.getServer(), e.getKey(), v, false, gm.getGameProfile().getName());
+            case "setmoney" -> fr.serveur.rpg.economy.Economy.admin(gm.getServer(), e.getKey(), v, true, gm.getGameProfile().getName());
+            case "freeze" -> {
+                data.frozen = !data.frozen;
+                if (target != null) Msg.send(target, Text.literal(data.frozen ? "Ton compte a été gelé par un GM." : "Ton compte est dégelé.")
+                        .formatted(data.frozen ? Formatting.RED : Formatting.GREEN));
+            }
             case "job" -> {
                 Job job = Job.parse(n.getString("job"));
                 if (job == null) return "!Métier inconnu.";
                 data.job = job;
                 data.current();
                 if (target != null) JobService.giveStarterTool(target, job);
+            }
+            case "side" -> {
+                String s = n.getString("job");
+                SideJob job = s.isEmpty() ? null : SideJob.parse(s);
+                if (!s.isEmpty() && job == null) return "!Métier inconnu.";
+                SideJobs.apply(target, data, job);
+                if (job != null) data.sideChosenOnce = true;
             }
             case "give" -> {
                 if (target == null) return "!Le joueur doit être connecté.";

@@ -61,17 +61,8 @@ public final class EconomyCommands {
                 .then(literal("virer").then(argument("joueur", StringArgumentType.word()).suggests(KNOWN_PLAYERS)
                         .then(argument("montant", LongArgumentType.longArg(1)).executes(c -> {
                             ServerPlayerEntity p = c.getSource().getPlayerOrThrow();
-                            RpgState state = RpgState.get(p.getServer());
-                            Map.Entry<UUID, PlayerData> target = resolve(c, state);
-                            if (target.getKey().equals(p.getUuid())) throw err("Tu ne peux pas te virer de l'argent à toi-même.");
-                            long amount = LongArgumentType.getLong(c, "montant");
-                            PlayerData me = state.player(p);
-                            if (me.money < amount) throw err("Solde insuffisant (" + Bank.format(me.money) + ").");
-                            me.money -= amount;
-                            target.getValue().money += amount;
-                            state.markDirty();
-                            Msg.info(c.getSource(), Text.literal("Virement de " + Bank.format(amount) + " à " + target.getValue().name + ".").formatted(Formatting.GREEN));
-                            Bank.notify(p.getServer(), target.getKey(), p.getGameProfile().getName() + " t'a viré " + Bank.format(amount) + ".");
+                            String error = transfer(p, StringArgumentType.getString(c, "joueur"), LongArgumentType.getLong(c, "montant"));
+                            if (error != null) throw err(error);
                             return 1;
                         })))));
 
@@ -98,15 +89,26 @@ public final class EconomyCommands {
         if (price <= 0) return "Indique un prix supérieur à 0.";
         if (held.isEmpty()) return "Tiens en main l'objet à vendre.";
         if (ObscureStone.isPickaxe(held)) return "La Pioche des ténèbres ne peut pas être vendue.";
+        if (fr.serveur.rpg.world.TravelBeacon.isBeacon(held)) return "La balise du voyageur ne peut pas être vendue.";
         RpgState state = RpgState.get(p.getServer());
+        if (state.player(p).frozen) return "Ton compte est gelé : contacte un GM.";
         long mine = state.auctions.stream().filter(a -> p.getUuid().equals(a.seller)).count();
         if (mine >= MAX_LISTINGS_PER_PLAYER) return "Tu as déjà " + MAX_LISTINGS_PER_PLAYER + " objets en vente.";
+        // Contre le blanchiment entre comptes : prix borné autour de la valeur en boutique, si l'objet y est.
+        double ref = fr.serveur.rpg.economy.DynamicShop.referenceUnitPrice(state, held);
+        if (ref > 0) {
+            var cfg = fr.serveur.rpg.economy.EconomyConfig.get();
+            long min = Math.max(1, (long) Math.floor(ref * held.getCount() * cfg.hdvPrixPlancher));
+            long max = Math.max(min, (long) Math.ceil(ref * held.getCount() * cfg.hdvPrixPlafond));
+            if (price < min || price > max) return "Prix autorisé pour cet objet : de " + min + " à " + max + " pièces.";
+        }
         MarketItem m = new MarketItem();
         m.id = state.nextMarketId++;
         m.seller = p.getUuid();
         m.sellerName = p.getGameProfile().getName();
         m.stack = held.copy();
         m.price = price;
+        m.listedAt = System.currentTimeMillis();
         p.getInventory().removeOne(held);
         state.auctions.add(m);
         state.markDirty();
@@ -120,13 +122,8 @@ public final class EconomyCommands {
         RpgState state = RpgState.get(p.getServer());
         Map.Entry<UUID, PlayerData> target = state.findByName(name);
         if (target == null) return "Joueur inconnu : " + name + ".";
-        if (target.getKey().equals(p.getUuid())) return "Tu ne peux pas te virer de l'argent à toi-même.";
-        if (amount <= 0) return "Montant invalide.";
-        PlayerData me = state.player(p);
-        if (me.money < amount) return "Solde insuffisant (" + Bank.format(me.money) + ").";
-        me.money -= amount;
-        target.getValue().money += amount;
-        state.markDirty();
+        String error = fr.serveur.rpg.economy.Economy.transfer(p.getServer(), p.getUuid(), target.getKey(), amount);
+        if (error != null) return error;
         Msg.send(p, Text.literal("Virement de " + Bank.format(amount) + " à " + target.getValue().name + ".").formatted(Formatting.GREEN));
         Bank.notify(p.getServer(), target.getKey(), p.getGameProfile().getName() + " t'a viré " + Bank.format(amount) + ".");
         return null;

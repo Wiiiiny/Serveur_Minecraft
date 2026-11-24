@@ -205,8 +205,10 @@ public final class DailyQuests {
         PlayerData data = state.player(player);
         int prestige = data.current() == null ? 0 : data.current().prestige;
         long coins = Math.round(q.coins * (1 + state.prestigeBonusPercent * prestige / 100.0));
-        data.money += coins;
+        coins = fr.serveur.rpg.economy.Economy.earn(player.getServer(), player.getUuid(),
+                fr.serveur.rpg.economy.Economy.Source.QUETE, coins, q.kind + " " + q.target);
         if (q.xp > 0 && data.job != null) Progression.addXp(player, q.xp, true);
+        fr.serveur.rpg.sombre.MondeSombre.onQuest(player);
         player.playSound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 0.7f, 1.2f);
         Msg.send(player, Text.literal("Quête du jour terminée ! ").formatted(Formatting.GOLD)
                 .append(Text.literal("+" + Bank.format(coins) + (q.xp > 0 ? ", +" + q.xp + " XP" : "")).formatted(Formatting.YELLOW)));
